@@ -1,8 +1,19 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { SiteLayout } from "@/components/site/Layout";
 import { PageHeader } from "@/components/site/PageHeader";
-import { ArrowRight, Sparkles, Compass, Target, Heart } from "lucide-react";
+import { ArrowRight, Sparkles, Compass, Target, Heart, Linkedin, Mail } from "lucide-react";
 import aboutImg from "@/assets/program-family.jpg";
+import team1 from "@/assets/team-1.jpg";
+import team2 from "@/assets/team-2.jpg";
+import team3 from "@/assets/team-3.jpg";
+import team4 from "@/assets/team-4.jpg";
+
+const team = [
+  { name: "Dr. Amara Johnson", role: "Founder & Executive Director", bio: "Visionary leader championing women's empowerment for over 20 years.", img: team1 },
+  { name: "Sofia Ramirez", role: "Director of Programs", bio: "Architect of SOAR's mentorship and financial literacy curriculum.", img: team2 },
+  { name: "Zara Okonkwo", role: "Head of Community", bio: "Builds the sisterhood — events, outreach, and volunteer care.", img: team3 },
+  { name: "Elena Whitfield", role: "Chief Partnerships Officer", bio: "Cultivates sponsors and strategic partners advancing our mission.", img: team4 },
+];
 
 export const Route = createFileRoute("/about")({
   head: () => ({
