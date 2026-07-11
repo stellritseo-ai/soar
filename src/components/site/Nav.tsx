@@ -1,6 +1,8 @@
 import { Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Menu, X, Heart } from "lucide-react";
+import { Menu, X, Heart, LogIn, LayoutDashboard } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+
 
 const links = [
   { to: "/", label: "Home" },
@@ -17,13 +19,20 @@ const links = [
 export function Nav() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const [signedIn, setSignedIn] = useState(false);
 
   useEffect(() => {
     const on = () => setScrolled(window.scrollY > 20);
     on();
     window.addEventListener("scroll", on);
-    return () => window.removeEventListener("scroll", on);
+    supabase.auth.getSession().then(({ data }) => setSignedIn(!!data.session));
+    const { data: sub } = supabase.auth.onAuthStateChange((_e, session) => setSignedIn(!!session));
+    return () => {
+      window.removeEventListener("scroll", on);
+      sub.subscription.unsubscribe();
+    };
   }, []);
+
 
   return (
     <header
@@ -57,6 +66,21 @@ export function Nav() {
         </div>
 
         <div className="hidden items-center gap-3 lg:flex">
+          {signedIn ? (
+            <Link
+              to="/dashboard"
+              className="inline-flex items-center gap-2 rounded-full border border-input bg-background px-4 py-2 text-sm font-semibold hover:bg-secondary"
+            >
+              <LayoutDashboard className="size-4" /> Dashboard
+            </Link>
+          ) : (
+            <Link
+              to="/auth"
+              className="inline-flex items-center gap-2 rounded-full border border-input bg-background px-4 py-2 text-sm font-semibold hover:bg-secondary"
+            >
+              <LogIn className="size-4" /> Admin
+            </Link>
+          )}
           <Link
             to="/donate"
             className="inline-flex items-center gap-2 rounded-full gradient-brand px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-elegant transition-transform hover:scale-[1.03]"
@@ -64,6 +88,7 @@ export function Nav() {
             <Heart className="size-4" /> Donate
           </Link>
         </div>
+
 
         <button
           className="grid size-11 place-items-center rounded-full glass lg:hidden"
