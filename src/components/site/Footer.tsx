@@ -1,7 +1,10 @@
 import { Link } from "@tanstack/react-router";
 import { Facebook, Mail, Phone, MapPin, Heart } from "lucide-react";
+import { useSetting, type ContactSettings } from "@/lib/cms";
 
 export function Footer() {
+  const { data } = useSetting<ContactSettings>("contact");
+  const c: ContactSettings = data ?? {};
   return (
     <footer className="relative mt-32 overflow-hidden">
       <div className="absolute inset-0 gradient-hero opacity-95" />
