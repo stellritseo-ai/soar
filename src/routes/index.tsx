@@ -153,15 +153,13 @@ function Home1() {
         <div className="relative mx-auto grid max-w-7xl gap-10 px-6 pb-24 pt-16 lg:px-10 lg:pt-28">
           <div className="max-w-3xl animate-fade-up">
             <span className="inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.22em] text-white backdrop-blur-md">
-              <span className="size-1.5 rounded-full bg-accent-soft" /> Sisters Of Adversity Rise
+              <span className="size-1.5 rounded-full bg-accent-soft" /> {hero?.eyebrow ?? "Sisters Of Adversity Rise"}
             </span>
             <h1 className="mt-6 font-display text-5xl leading-[0.98] text-white sm:text-6xl md:text-7xl lg:text-[88px]">
-              Empowering Women <br />
-              to <span className="text-gradient-gold italic">Dream Again</span>
+              {hero?.headline ?? (<>Empowering Women <br />to <span className="text-gradient-gold italic">Dream Again</span></>)}
             </h1>
             <p className="mt-6 max-w-2xl text-lg leading-relaxed text-white/85 md:text-xl">
-              SOAR Global Foundation Inc. helps women overcome adversity through education, mentorship,
-              financial literacy, family support, and pathways to homeownership.
+              {hero?.subheadline ?? "SOAR Global Foundation Inc. helps women overcome adversity through education, mentorship, financial literacy, family support, and pathways to homeownership."}
             </p>
             <div className="mt-9 flex flex-wrap items-center gap-4">
               <Link
