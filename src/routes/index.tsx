@@ -447,9 +447,9 @@ function Home1() {
 
           <div className="mt-14 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
             {team.map((m) => (
-              <article key={m.name} className="group relative overflow-hidden rounded-3xl border border-border bg-card shadow-soft transition-all duration-500 hover:-translate-y-1 hover:shadow-elegant">
+              <article key={m.id} className="group relative overflow-hidden rounded-3xl border border-border bg-card shadow-soft transition-all duration-500 hover:-translate-y-1 hover:shadow-elegant">
                 <div className="relative overflow-hidden">
-                  <img src={m.img} alt={m.name} loading="lazy" width={800} height={1000} className="aspect-[4/5] size-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                  <img src={m.image_url ?? team1} alt={m.name} loading="lazy" width={800} height={1000} className="aspect-[4/5] size-full object-cover transition-transform duration-700 group-hover:scale-105" />
                   <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-primary-deep/70 via-transparent to-transparent opacity-70" />
                   <div className="absolute bottom-4 left-4 right-4 flex gap-2 opacity-0 transition-opacity duration-500 group-hover:opacity-100">
                     <a href="#" aria-label={`${m.name} on LinkedIn`} className="grid size-9 place-items-center rounded-full glass text-primary-deep hover:text-primary"><Linkedin className="size-4" /></a>
