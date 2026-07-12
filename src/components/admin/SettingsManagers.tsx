@@ -14,7 +14,7 @@ function useSettingForm<T extends Record<string, unknown>>(key: string) {
 
   const save = useMutation({
     mutationFn: async (value: T) => {
-      const { error } = await supabase.from("site_settings").upsert({ key, value });
+      const { error } = await supabase.from("site_settings").upsert({ key, value: value as never });
       if (error) throw error;
     },
     onSuccess: () => {
