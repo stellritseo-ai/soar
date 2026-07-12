@@ -29,12 +29,13 @@ import team1 from "@/assets/team-1.jpg";
 import team2 from "@/assets/team-2.jpg";
 import team3 from "@/assets/team-3.jpg";
 import team4 from "@/assets/team-4.jpg";
+import { useTeam, useSetting, type HeroSettings } from "@/lib/cms";
 
-const team = [
-  { name: "Dr. Amara Johnson", role: "Founder & Executive Director", bio: "Visionary leader championing women's empowerment for over 20 years.", img: team1 },
-  { name: "Sofia Ramirez", role: "Director of Programs", bio: "Architect of SOAR's mentorship and financial literacy curriculum.", img: team2 },
-  { name: "Zara Okonkwo", role: "Head of Community", bio: "Builds the sisterhood — events, outreach, and volunteer care.", img: team3 },
-  { name: "Elena Whitfield", role: "Chief Partnerships Officer", bio: "Cultivates sponsors and strategic partners advancing our mission.", img: team4 },
+const fallbackTeam = [
+  { id: "1", name: "Dr. Amara Johnson", role: "Founder & Executive Director", bio: "Visionary leader championing women's empowerment for over 20 years.", image_url: team1 },
+  { id: "2", name: "Sofia Ramirez", role: "Director of Programs", bio: "Architect of SOAR's mentorship and financial literacy curriculum.", image_url: team2 },
+  { id: "3", name: "Zara Okonkwo", role: "Head of Community", bio: "Builds the sisterhood — events, outreach, and volunteer care.", image_url: team3 },
+  { id: "4", name: "Elena Whitfield", role: "Chief Partnerships Officer", bio: "Cultivates sponsors and strategic partners advancing our mission.", image_url: team4 },
 ];
 
 
@@ -100,6 +101,9 @@ const stories = [
 ];
 
 function Home1() {
+  const { data: teamData } = useTeam();
+  const { data: hero } = useSetting<HeroSettings>("hero");
+  const team = teamData && teamData.length > 0 ? teamData : fallbackTeam;
   return (
     <SiteLayout>
       {/* HERO */}
@@ -149,15 +153,13 @@ function Home1() {
         <div className="relative mx-auto grid max-w-7xl gap-10 px-6 pb-24 pt-16 lg:px-10 lg:pt-28">
           <div className="max-w-3xl animate-fade-up">
             <span className="inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.22em] text-white backdrop-blur-md">
-              <span className="size-1.5 rounded-full bg-accent-soft" /> Sisters Of Adversity Rise
+              <span className="size-1.5 rounded-full bg-accent-soft" /> {hero?.eyebrow ?? "Sisters Of Adversity Rise"}
             </span>
             <h1 className="mt-6 font-display text-5xl leading-[0.98] text-white sm:text-6xl md:text-7xl lg:text-[88px]">
-              Empowering Women <br />
-              to <span className="text-gradient-gold italic">Dream Again</span>
+              {hero?.headline ?? (<>Empowering Women <br />to <span className="text-gradient-gold italic">Dream Again</span></>)}
             </h1>
             <p className="mt-6 max-w-2xl text-lg leading-relaxed text-white/85 md:text-xl">
-              SOAR Global Foundation Inc. helps women overcome adversity through education, mentorship,
-              financial literacy, family support, and pathways to homeownership.
+              {hero?.subheadline ?? "SOAR Global Foundation Inc. helps women overcome adversity through education, mentorship, financial literacy, family support, and pathways to homeownership."}
             </p>
             <div className="mt-9 flex flex-wrap items-center gap-4">
               <Link
@@ -443,9 +445,9 @@ function Home1() {
 
           <div className="mt-14 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
             {team.map((m) => (
-              <article key={m.name} className="group relative overflow-hidden rounded-3xl border border-border bg-card shadow-soft transition-all duration-500 hover:-translate-y-1 hover:shadow-elegant">
+              <article key={m.id} className="group relative overflow-hidden rounded-3xl border border-border bg-card shadow-soft transition-all duration-500 hover:-translate-y-1 hover:shadow-elegant">
                 <div className="relative overflow-hidden">
-                  <img src={m.img} alt={m.name} loading="lazy" width={800} height={1000} className="aspect-[4/5] size-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                  <img src={m.image_url ?? team1} alt={m.name} loading="lazy" width={800} height={1000} className="aspect-[4/5] size-full object-cover transition-transform duration-700 group-hover:scale-105" />
                   <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-primary-deep/70 via-transparent to-transparent opacity-70" />
                   <div className="absolute bottom-4 left-4 right-4 flex gap-2 opacity-0 transition-opacity duration-500 group-hover:opacity-100">
                     <a href="#" aria-label={`${m.name} on LinkedIn`} className="grid size-9 place-items-center rounded-full glass text-primary-deep hover:text-primary"><Linkedin className="size-4" /></a>

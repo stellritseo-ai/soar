@@ -1,7 +1,13 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
+import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
 import { LogOut, Users, Calendar, Newspaper, Image as ImageIcon, Mail, Sparkles } from "lucide-react";
+import { TeamManager } from "@/components/admin/TeamManager";
+import { EventsManager } from "@/components/admin/EventsManager";
+import { BlogManager } from "@/components/admin/BlogManager";
+import { GalleryManager } from "@/components/admin/GalleryManager";
+import { HeroManager, ContactManager } from "@/components/admin/SettingsManagers";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
   head: () => ({
@@ -13,26 +19,29 @@ export const Route = createFileRoute("/_authenticated/dashboard")({
   component: Dashboard,
 });
 
+const TABS = [
+  { key: "team", label: "Team", icon: Users, C: TeamManager },
+  { key: "events", label: "Events", icon: Calendar, C: EventsManager },
+  { key: "blog", label: "Blog", icon: Newspaper, C: BlogManager },
+  { key: "gallery", label: "Gallery", icon: ImageIcon, C: GalleryManager },
+  { key: "hero", label: "Hero", icon: Sparkles, C: HeroManager },
+  { key: "contact", label: "Contact", icon: Mail, C: ContactManager },
+] as const;
+
 function Dashboard() {
   const { user } = Route.useRouteContext();
   const navigate = useNavigate();
-  const queryClient = useQueryClient();
+  const qc = useQueryClient();
+  const [tab, setTab] = useState<(typeof TABS)[number]["key"]>("team");
 
   async function signOut() {
-    await queryClient.cancelQueries();
-    queryClient.clear();
+    await qc.cancelQueries();
+    qc.clear();
     await supabase.auth.signOut();
     navigate({ to: "/auth", replace: true });
   }
 
-  const sections = [
-    { title: "Team Members", icon: Users, copy: "Add, edit, or remove team member cards." },
-    { title: "Events", icon: Calendar, copy: "Manage upcoming events." },
-    { title: "Blog Posts", icon: Newspaper, copy: "Publish articles and news." },
-    { title: "Gallery", icon: ImageIcon, copy: "Curate gallery images." },
-    { title: "Contact Info", icon: Mail, copy: "Update site contact details." },
-    { title: "Hero & Copy", icon: Sparkles, copy: "Edit homepage headline and stats." },
-  ];
+  const Active = TABS.find((t) => t.key === tab)!.C;
 
   return (
     <div className="min-h-dvh bg-background">
@@ -49,38 +58,28 @@ function Dashboard() {
           </Link>
           <div className="flex items-center gap-3">
             <span className="hidden text-sm text-muted-foreground md:inline">{user.email}</span>
-            <button
-              onClick={signOut}
-              className="inline-flex items-center gap-2 rounded-full border border-input bg-background px-4 py-2 text-sm font-semibold hover:bg-secondary"
-            >
+            <button onClick={signOut} className="inline-flex items-center gap-2 rounded-full border border-input bg-background px-4 py-2 text-sm font-semibold hover:bg-secondary">
               <LogOut className="size-4" /> Sign out
             </button>
           </div>
         </div>
       </header>
 
-      <main className="mx-auto max-w-7xl px-6 py-12 lg:px-10">
-        <h1 className="font-display text-4xl md:text-5xl">Welcome back.</h1>
-        <p className="mt-2 text-muted-foreground">Manage your website content from here.</p>
-
-        <div className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {sections.map((s) => (
-            <div
-              key={s.title}
-              className="group rounded-3xl border border-border bg-card p-7 shadow-soft transition-all hover:-translate-y-1 hover:shadow-elegant"
-            >
-              <div className="grid size-12 place-items-center rounded-2xl gradient-brand text-primary-foreground shadow-glow">
-                <s.icon className="size-5" />
-              </div>
-              <h3 className="mt-5 font-display text-xl">{s.title}</h3>
-              <p className="mt-2 text-sm text-muted-foreground">{s.copy}</p>
-              <div className="mt-5 text-xs font-semibold uppercase tracking-widest text-primary/70">
-                Coming next
-              </div>
-            </div>
+      <div className="mx-auto grid max-w-7xl gap-8 px-6 py-8 lg:grid-cols-[220px_1fr] lg:px-10">
+        <nav className="flex gap-2 overflow-x-auto lg:flex-col lg:overflow-visible">
+          {TABS.map((t) => (
+            <button key={t.key} onClick={() => setTab(t.key)}
+              className={`inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-medium transition ${
+                tab === t.key ? "bg-secondary text-primary" : "text-foreground/70 hover:bg-secondary/60"
+              }`}>
+              <t.icon className="size-4" /> {t.label}
+            </button>
           ))}
-        </div>
-      </main>
+        </nav>
+        <main className="min-w-0">
+          <Active />
+        </main>
+      </div>
     </div>
   );
 }

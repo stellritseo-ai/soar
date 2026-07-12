@@ -1,7 +1,10 @@
 import { Link } from "@tanstack/react-router";
 import { Facebook, Mail, Phone, MapPin, Heart } from "lucide-react";
+import { useSetting, type ContactSettings } from "@/lib/cms";
 
 export function Footer() {
+  const { data } = useSetting<ContactSettings>("contact");
+  const c: ContactSettings = data ?? {};
   return (
     <footer className="relative mt-32 overflow-hidden">
       <div className="absolute inset-0 gradient-hero opacity-95" />
@@ -70,9 +73,9 @@ export function Footer() {
             </form>
 
             <ul className="mt-6 space-y-2.5 text-sm text-white/80">
-              <li className="flex items-center gap-2"><Phone className="size-4 text-accent-soft" /> (321) 732-0966</li>
-              <li className="flex items-center gap-2"><Mail className="size-4 text-accent-soft" /> sistersoar14@gmail.com</li>
-              <li className="flex items-center gap-2"><MapPin className="size-4 text-accent-soft" /> United States</li>
+              {c.phone && <li className="flex items-center gap-2"><Phone className="size-4 text-accent-soft" /> {c.phone}</li>}
+              {c.email && <li className="flex items-center gap-2"><Mail className="size-4 text-accent-soft" /> {c.email}</li>}
+              {c.address && <li className="flex items-center gap-2"><MapPin className="size-4 text-accent-soft" /> {c.address}</li>}
             </ul>
           </div>
         </div>

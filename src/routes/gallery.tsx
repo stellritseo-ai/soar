@@ -9,6 +9,7 @@ import p1 from "@/assets/program-financial.jpg";
 import p2 from "@/assets/program-home.jpg";
 import p3 from "@/assets/program-mentor.jpg";
 import p4 from "@/assets/program-family.jpg";
+import { useGallery } from "@/lib/cms";
 
 export const Route = createFileRoute("/gallery")({
   head: () => ({
@@ -22,9 +23,11 @@ export const Route = createFileRoute("/gallery")({
   component: Gallery,
 });
 
-const images = [hero, s1, p1, p2, s2, p3, p4, s3];
+const fallback = [hero, s1, p1, p2, s2, p3, p4, s3];
 
 function Gallery() {
+  const { data } = useGallery();
+  const images = data && data.length > 0 ? data.map((g) => g.image_url) : fallback;
   return (
     <SiteLayout>
       <PageHeader
