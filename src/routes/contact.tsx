@@ -1,7 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteLayout } from "@/components/site/Layout";
 import { PageHeader } from "@/components/site/PageHeader";
-import { Phone, Mail, Facebook, MapPin, Send } from "lucide-react";
+import { Phone, Mail, MapPin, Clock, Send } from "lucide-react";
+import { useSetting, type ContactSettings } from "@/lib/cms";
 
 export const Route = createFileRoute("/contact")({
   head: () => ({
@@ -17,6 +18,8 @@ export const Route = createFileRoute("/contact")({
 });
 
 function Contact() {
+  const { data } = useSetting<ContactSettings>("contact");
+  const c: ContactSettings = data ?? {};
   return (
     <SiteLayout>
       <PageHeader
@@ -30,44 +33,43 @@ function Contact() {
           <div className="rounded-[28px] gradient-hero p-8 text-primary-foreground shadow-elegant">
             <h3 className="font-display text-2xl">Reach out</h3>
             <ul className="mt-6 space-y-4 text-sm">
-              <li className="flex items-start gap-3">
-                <span className="grid size-10 place-items-center rounded-full bg-white/15"><Phone className="size-4" /></span>
-                <div>
-                  <div className="text-xs uppercase tracking-widest text-white/70">Phone</div>
-                  <a href="tel:+13217320966" className="text-base">(321) 732-0966</a>
-                </div>
-              </li>
-              <li className="flex items-start gap-3">
-                <span className="grid size-10 place-items-center rounded-full bg-white/15"><Mail className="size-4" /></span>
-                <div>
-                  <div className="text-xs uppercase tracking-widest text-white/70">Email</div>
-                  <a href="mailto:sistersoar14@gmail.com" className="text-base">sistersoar14@gmail.com</a>
-                </div>
-              </li>
-              <li className="flex items-start gap-3">
-                <span className="grid size-10 place-items-center rounded-full bg-white/15"><Facebook className="size-4" /></span>
-                <div>
-                  <div className="text-xs uppercase tracking-widest text-white/70">Facebook</div>
-                  <span className="text-base">SOAR (Sisters Of Adversity Rise)</span>
-                </div>
-              </li>
-              <li className="flex items-start gap-3">
-                <span className="grid size-10 place-items-center rounded-full bg-white/15"><MapPin className="size-4" /></span>
-                <div>
-                  <div className="text-xs uppercase tracking-widest text-white/70">Serving</div>
-                  <span className="text-base">United States — expanding</span>
-                </div>
-              </li>
+              {c.phone && (
+                <li className="flex items-start gap-3">
+                  <span className="grid size-10 place-items-center rounded-full bg-white/15"><Phone className="size-4" /></span>
+                  <div>
+                    <div className="text-xs uppercase tracking-widest text-white/70">Phone</div>
+                    <a href={`tel:${c.phone.replace(/\s/g, "")}`} className="text-base">{c.phone}</a>
+                  </div>
+                </li>
+              )}
+              {c.email && (
+                <li className="flex items-start gap-3">
+                  <span className="grid size-10 place-items-center rounded-full bg-white/15"><Mail className="size-4" /></span>
+                  <div>
+                    <div className="text-xs uppercase tracking-widest text-white/70">Email</div>
+                    <a href={`mailto:${c.email}`} className="text-base">{c.email}</a>
+                  </div>
+                </li>
+              )}
+              {c.address && (
+                <li className="flex items-start gap-3">
+                  <span className="grid size-10 place-items-center rounded-full bg-white/15"><MapPin className="size-4" /></span>
+                  <div>
+                    <div className="text-xs uppercase tracking-widest text-white/70">Address</div>
+                    <span className="text-base">{c.address}</span>
+                  </div>
+                </li>
+              )}
+              {c.hours && (
+                <li className="flex items-start gap-3">
+                  <span className="grid size-10 place-items-center rounded-full bg-white/15"><Clock className="size-4" /></span>
+                  <div>
+                    <div className="text-xs uppercase tracking-widest text-white/70">Hours</div>
+                    <span className="text-base">{c.hours}</span>
+                  </div>
+                </li>
+              )}
             </ul>
-
-            <div className="mt-6 overflow-hidden rounded-2xl">
-              <iframe
-                title="Map"
-                src="https://www.google.com/maps?q=Orlando,FL&output=embed"
-                className="h-56 w-full border-0"
-                loading="lazy"
-              />
-            </div>
           </div>
         </div>
 

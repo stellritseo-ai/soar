@@ -6,6 +6,7 @@ import p1 from "@/assets/program-financial.jpg";
 import p2 from "@/assets/program-home.jpg";
 import p3 from "@/assets/program-mentor.jpg";
 import p4 from "@/assets/program-family.jpg";
+import { usePublishedPosts } from "@/lib/cms";
 
 export const Route = createFileRoute("/blog")({
   head: () => ({
@@ -19,14 +20,15 @@ export const Route = createFileRoute("/blog")({
   component: Blog,
 });
 
-const posts = [
-  { img: p2, cat: "Housing", title: "5 first steps toward buying your first home", copy: "A practical map through the emotional terrain of homeownership readiness." },
-  { img: p1, cat: "Finance", title: "The credit rebuild playbook", copy: "How to move from setback to a score you can stand on — one habit at a time." },
-  { img: p3, cat: "Mentorship", title: "Finding the mentor who changes everything", copy: "The traits to look for, and the questions that unlock the right relationship." },
-  { img: p4, cat: "Community", title: "Why family support is the foundation", copy: "How wraparound care helps women rise higher and stay standing." },
+const fallbackImages = [p2, p1, p3, p4];
+const fallback = [
+  { id: "1", slug: "first-steps-home", image_url: p2, title: "5 first steps toward buying your first home", excerpt: "A practical map through the emotional terrain of homeownership readiness." },
+  { id: "2", slug: "credit-rebuild", image_url: p1, title: "The credit rebuild playbook", excerpt: "How to move from setback to a score you can stand on — one habit at a time." },
 ];
 
 function Blog() {
+  const { data } = usePublishedPosts();
+  const posts = data && data.length > 0 ? data : fallback;
   return (
     <SiteLayout>
       <PageHeader
@@ -36,15 +38,14 @@ function Blog() {
       />
       <section className="mx-auto max-w-7xl px-6 pb-28 lg:px-10">
         <div className="grid gap-8 md:grid-cols-2">
-          {posts.map((p) => (
-            <article key={p.title} className="group overflow-hidden rounded-3xl border border-border bg-card shadow-soft transition-all hover:-translate-y-1 hover:shadow-elegant">
+          {posts.map((p, i) => (
+            <article key={p.id} className="group overflow-hidden rounded-3xl border border-border bg-card shadow-soft transition-all hover:-translate-y-1 hover:shadow-elegant">
               <div className="aspect-[16/10] overflow-hidden">
-                <img src={p.img} alt={p.title} loading="lazy" className="size-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                <img src={p.image_url ?? fallbackImages[i % fallbackImages.length]} alt={p.title} loading="lazy" className="size-full object-cover transition-transform duration-700 group-hover:scale-105" />
               </div>
               <div className="p-8">
-                <span className="text-xs font-semibold uppercase tracking-widest text-primary">{p.cat}</span>
                 <h3 className="mt-2 font-display text-2xl">{p.title}</h3>
-                <p className="mt-2 text-sm text-muted-foreground">{p.copy}</p>
+                <p className="mt-2 text-sm text-muted-foreground">{p.excerpt}</p>
                 <a className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-primary">Read article <ArrowRight className="size-4" /></a>
               </div>
             </article>
