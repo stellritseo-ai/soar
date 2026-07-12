@@ -73,9 +73,9 @@ export function Footer() {
             </form>
 
             <ul className="mt-6 space-y-2.5 text-sm text-white/80">
-              <li className="flex items-center gap-2"><Phone className="size-4 text-accent-soft" /> (321) 732-0966</li>
-              <li className="flex items-center gap-2"><Mail className="size-4 text-accent-soft" /> sistersoar14@gmail.com</li>
-              <li className="flex items-center gap-2"><MapPin className="size-4 text-accent-soft" /> United States</li>
+              {c.phone && <li className="flex items-center gap-2"><Phone className="size-4 text-accent-soft" /> {c.phone}</li>}
+              {c.email && <li className="flex items-center gap-2"><Mail className="size-4 text-accent-soft" /> {c.email}</li>}
+              {c.address && <li className="flex items-center gap-2"><MapPin className="size-4 text-accent-soft" /> {c.address}</li>}
             </ul>
           </div>
         </div>
