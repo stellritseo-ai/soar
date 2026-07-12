@@ -29,12 +29,13 @@ import team1 from "@/assets/team-1.jpg";
 import team2 from "@/assets/team-2.jpg";
 import team3 from "@/assets/team-3.jpg";
 import team4 from "@/assets/team-4.jpg";
+import { useTeam, useSetting, type HeroSettings } from "@/lib/cms";
 
-const team = [
-  { name: "Dr. Amara Johnson", role: "Founder & Executive Director", bio: "Visionary leader championing women's empowerment for over 20 years.", img: team1 },
-  { name: "Sofia Ramirez", role: "Director of Programs", bio: "Architect of SOAR's mentorship and financial literacy curriculum.", img: team2 },
-  { name: "Zara Okonkwo", role: "Head of Community", bio: "Builds the sisterhood — events, outreach, and volunteer care.", img: team3 },
-  { name: "Elena Whitfield", role: "Chief Partnerships Officer", bio: "Cultivates sponsors and strategic partners advancing our mission.", img: team4 },
+const fallbackTeam = [
+  { id: "1", name: "Dr. Amara Johnson", role: "Founder & Executive Director", bio: "Visionary leader championing women's empowerment for over 20 years.", image_url: team1 },
+  { id: "2", name: "Sofia Ramirez", role: "Director of Programs", bio: "Architect of SOAR's mentorship and financial literacy curriculum.", image_url: team2 },
+  { id: "3", name: "Zara Okonkwo", role: "Head of Community", bio: "Builds the sisterhood — events, outreach, and volunteer care.", image_url: team3 },
+  { id: "4", name: "Elena Whitfield", role: "Chief Partnerships Officer", bio: "Cultivates sponsors and strategic partners advancing our mission.", image_url: team4 },
 ];
 
 
