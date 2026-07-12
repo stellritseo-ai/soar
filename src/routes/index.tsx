@@ -101,6 +101,9 @@ const stories = [
 ];
 
 function Home1() {
+  const { data: teamData } = useTeam();
+  const { data: hero } = useSetting<HeroSettings>("hero");
+  const team = teamData && teamData.length > 0 ? teamData : fallbackTeam;
   return (
     <SiteLayout>
       {/* HERO */}
