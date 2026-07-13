@@ -3,7 +3,7 @@ import { SiteLayout } from "@/components/site/Layout";
 import { PageHeader } from "@/components/site/PageHeader";
 import { ArrowRight, Sparkles, Compass, Target, Heart, Linkedin, Mail } from "lucide-react";
 import aboutImg from "@/assets/program-family.jpg";
-import team1 from "@/assets/team1.JPG";
+import team1 from "@/assets/team1.jpg";
 import team2 from "@/assets/team2.jpeg";
 import team3 from "@/assets/team3.jpg";
 import team4 from "@/assets/team4.jpg";
