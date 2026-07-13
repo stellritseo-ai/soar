@@ -3,10 +3,10 @@ import { SiteLayout } from "@/components/site/Layout";
 import { PageHeader } from "@/components/site/PageHeader";
 import { ArrowRight, Sparkles, Compass, Target, Heart, Linkedin, Mail } from "lucide-react";
 import aboutImg from "@/assets/program-family.jpg";
-import team1 from "@/assets/team-1.jpg";
-import team2 from "@/assets/team-2.jpg";
-import team3 from "@/assets/team-3.jpg";
-import team4 from "@/assets/team-4.jpg";
+import team1 from "@/assets/team1.JPG";
+import team2 from "@/assets/team2.jpeg";
+import team3 from "@/assets/team3.jpg";
+import team4 from "@/assets/team4.jpg";
 
 const team = [
   { name: "Dr. Amara Johnson", role: "Founder & Executive Director", bio: "Visionary leader championing women's empowerment for over 20 years.", img: team1 },
@@ -146,6 +146,8 @@ function About() {
           </div>
         </div>
       </section>
+
     </SiteLayout>
   );
 }
+

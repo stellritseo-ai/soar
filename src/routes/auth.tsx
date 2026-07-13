@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Heart, Loader2 } from "lucide-react";
 import { Link } from "@tanstack/react-router";
+import logoImg from "@/assets/logo.png";
 
 export const Route = createFileRoute("/auth")({
   validateSearch: (s: Record<string, unknown>) => ({
@@ -70,9 +71,7 @@ function AuthPage() {
     <div className="grid min-h-dvh place-items-center bg-background px-6 py-16">
       <div className="w-full max-w-md">
         <Link to="/" className="mb-8 flex items-center justify-center gap-2.5">
-          <span className="grid size-11 place-items-center rounded-full gradient-brand shadow-glow">
-            <span className="font-display text-lg font-bold text-primary-foreground">S</span>
-          </span>
+          <img src={logoImg} alt="SOAR Logo" className="h-11 w-auto object-contain" />
           <span className="flex flex-col leading-none">
             <span className="font-display text-lg font-bold tracking-tight">SOAR</span>
             <span className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">Admin</span>

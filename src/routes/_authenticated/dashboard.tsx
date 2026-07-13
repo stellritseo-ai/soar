@@ -8,6 +8,7 @@ import { EventsManager } from "@/components/admin/EventsManager";
 import { BlogManager } from "@/components/admin/BlogManager";
 import { GalleryManager } from "@/components/admin/GalleryManager";
 import { HeroManager, ContactManager } from "@/components/admin/SettingsManagers";
+import logoImg from "@/assets/logo.png";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
   head: () => ({
@@ -48,9 +49,7 @@ function Dashboard() {
       <header className="border-b border-border bg-card/60 backdrop-blur">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 lg:px-10">
           <Link to="/" className="flex items-center gap-2.5">
-            <span className="grid size-9 place-items-center rounded-full gradient-brand shadow-glow">
-              <span className="font-display text-sm font-bold text-primary-foreground">S</span>
-            </span>
+            <img src={logoImg} alt="SOAR Logo" className="h-9 w-auto object-contain" />
             <span className="flex flex-col leading-none">
               <span className="font-display text-base font-bold tracking-tight">SOAR Admin</span>
               <span className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">Dashboard</span>

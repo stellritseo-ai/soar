@@ -22,6 +22,7 @@ export function PageHeader({
             {eyebrow}
           </span>
         )}
+
         <h1 className="mt-6 font-display text-5xl leading-[1.05] text-foreground md:text-6xl lg:text-7xl">
           {title}
         </h1>
