@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import { Nav } from "./Nav";
 import { Footer } from "./Footer";
+import { ChatWidget } from "./ChatWidget";
 
 export function SiteLayout({ children }: { children: ReactNode }) {
   return (
@@ -8,6 +9,7 @@ export function SiteLayout({ children }: { children: ReactNode }) {
       <Nav />
       <main>{children}</main>
       <Footer />
+      <ChatWidget />
     </div>
   );
 }
