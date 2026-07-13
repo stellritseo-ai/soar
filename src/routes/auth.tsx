@@ -38,9 +38,9 @@ function AuthPage() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => {
-      if (data.session) navigate({ to: safePath(redirect), replace: true });
-    });
+    if (typeof window !== "undefined" && localStorage.getItem("admin_auth") === "true") {
+      navigate({ to: safePath(redirect), replace: true });
+    }
   }, [navigate, redirect]);
 
   async function handleSubmit(e: React.FormEvent) {
@@ -48,18 +48,12 @@ function AuthPage() {
     setBusy(true);
     setError(null);
     try {
-      if (mode === "signup") {
-        const { error } = await supabase.auth.signUp({
-          email,
-          password,
-          options: { emailRedirectTo: `${window.location.origin}/dashboard` },
-        });
-        if (error) throw error;
+      if (email === "admin" && password === "admin") {
+        localStorage.setItem("admin_auth", "true");
+        navigate({ to: safePath(redirect), replace: true });
       } else {
-        const { error } = await supabase.auth.signInWithPassword({ email, password });
-        if (error) throw error;
+        throw new Error("Invalid username or password");
       }
-      navigate({ to: safePath(redirect), replace: true });
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong");
     } finally {
@@ -91,12 +85,12 @@ function AuthPage() {
           <form onSubmit={handleSubmit} className="mt-6 space-y-4">
             <div>
               <label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
-                Email
+                Username or Email
               </label>
               <input
-                type="email"
+                type="text"
                 required
-                autoComplete="email"
+                autoComplete="username"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="mt-1.5 w-full rounded-xl border border-input bg-background px-4 py-3 text-sm outline-none focus:border-primary"
@@ -109,8 +103,7 @@ function AuthPage() {
               <input
                 type="password"
                 required
-                minLength={8}
-                autoComplete={mode === "signin" ? "current-password" : "new-password"}
+                autoComplete="current-password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className="mt-1.5 w-full rounded-xl border border-input bg-background px-4 py-3 text-sm outline-none focus:border-primary"
