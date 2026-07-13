@@ -7,30 +7,31 @@ import team4 from "@/assets/team4.jpg";
 
 const fallbackTeam = [
   {
-    id: "1",
-    name: "Dr. Amara Johnson",
-    role: "Founder & Executive Director",
-    bio: "Visionary leader championing women's empowerment for over 20 years.",
-    image_url: team1,
-  },
-  {
     id: "2",
-    name: "Sofia Ramirez",
-    role: "Director of Programs",
-    bio: "Architect of SOAR's mentorship and financial literacy curriculum.",
+    name: " Myrtle Dixon",
+    role: "President",
+    bio: "Visionary leader championing women's empowerment for over 20 years.",
     image_url: team2,
   },
   {
+    id: "1",
+    name: "Terry-Ann Taylor-Beckford",
+    role: "Vice President",
+    bio: "Architect of SOAR's mentorship and financial literacy curriculum.",
+    image_url: team1,
+  },
+
+  {
     id: "3",
-    name: "Zara Okonkwo",
-    role: "Head of Community",
+    name: "Betty Arhelo",
+    role: "Secretary",
     bio: "Builds the sisterhood — events, outreach, and volunteer care.",
     image_url: team3,
   },
   {
     id: "4",
-    name: "Elena Whitfield",
-    role: "Chief Partnerships Officer",
+    name: "Tarama Girly",
+    role: "Director",
     bio: "Cultivates sponsors and strategic partners advancing our mission.",
     image_url: team4,
   },
