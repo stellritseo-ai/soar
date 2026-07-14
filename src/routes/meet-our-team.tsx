@@ -6,7 +6,7 @@ import programMentorImg from "@/assets/program-mentor.jpg";
 import founderMyrtleImg from "@/assets/team/Myrtle Dixon (Founder).jpeg";
 import presTerryImg from "@/assets/team/Terry-Ann Taylor-Beckford (president).jpg";
 import vpBettyImg from "@/assets/team/Betty Arhelo (vice president ).jpg";
-import secretaryBettyImg from "@/assets/team/Arhelo Betty ( Secretary ).png";
+import secretaryBettyImg from "@/assets/team/Harrison Kameka ( Secretary ).png";
 import dirTamaraImg from "@/assets/team/Tamara Girly (director).JPG";
 import dirTamarImg from "@/assets/team/Tamar Raby (director).png";
 import { useTeam } from "@/lib/cms";
@@ -47,9 +47,9 @@ const fallbackLeaders = [
     focus: ["Outreach Initiatives", "Community Care", "Volunteer Networks"],
   },
   {
-    name: "Arhelo Betty",
+    name: "Harrison Kameka",
     role: "Secretary",
-    bio: "Arhelo Betty serves as the Secretary, maintaining administrative excellence, records, and coordinating operations across SOAR's programs to ensure smooth outreach execution.\n\nHer dedication ensures that all resources are optimally utilized and communication flows transparently across volunteers, branches, and stakeholders. Betty's attention to administrative detail ensures SOAR meets all local and federal regulations while coordinating community workshops.",
+    bio: "Harrison Kameka serves as the Secretary, maintaining administrative excellence, records, and coordinating operations across SOAR's programs to ensure smooth outreach execution.\n\nHer dedication ensures that all resources are optimally utilized and communication flows transparently across volunteers, branches, and stakeholders. Betty's attention to administrative detail ensures SOAR meets all local and federal regulations while coordinating community workshops.",
     img: secretaryBettyImg,
     focus: ["Board Governance", "Records Compliance", "Sisterhood Care"],
   },

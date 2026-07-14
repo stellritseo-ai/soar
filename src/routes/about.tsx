@@ -6,7 +6,7 @@ import aboutImg from "@/assets/program-family.jpg";
 import founderMyrtleImg from "@/assets/team/Myrtle Dixon (Founder).jpeg";
 import presTerryImg from "@/assets/team/Terry-Ann Taylor-Beckford (president).jpg";
 import vpBettyImg from "@/assets/team/Betty Arhelo (vice president ).jpg";
-import secretaryBettyImg from "@/assets/team/Arhelo Betty ( Secretary ).png";
+import secretaryBettyImg from "@/assets/team/Harrison Kameka ( Secretary ).png";
 import dirTamaraImg from "@/assets/team/Tamara Girly (director).JPG";
 import dirTamarImg from "@/assets/team/Tamar Raby (director).png";
 
@@ -32,7 +32,7 @@ const fallbackTeam = [
     img: vpBettyImg,
   },
   {
-    name: "Arhelo Betty",
+    name: "Harrison Kameka",
     role: "Secretary",
     bio: "Builds the sisterhood — events, outreach, and volunteer care.",
     img: secretaryBettyImg,
@@ -46,7 +46,7 @@ const fallbackTeam = [
   {
     name: "Tamar Raby",
     role: "Director",
-    bio: "Cultivates community relations and local sponsorships.",
+    bio: "Tamar builds bridges with community partners and local sponsors.",
     img: dirTamarImg,
   },
 ];
