@@ -18,8 +18,10 @@ export function GalleryManager() {
       for (const f of Array.from(files)) {
         const url = await uploadImage(f, "gallery");
         const res = await upsertGalleryImageFn({
-          image_url: url, title: f.name.replace(/\.[^.]+$/, ""),
-          sort_order: (data?.length ?? 0),
+          data: {
+            image_url: url, title: f.name.replace(/\.[^.]+$/, ""),
+            sort_order: (data?.length ?? 0),
+          }
         });
         if (!res.success) throw new Error("Failed to insert gallery image record");
       }
@@ -33,7 +35,7 @@ export function GalleryManager() {
 
   const remove = useMutation({
     mutationFn: async (id: string) => {
-      const res = await deleteGalleryImageFn(id);
+      const res = await deleteGalleryImageFn({ data: id });
       if (!res.success) throw new Error("Failed to delete gallery image");
     },
     onSuccess: invalidate,

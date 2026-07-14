@@ -62,10 +62,12 @@ function Contact() {
     setIsSubmitting(true);
     try {
       await submitInquiryFn({
-        name: formState.name,
-        email: formState.email,
-        subject: formState.role || "General Inquiry",
-        message: formState.message
+        data: {
+          name: formState.name,
+          email: formState.email,
+          subject: formState.role || "General Inquiry",
+          message: formState.message
+        }
       });
       setIsSuccess(true);
       setFormState({ name: "", email: "", role: "", message: "" });

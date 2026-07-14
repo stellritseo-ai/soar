@@ -16,7 +16,7 @@ export function EventsManager() {
 
   const save = useMutation({
     mutationFn: async (r: Draft) => {
-      const res = await upsertEventFn(r);
+      const res = await upsertEventFn({ data: r });
       if (!res.success) throw new Error("Failed to save event");
     },
     onSuccess: () => { invalidate(); setEditing(null); },
@@ -24,7 +24,7 @@ export function EventsManager() {
 
   const remove = useMutation({
     mutationFn: async (id: string) => {
-      const res = await deleteEventFn(id);
+      const res = await deleteEventFn({ data: id });
       if (!res.success) throw new Error("Failed to delete event");
     },
     onSuccess: invalidate,

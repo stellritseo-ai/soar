@@ -13,7 +13,7 @@ function useSettingForm<T extends Record<string, unknown>>(key: string) {
 
   const save = useMutation({
     mutationFn: async (value: T) => {
-      const res = await saveSettingFn({ key, value });
+      const res = await saveSettingFn({ data: { key, value } });
       if (!res.success) throw new Error("Failed to save setting");
     },
     onSuccess: () => {

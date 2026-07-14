@@ -115,12 +115,13 @@ export function ChatWidget() {
 
     try {
       setSendError(null);
-      // Persist to DB via server function
       const saved = await sendChatMessageFn({
-        conversationId,
-        sender: "user" as const,
-        senderName: name,
-        message: text,
+        data: {
+          conversationId,
+          sender: "user" as const,
+          senderName: name,
+          message: text,
+        }
       });
 
       // Replace optimistic message with the real saved one

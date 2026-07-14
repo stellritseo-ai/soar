@@ -23,7 +23,7 @@ export function BlogManager() {
 
   const save = useMutation({
     mutationFn: async (r: Draft) => {
-      const res = await upsertBlogPostFn(r);
+      const res = await upsertBlogPostFn({ data: r });
       if (!res.success) throw new Error("Failed to save blog post");
     },
     onSuccess: () => { invalidate(); setEditing(null); },
@@ -31,7 +31,7 @@ export function BlogManager() {
 
   const remove = useMutation({
     mutationFn: async (id: string) => {
-      const res = await deleteBlogPostFn(id);
+      const res = await deleteBlogPostFn({ data: id });
       if (!res.success) throw new Error("Failed to delete blog post");
     },
     onSuccess: invalidate,

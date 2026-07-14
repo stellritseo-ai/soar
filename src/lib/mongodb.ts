@@ -1,6 +1,9 @@
 import mongoose from "mongoose";
 import fs from "fs";
 import path from "path";
+import dns from "dns";
+
+dns.setServers(["1.1.1.1", "8.8.8.8"]);
 
 // Securely load .env file if run outside Vite framework context (e.g. standalone scripts or custom loaders)
 if (!process.env.MONGODB_URI) {
@@ -49,7 +52,7 @@ export async function connectToDatabase() {
       bufferCommands: false,
     };
 
-    cached.promise = mongoose.connect(MONGODB_URI, opts).then((mongooseInstance) => {
+    cached.promise = mongoose.connect(MONGODB_URI!, opts).then((mongooseInstance) => {
       console.log("Connected to MongoDB successfully");
       return mongooseInstance;
     });

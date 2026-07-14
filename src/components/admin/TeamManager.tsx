@@ -15,7 +15,7 @@ export function TeamManager() {
 
   const save = useMutation({
     mutationFn: async (row: Draft) => {
-      const res = await upsertTeamMemberFn(row);
+      const res = await upsertTeamMemberFn({ data: row });
       if (!res.success) throw new Error("Failed to save team member");
     },
     onSuccess: () => { invalidate(); setEditing(null); },
@@ -23,7 +23,7 @@ export function TeamManager() {
 
   const remove = useMutation({
     mutationFn: async (id: string) => {
-      const res = await deleteTeamMemberFn(id);
+      const res = await deleteTeamMemberFn({ data: id });
       if (!res.success) throw new Error("Failed to delete team member");
     },
     onSuccess: invalidate,

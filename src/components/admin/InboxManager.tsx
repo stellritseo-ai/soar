@@ -13,14 +13,14 @@ export function InboxManager() {
 
   const markRead = useMutation({
     mutationFn: async (id: string) => {
-      await markInquiryReadFn(id);
+      await markInquiryReadFn({ data: id });
     },
     onSuccess: invalidate,
   });
 
   const remove = useMutation({
     mutationFn: async (id: string) => {
-      await deleteInquiryFn(id);
+      await deleteInquiryFn({ data: id });
     },
     onSuccess: () => {
       invalidate();

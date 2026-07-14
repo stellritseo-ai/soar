@@ -68,7 +68,7 @@ export const getSettingFn = createServerFn({ method: "GET" })
     await connectToDatabase();
     await seedDatabase();
     const doc = await SiteSetting.findOne({ key });
-    return (doc ? doc.value : null) as Record<string, unknown> | null;
+    return (doc ? doc.value : null) as any;
   });
 
 export const saveSettingFn = createServerFn({ method: "POST" })
@@ -303,14 +303,14 @@ export function useEventsList() {
 export function usePublishedPosts() {
   return useQuery({
     queryKey: ["cms", "blog", "published"],
-    queryFn: () => getBlogPostsFn(true),
+    queryFn: () => getBlogPostsFn({ data: true }),
   });
 }
 
 export function useAllPosts() {
   return useQuery({
     queryKey: ["cms", "blog", "all"],
-    queryFn: () => getBlogPostsFn(false),
+    queryFn: () => getBlogPostsFn({ data: false }),
   });
 }
 
@@ -325,7 +325,7 @@ export function useSetting<T = Record<string, unknown>>(key: string) {
   return useQuery({
     queryKey: ["cms", "setting", key],
     queryFn: async () => {
-      const data = await getSettingFn(key);
+      const data = await getSettingFn({ data: key });
       return (data ?? {}) as T;
     },
   });
@@ -466,7 +466,7 @@ export function useInquiries() {
 export function useChatHistory(conversationId: string) {
   return useQuery({
     queryKey: ["chat", "history", conversationId],
-    queryFn: () => getChatHistoryFn(conversationId),
+    queryFn: () => getChatHistoryFn({ data: conversationId }),
     enabled: !!conversationId,
     refetchInterval: 3000
   });

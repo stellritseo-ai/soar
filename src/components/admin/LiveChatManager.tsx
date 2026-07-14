@@ -86,12 +86,13 @@ export function LiveChatManager() {
     setIsSending(true);
 
     try {
-      // Save to DB via server function (always reliable)
       const saved = await sendChatMessageFn({
-        conversationId: selectedSessionId,
-        sender: "admin",
-        senderName: "Admin",
-        message: messageText,
+        data: {
+          conversationId: selectedSessionId,
+          sender: "admin",
+          senderName: "Admin",
+          message: messageText,
+        }
       });
 
       // Add to local messages immediately

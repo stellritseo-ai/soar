@@ -43,7 +43,7 @@ function Dashboard() {
     if (typeof document !== "undefined") {
       document.cookie = "admin_auth=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
     }
-    navigate({ to: "/auth", replace: true });
+    navigate({ to: "/auth", search: { redirect: undefined }, replace: true });
   }
 
   const TABS = [

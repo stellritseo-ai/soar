@@ -9,7 +9,7 @@ import vpBettyImg from "@/assets/team/Betty Arhelo (vice president ).jpg";
 import presMyrtleImg from "@/assets/team/Dixon, Myrtle ( President ).png";
 import founderMyrtleImg from "@/assets/team/Myrtle Dixon ( Founder & President ).jpeg";
 import presTerryImg from "@/assets/team/Terry-Ann Taylor-Beckford (president).jpg";
-import dirTamaraImg from "@/assets/team/tamara girly (director).JPG";
+import dirTamaraImg from "@/assets/team/tamara girly (director).jpg";
 import { useTeam } from "@/lib/cms";
 
 export const Route = createFileRoute("/our-story")({

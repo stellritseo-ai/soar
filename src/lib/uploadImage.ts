@@ -35,9 +35,11 @@ export async function uploadImage(file: File, folder: string): Promise<string> {
   });
 
   const res = await uploadFileServerFn({
-    name: file.name,
-    type: file.type,
-    base64
+    data: {
+      name: file.name,
+      type: file.type,
+      base64
+    }
   });
 
   return res.url;
