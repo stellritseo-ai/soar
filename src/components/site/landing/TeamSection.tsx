@@ -1,44 +1,69 @@
 import { Link } from "@tanstack/react-router";
 import { Linkedin, Mail, ChevronRight } from "lucide-react";
-import team1 from "@/assets/team1.jpg";
-import team2 from "@/assets/team2.jpeg";
-import team3 from "@/assets/team3.jpg";
-import team4 from "@/assets/team4.jpg";
+import { useTeam } from "@/lib/cms";
+import secretaryBettyImg from "@/assets/team/Arhelo Betty (Secretary).png";
+import vpBettyImg from "@/assets/team/Betty Arhelo (vice president ).jpg";
+import presMyrtleImg from "@/assets/team/Dixon, Myrtle ( President ).png";
+import founderMyrtleImg from "@/assets/team/Myrtle Dixon ( Founder & President ).jpeg";
+import presTerryImg from "@/assets/team/Terry-Ann Taylor-Beckford (president).jpg";
+import dirTamaraImg from "@/assets/team/tamara girly (director).jpg";
 
 const fallbackTeam = [
   {
-    id: "2",
-    name: " Myrtle Dixon",
+    id: "1",
+    name: "Myrtle Dixon",
     role: "President",
     bio: "Visionary leader championing women's empowerment for over 20 years.",
-    image_url: team2,
+    image_url: founderMyrtleImg,
   },
   {
-    id: "1",
-    name: "Terry-Ann Taylor-Beckford",
-    role: "Vice President",
-    bio: "Architect of SOAR's mentorship and financial literacy curriculum.",
-    image_url: team1,
+    id: "2",
+    name: "Dixon, Myrtle",
+    role: "President",
+    bio: "Leading strategic direction and advocacy for sustainable housing.",
+    image_url: presMyrtleImg,
   },
-
   {
     id: "3",
-    name: "Betty Arhelo",
-    role: "Secretary",
-    bio: "Builds the sisterhood — events, outreach, and volunteer care.",
-    image_url: team3,
+    name: "Terry-Ann Taylor-Beckford",
+    role: "President",
+    bio: "Architect of SOAR's mentorship and financial literacy curriculum.",
+    image_url: presTerryImg,
   },
   {
     id: "4",
-    name: "Tarama Girly",
+    name: "Betty Arhelo",
+    role: "Vice President",
+    bio: "Cultivating community support and organizing outreach programs.",
+    image_url: vpBettyImg,
+  },
+  {
+    id: "5",
+    name: "Arhelo Betty",
+    role: "Secretary",
+    bio: "Builds the sisterhood — events, outreach, and volunteer care.",
+    image_url: secretaryBettyImg,
+  },
+  {
+    id: "6",
+    name: "Tamara Girly",
     role: "Director",
     bio: "Cultivates sponsors and strategic partners advancing our mission.",
-    image_url: team4,
+    image_url: dirTamaraImg,
   },
 ];
 
 export function TeamSection() {
-  const team = fallbackTeam;
+  const { data: dbTeam } = useTeam();
+  const team = dbTeam && dbTeam.length > 0
+    ? dbTeam.map(member => ({
+        id: member.id,
+        name: member.name,
+        role: member.role,
+        bio: member.bio || "",
+        image_url: member.image_url || fallbackTeam.find(t => t.name === member.name)?.image_url || ""
+      }))
+    : fallbackTeam;
 
   return (
     <section className="py-20 bg-background relative overflow-hidden">
@@ -60,64 +85,130 @@ export function TeamSection() {
           </p>
         </div>
 
-        {/* Team Grid (Unified 10px rounded design system) */}
-        <div className="mt-14 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
-          {team.map((m) => (
-            <article
-              key={m.id}
-              className="group relative overflow-hidden rounded-[10px] border border-border/70 bg-card/70 backdrop-blur-sm shadow-soft transition-all duration-500 hover:-translate-y-2 hover:border-primary/20 hover:shadow-elegant flex flex-col h-full"
-            >
-              <div className="relative overflow-hidden border-b border-border/40">
-                <img
-                  src={m.image_url ?? team1}
-                  alt={m.name}
-                  loading="lazy"
-                  width={800}
-                  height={1000}
-                  className="aspect-[4/5] size-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
-                />
-                {/* Custom gradient overlay inside image */}
-                <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#0B1220]/60 via-transparent to-transparent opacity-70" />
+        {/* Infinite Slide Marquee Container */}
+        <div className="mt-14 w-full relative overflow-hidden">
+          {/* Edge fading masks for premium visual effect */}
+          <div className="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-background to-transparent z-20 pointer-events-none" />
+          <div className="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-background to-transparent z-20 pointer-events-none" />
 
-                {/* Social media float links */}
-                <div className="absolute bottom-4 left-4 right-4 flex gap-2 opacity-0 transition-all duration-300 transform translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 z-20">
-                  <a
-                    href="#"
-                    aria-label={`${m.name} on LinkedIn`}
-                    className="grid size-9 place-items-center rounded-full bg-white/90 backdrop-blur-sm border border-white/20 text-[#3A0A63] hover:text-[#5E2B97] hover:scale-105 shadow transition-all duration-200"
-                  >
-                    <Linkedin className="size-4" />
-                  </a>
-                  <a
-                    href="#"
-                    aria-label={`Email ${m.name}`}
-                    className="grid size-9 place-items-center rounded-full bg-white/90 backdrop-blur-sm border border-white/20 text-[#3A0A63] hover:text-[#5E2B97] hover:scale-105 shadow transition-all duration-200"
-                  >
-                    <Mail className="size-4" />
-                  </a>
-                </div>
-              </div>
+          {/* Marquee track */}
+          <div className="animate-marquee flex gap-8 hover:[animation-play-state:paused] py-4">
 
-              {/* Member details */}
-              <div className="p-6 flex flex-col flex-grow">
-                <h3 className="font-display text-xl font-bold text-[#3A0A63] transition-colors duration-300 group-hover:text-[#5E2B97]">
-                  {m.name}
-                </h3>
-                <div className="mt-1 text-[11px] font-bold uppercase tracking-widest text-[#D4AF37]">
-                  {m.role}
-                </div>
-                <p className="mt-3 text-[14px] leading-relaxed text-muted-foreground font-medium flex-grow">
-                  {m.bio}
-                </p>
-              </div>
-            </article>
-          ))}
+            {/* First copy */}
+            <div className="flex gap-8 shrink-0">
+              {team.map((m) => (
+                <article
+                  key={m.id}
+                  className="w-[280px] group relative overflow-hidden rounded-[10px] border border-border/70 bg-card/70 backdrop-blur-sm shadow-soft transition-all duration-500 hover:-translate-y-2 hover:border-primary/20 hover:shadow-elegant flex flex-col h-full shrink-0"
+                >
+                  <div className="relative overflow-hidden border-b border-border/40 aspect-[4/5] w-full">
+                    <img
+                      src={m.image_url}
+                      alt={m.name}
+                      loading="lazy"
+                      width={800}
+                      height={1000}
+                      className="size-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
+                    />
+                    {/* Custom gradient overlay inside image */}
+                    <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#0B1220]/60 via-transparent to-transparent opacity-70" />
+
+                    {/* Social media float links */}
+                    <div className="absolute bottom-4 left-4 right-4 flex gap-2 opacity-0 transition-all duration-300 transform translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 z-20">
+                      <a
+                        href="#"
+                        aria-label={`${m.name} on LinkedIn`}
+                        className="grid size-9 place-items-center rounded-full bg-white/90 backdrop-blur-sm border border-white/20 text-[#3A0A63] hover:text-[#5E2B97] hover:scale-105 shadow transition-all duration-200"
+                      >
+                        <Linkedin className="size-4" />
+                      </a>
+                      <a
+                        href="#"
+                        aria-label={`Email ${m.name}`}
+                        className="grid size-9 place-items-center rounded-full bg-white/90 backdrop-blur-sm border border-white/20 text-[#3A0A63] hover:text-[#5E2B97] hover:scale-105 shadow transition-all duration-200"
+                      >
+                        <Mail className="size-4" />
+                      </a>
+                    </div>
+                  </div>
+
+                  {/* Member details */}
+                  <div className="p-6 flex flex-col flex-grow">
+                    <h3 className="font-display text-xl font-bold text-[#3A0A63] transition-colors duration-300 group-hover:text-[#5E2B97]">
+                      {m.name}
+                    </h3>
+                    <div className="mt-1 text-[11px] font-bold uppercase tracking-widest text-[#D4AF37]">
+                      {m.role}
+                    </div>
+                    <p className="mt-3 text-[14px] leading-relaxed text-muted-foreground font-medium flex-grow">
+                      {m.bio}
+                    </p>
+                  </div>
+                </article>
+              ))}
+            </div>
+
+            {/* Second copy for seamless loop */}
+            <div className="flex gap-8 shrink-0" aria-hidden="true">
+              {team.map((m) => (
+                <article
+                  key={`${m.id}-dup`}
+                  className="w-[280px] group relative overflow-hidden rounded-[10px] border border-border/70 bg-card/70 backdrop-blur-sm shadow-soft transition-all duration-500 hover:-translate-y-2 hover:border-primary/20 hover:shadow-elegant flex flex-col h-full shrink-0"
+                >
+                  <div className="relative overflow-hidden border-b border-border/40 aspect-[4/5] w-full">
+                    <img
+                      src={m.image_url}
+                      alt={m.name}
+                      loading="lazy"
+                      width={800}
+                      height={1000}
+                      className="size-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
+                    />
+                    {/* Custom gradient overlay inside image */}
+                    <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#0B1220]/60 via-transparent to-transparent opacity-70" />
+
+                    {/* Social media float links */}
+                    <div className="absolute bottom-4 left-4 right-4 flex gap-2 opacity-0 transition-all duration-300 transform translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 z-20">
+                      <a
+                        href="#"
+                        aria-label={`${m.name} on LinkedIn`}
+                        className="grid size-9 place-items-center rounded-full bg-white/90 backdrop-blur-sm border border-white/20 text-[#3A0A63] hover:text-[#5E2B97] hover:scale-105 shadow transition-all duration-200"
+                      >
+                        <Linkedin className="size-4" />
+                      </a>
+                      <a
+                        href="#"
+                        aria-label={`Email ${m.name}`}
+                        className="grid size-9 place-items-center rounded-full bg-white/90 backdrop-blur-sm border border-white/20 text-[#3A0A63] hover:text-[#5E2B97] hover:scale-105 shadow transition-all duration-200"
+                      >
+                        <Mail className="size-4" />
+                      </a>
+                    </div>
+                  </div>
+
+                  {/* Member details */}
+                  <div className="p-6 flex flex-col flex-grow">
+                    <h3 className="font-display text-xl font-bold text-[#3A0A63] transition-colors duration-300 group-hover:text-[#5E2B97]">
+                      {m.name}
+                    </h3>
+                    <div className="mt-1 text-[11px] font-bold uppercase tracking-widest text-[#D4AF37]">
+                      {m.role}
+                    </div>
+                    <p className="mt-3 text-[14px] leading-relaxed text-muted-foreground font-medium flex-grow">
+                      {m.bio}
+                    </p>
+                  </div>
+                </article>
+              ))}
+            </div>
+
+          </div>
         </div>
 
         {/* Bottom CTA */}
         <div className="mt-12 text-center">
           <Link
-            to="#"
+            to="/our-story"
             className="group inline-flex items-center gap-1.5 text-sm font-bold text-[#5E2B97] hover:text-[#3A0A63] transition duration-200"
           >
             Learn more about our story
@@ -125,9 +216,7 @@ export function TeamSection() {
           </Link>
         </div>
 
-
       </div>
     </section>
   );
 }
-

@@ -1,6 +1,5 @@
 import { createFileRoute, useNavigate, useSearch } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
 import { Heart, Loader2 } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import logoImg from "@/assets/logo.png";
@@ -50,6 +49,9 @@ function AuthPage() {
     try {
       if (email === "admin" && password === "admin") {
         localStorage.setItem("admin_auth", "true");
+        if (typeof document !== "undefined") {
+          document.cookie = "admin_auth=true; path=/; max-age=86400; SameSite=Strict";
+        }
         navigate({ to: safePath(redirect), replace: true });
       } else {
         throw new Error("Invalid username or password");

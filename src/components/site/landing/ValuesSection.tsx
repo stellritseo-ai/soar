@@ -50,7 +50,7 @@ const values = [
 export function ValuesSection() {
   return (
     <section
-      className="relative py-16"
+      className="relative pt-16 pb-20"
       style={{
         background: "linear-gradient(160deg, #0D001A 0%, #1A0035 50%, #0A0015 100%)",
       }}
@@ -189,7 +189,7 @@ export function ValuesSection() {
 
                   {/* READ MORE button — filled gold on even, outlined on odd */}
                   <Link
-                    to="#"
+                    to="/how-we-work"
                     className="self-start inline-flex items-center justify-center font-bold text-[11px] tracking-[0.15em] uppercase px-6 py-2.5 rounded-full transition-all duration-200 hover:scale-[1.03] active:scale-[0.97]"
                     style={
                       isEven

@@ -1,8 +1,12 @@
 import { Link } from "@tanstack/react-router";
 import { Facebook, Mail, Phone, MapPin, Heart, Instagram, Twitter, Linkedin } from "lucide-react";
+import { useSetting, type ContactSettings } from "@/lib/cms";
 import footerLogoImg from "@/assets/footer-logo.png";
 
 export function Footer() {
+  const { data } = useSetting<ContactSettings>("contact");
+  const phone = data?.phone ?? "(321) 710-7145";
+  const email = data?.email ?? "sistersoar14@gmail.com";
 
   return (
     <footer className="relative bg-gradient-to-b from-[#110123] via-[#07000F] to-[#030007] overflow-hidden border-t-2 border-[#D4AF37]/40">
@@ -67,7 +71,7 @@ export function Footer() {
               <div>
                 <div className="font-display text-base font-extrabold text-white leading-snug tracking-tight">SOAR Global</div>
                 <div className="font-display text-base font-extrabold text-white leading-snug tracking-tight">Foundation Inc.</div>
-                <div className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#D4AF37] mt-1">Est. 2020</div>
+                <div className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#D4AF37] mt-1">Est. 2014</div>
               </div>
             </div>
 
@@ -78,7 +82,7 @@ export function Footer() {
             {/* Social Links */}
             <div className="mt-6 flex gap-3">
               <a
-                href="https://facebook.com"
+                href="https://www.facebook.com/profile.php?id=100068064036234"
                 aria-label="Facebook"
                 className="grid size-10 place-items-center rounded-full bg-white/5 border border-white/10 text-white hover:bg-[#D4AF37] hover:text-[#0C1220] hover:scale-105 shadow transition-all duration-200"
               >
@@ -107,11 +111,11 @@ export function Footer() {
               Explore
             </h4>
             <ul className="space-y-3.5 text-sm text-white/70 font-medium">
-              <li><Link to="#" className="hover:text-[#D4AF37] transition-colors duration-200">About Us</Link></li>
-              <li><Link to="#" className="hover:text-[#D4AF37] transition-colors duration-200">Programs</Link></li>
-              <li><Link to="#" className="hover:text-[#D4AF37] transition-colors duration-200">Success Stories</Link></li>
-              <li><Link to="#" className="hover:text-[#D4AF37] transition-colors duration-200">Events</Link></li>
-              <li><Link to="#" className="hover:text-[#D4AF37] transition-colors duration-200">Blog</Link></li>
+              <li><Link to="/our-story" className="hover:text-[#D4AF37] transition-colors duration-200">About Us</Link></li>
+              <li><Link to="/programs" className="hover:text-[#D4AF37] transition-colors duration-200">Programs</Link></li>
+              <li><Link to="/success-stories" className="hover:text-[#D4AF37] transition-colors duration-200">Success Stories</Link></li>
+              <li><Link to="/events" className="hover:text-[#D4AF37] transition-colors duration-200">Events</Link></li>
+              <li><Link to="/blog" className="hover:text-[#D4AF37] transition-colors duration-200">Blog</Link></li>
             </ul>
           </div>
 
@@ -121,10 +125,10 @@ export function Footer() {
               Get Involved
             </h4>
             <ul className="space-y-3.5 text-sm text-white/70 font-medium">
-              <li><Link to="#" className="hover:text-[#D4AF37] transition-colors duration-200">Donate</Link></li>
-              <li><Link to="#" className="hover:text-[#D4AF37] transition-colors duration-200">Volunteer</Link></li>
-              <li><Link to="#" className="hover:text-[#D4AF37] transition-colors duration-200">Partners</Link></li>
-              <li><Link to="#" className="hover:text-[#D4AF37] transition-colors duration-200">Contact</Link></li>
+              <li><Link to="/donate" className="hover:text-[#D4AF37] transition-colors duration-200">Donate</Link></li>
+              <li><Link to="/volunteer" className="hover:text-[#D4AF37] transition-colors duration-200">Volunteer</Link></li>
+              <li><Link to="/partners" className="hover:text-[#D4AF37] transition-colors duration-200">Partners</Link></li>
+              <li><Link to="/contact" className="hover:text-[#D4AF37] transition-colors duration-200">Contact</Link></li>
             </ul>
           </div>
 
@@ -138,19 +142,27 @@ export function Footer() {
                 <div className="grid size-8 place-items-center rounded-lg bg-white/5 border border-white/10 text-[#D4AF37] shrink-0">
                   <Phone className="size-4" />
                 </div>
-                <a href="tel:+13217320966" className="hover:text-[#D4AF37] transition-colors">
-                  (321) 732-0966
+                <a href={`tel:${phone.replace(/\s/g, "")}`} className="hover:text-[#D4AF37] transition-colors">
+                  {phone}
                 </a>
               </li>
               <li className="flex items-center gap-3">
                 <div className="grid size-8 place-items-center rounded-lg bg-white/5 border border-white/10 text-[#D4AF37] shrink-0">
                   <Mail className="size-4" />
                 </div>
-                <a href="mailto:sistersoar14@gmail.com" className="hover:text-[#D4AF37] transition-colors break-all">
-                  sistersoar14@gmail.com
+                <a href={`mailto:${email}`} className="hover:text-[#D4AF37] transition-colors break-all">
+                  {email}
                 </a>
               </li>
 
+              <li className="flex items-start gap-3">
+                <div className="grid size-8 place-items-center rounded-lg bg-white/5 border border-white/10 text-[#D4AF37] shrink-0 mt-0.5">
+                  <MapPin className="size-4" />
+                </div>
+                <span className="text-white/70">
+                  3311 N Powers Dr, Orlando, FL 32818
+                </span>
+              </li>
             </ul>
           </div>
 
@@ -166,8 +178,8 @@ export function Footer() {
             <span className="text-white/40">Design & Developed by <span className="text-[#D4AF37] font-semibold">StellR IT LLC</span></span>
           </p>
           <div className="flex gap-6">
-            <Link to="#" className="hover:text-[#D4AF37] transition-colors duration-200">Privacy Policy</Link>
-            <Link to="#" className="hover:text-[#D4AF37] transition-colors duration-200">Terms of Service</Link>
+            <Link to="/privacy" className="hover:text-[#D4AF37] transition-colors duration-200">Privacy Policy</Link>
+            <Link to="/terms" className="hover:text-[#D4AF37] transition-colors duration-200">Terms of Service</Link>
           </div>
         </div>
 

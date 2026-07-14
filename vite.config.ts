@@ -12,4 +12,22 @@ export default defineConfig({
     // nitro/vite builds from this
     server: { entry: "server" },
   },
+  vite: {
+    resolve: {
+      alias: {
+        "punycode/": "punycode",
+      },
+    },
+    plugins: [
+      {
+        name: "socket-server",
+        configureServer() {
+          import("./scripts/chat-server.js").catch(err => {
+            console.error("Failed to start socket server in Vite plugin:", err);
+          });
+        }
+      }
+    ]
+  },
 });
+

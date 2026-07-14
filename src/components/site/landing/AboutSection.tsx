@@ -36,7 +36,7 @@ export function AboutSection() {
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#D4AF37] opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-[#D4AF37]"></span>
               </span>
-              <span className="text-[10px] font-bold uppercase tracking-widest text-[#D4AF37]">Est. 2020</span>
+              <span className="text-[10px] font-bold uppercase tracking-widest text-[#D4AF37]">Est. 2014</span>
             </div>
             <div className="mt-2 font-display text-lg font-semibold text-[#3A0A63] leading-snug">
               A sisterhood built to rise together.
@@ -88,7 +88,7 @@ export function AboutSection() {
           </div>
 
           <Link
-            to="#"
+            to="/our-story"
             className="group mt-9 self-start inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-[#5E2B97] to-[#481E7A] text-white font-bold px-8 py-3.5 text-sm shadow-elegant transition duration-200 hover:scale-[1.02] active:scale-[0.97]"
           >
             Discover our story 

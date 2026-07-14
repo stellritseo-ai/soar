@@ -1,7 +1,8 @@
 import { Link } from "@tanstack/react-router";
 import { Calendar, MapPin, Ticket, Sparkles, Clock, ArrowRight } from "lucide-react";
+import { useEventsList } from "@/lib/cms";
 
-const otherEvents = [
+const fallbackOtherEvents = [
   {
     id: "2",
     title: "Financial Freedom Workshop",
@@ -21,6 +22,37 @@ const otherEvents = [
 ];
 
 export function EventsSection() {
+  const { data: dbEvents } = useEventsList();
+
+  // Pick first event as featured, others as secondary list
+  const hasDbEvents = dbEvents && dbEvents.length > 0;
+  
+  const featuredEvent = hasDbEvents ? {
+    title: dbEvents[0].title,
+    description: dbEvents[0].description || "Join us for our signature annual benefit celebrating stories of resilience and sovereignty.",
+    dateText: dbEvents[0].event_date ? new Date(dbEvents[0].event_date).toLocaleDateString(undefined, { weekday: "short", month: "short", day: "numeric", year: "numeric" }) + " — 5:00 PM" : "Oct 24, 2026",
+    location: dbEvents[0].location || "Orlando, FL",
+    price: "Contribution: $50",
+    attire: "Attire: Purple & Gold Formal"
+  } : {
+    title: "Purple Hearts Gala",
+    description: "Join us for our signature annual benefit. Honoring outstanding women making a difference in our community. Featuring Keynote Speaker State Representative Lisa Dunkley, Special Guest Psalmist Minister Blessing Chigozie, live entertainment, and fine dining.",
+    dateText: "Sat, Oct 24, 2026 — 5:00 PM",
+    location: "Greater Vision Center, Ocoee, FL",
+    price: "Contribution: $50",
+    attire: "Attire: Purple & Gold Formal"
+  };
+
+  const otherEvents = hasDbEvents && dbEvents.length > 1 
+    ? dbEvents.slice(1).map(e => ({
+        id: e.id,
+        title: e.title,
+        date: e.event_date ? new Date(e.event_date).toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" }) : "",
+        time: "TBA",
+        location: e.location || "TBA",
+        tag: "Community"
+      }))
+    : fallbackOtherEvents;
   return (
     <section className="relative py-20 bg-background overflow-hidden border-t border-border/40">
       {/* Soft background glow */}
@@ -39,7 +71,7 @@ export function EventsSection() {
             </h2>
           </div>
           <Link
-            to="#"
+            to="/events"
             className="group inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-[#5E2B97] to-[#481E7A] text-white font-bold px-8 py-3.5 text-sm shadow-elegant transition duration-200 hover:scale-[1.02] active:scale-[0.97] shrink-0"
           >
             View calendar 
@@ -70,7 +102,7 @@ export function EventsSection() {
 
                 {/* Event Name */}
                 <h3 className="font-display text-3xl md:text-4xl font-extrabold text-white tracking-tight">
-                  Purple Hearts Gala
+                  {featuredEvent.title}
                 </h3>
                 
                 {/* Event Tagline */}
@@ -80,26 +112,26 @@ export function EventsSection() {
 
                 {/* Event Description */}
                 <p className="mt-5 text-sm md:text-[15px] leading-relaxed text-white/80 font-medium max-w-xl">
-                  Join us for our signature annual benefit. Honoring outstanding women making a difference in our community. Featuring Keynote Speaker State Representative Lisa Dunkley, Special Guest Psalmist Minister Blessing Chigozie, live entertainment, and fine dining. 
+                  {featuredEvent.description}
                 </p>
 
                 {/* Details List */}
                 <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-4 border-t border-white/10 pt-6">
                   <div className="flex items-center gap-3 text-sm text-white/95 font-semibold">
                     <Calendar className="size-4.5 text-[#D4AF37] shrink-0" />
-                    <span>Sat, Oct 24, 2026 — 5:00 PM</span>
+                    <span>{featuredEvent.dateText}</span>
                   </div>
                   <div className="flex items-center gap-3 text-sm text-white/95 font-semibold">
                     <MapPin className="size-4.5 text-[#D4AF37] shrink-0" />
-                    <span>Greater Vision Center, Ocoee, FL</span>
+                    <span>{featuredEvent.location}</span>
                   </div>
                   <div className="flex items-center gap-3 text-sm text-white/95 font-semibold">
                     <Ticket className="size-4.5 text-[#D4AF37] shrink-0" />
-                    <span>Contribution: $50</span>
+                    <span>{featuredEvent.price}</span>
                   </div>
                   <div className="flex items-center gap-3 text-sm text-white/95 font-semibold">
                     <Sparkles className="size-4.5 text-[#D4AF37] shrink-0" />
-                    <span>Attire: Purple & Gold Formal</span>
+                    <span>{featuredEvent.attire}</span>
                   </div>
                 </div>
               </div>
@@ -107,7 +139,7 @@ export function EventsSection() {
               {/* Action Button */}
               <div className="mt-10 pt-4 flex flex-wrap items-center gap-4">
                 <Link
-                  to="#"
+                  to="/events"
                   className="inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-[#D4AF37] to-[#F2D27C] text-[#0C1220] font-bold px-8 py-3.5 text-sm shadow-elegant transition duration-200 hover:scale-[1.02] active:scale-[0.97]"
                 >
                   <Ticket className="size-4 fill-current text-[#0C1220]/75" />
@@ -156,7 +188,7 @@ export function EventsSection() {
                       {e.time}
                     </span>
                     <Link
-                      to="#"
+                      to="/events"
                       className="group/link inline-flex items-center gap-1 text-xs font-bold text-[#5E2B97] hover:text-[#3A0A63]"
                     >
                       Details

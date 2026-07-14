@@ -51,7 +51,7 @@ export function ProgramsSection() {
             </h2>
           </div>
           <Link 
-            to="#" 
+            to="/programs" 
             className="group inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-[#5E2B97] to-[#481E7A] text-white font-bold px-8 py-3.5 text-sm shadow-elegant transition duration-200 hover:scale-[1.02] active:scale-[0.97]"
           >
             View all programs 
@@ -96,7 +96,7 @@ export function ProgramsSection() {
                 </p>
                 
                 <Link
-                  to="#"
+                  to="/programs"
                   className="group/btn mt-6 self-start inline-flex items-center gap-1 text-sm font-bold text-[#5E2B97] hover:text-[#3A0A63] transition duration-200"
                 >
                   Learn more 

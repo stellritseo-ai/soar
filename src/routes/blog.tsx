@@ -36,7 +36,7 @@ function Blog() {
         title={<>Wisdom for the <span className="text-gradient-brand italic">rise</span>.</>}
         subtitle="Practical guides, stories from the community, and resources for the journey."
       />
-      <section className="mx-auto max-w-7xl px-6 pb-28 lg:px-10">
+      <section className="mx-auto max-w-7xl px-6 pb-28 lg:px-10 mt-[50px]">
         <div className="grid gap-8 md:grid-cols-2">
           {posts.map((p, i) => (
             <article key={p.id} className="group overflow-hidden rounded-3xl border border-border bg-card shadow-soft transition-all hover:-translate-y-1 hover:shadow-elegant">

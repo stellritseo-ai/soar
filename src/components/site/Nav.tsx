@@ -18,41 +18,40 @@ const menuItems: MenuItem[] = [
   {
     label: "About Us",
     children: [
-      { to: "#", label: "Our Story" },
-      { to: "#", label: "Meet Our Team" },
-      { to: "#", label: "Financials" },
+      { to: "/our-story", label: "Our Story" },
+      { to: "/meet-our-team", label: "Meet Our Team" },
     ],
   },
   {
     label: "What We Do",
     children: [
-      { to: "#", label: "How We Work" },
-      { to: "#", label: "Our Partners" },
+      { to: "/how-we-work", label: "How We Work" },
+      // { to: "#", label: "Our Partners" },
     ],
   },
   {
     label: "Our Impact",
     children: [
-      { to: "#", label: "Our Impact" },
+      { to: "/our-impact", label: "Our Impact" },
     ],
   },
   {
     label: "Get Involved",
     children: [
-      { to: "#", label: "Ways to Give" },
-      { to: "#", label: "Volunteer" },
+      { to: "/ways-to-give", label: "Ways to Give" },
+      { to: "/volunteer", label: "Volunteer" },
     ],
   },
   {
     label: "News & Events",
     children: [
-      { to: "#", label: "News & Events" },
-      { to: "#", label: "Blog" },
-      { to: "#", label: "Events" },
+      { to: "/news-and-events", label: "News & Events" },
+      // { to: "/blog", label: "Blog" },
+      { to: "/events", label: "Events" },
     ],
   },
   {
-    to: "#",
+    to: "/contact",
     label: "Contact Us",
   },
 ];
@@ -88,7 +87,7 @@ export function Nav() {
     >
       <nav className="mx-auto flex max-w-7xl items-center justify-between px-6 lg:px-10">
         {/* LOGO */}
-        <Link to="#" className="group flex items-center">
+        <Link to="/" className="group flex items-center">
           <img
             src={logoImg}
             alt="SOAR Logo"
@@ -147,7 +146,7 @@ export function Nav() {
         {/* RIGHT SIDE BUTTONS */}
         <div className="hidden items-center gap-6 lg:flex">
           <Link
-            to="#"
+            to="/donate"
             className="inline-flex items-center justify-center rounded-full gradient-brand px-6 py-2.5 text-sm font-semibold text-primary-foreground shadow-elegant hover:scale-[1.02] active:scale-[0.98] transition-all duration-200"
           >
             Donate Now
@@ -157,7 +156,7 @@ export function Nav() {
         {/* MOBILE MENU TOGGLE WITH DONATE BUTTON */}
         <div className="flex items-center gap-3 lg:hidden">
           <Link
-            to="#"
+            to="/donate"
             className="inline-flex items-center justify-center rounded-full bg-gradient-to-r from-[#D4AF37] to-[#F2D27C] text-[#0C1220] font-bold h-10 px-5 text-xs shadow-soft transition-all duration-200 hover:scale-[1.02] active:scale-[0.97]"
           >
             Donate
@@ -226,7 +225,7 @@ export function Nav() {
             })}
             <div className="border-t border-border/40 my-3 pt-3 flex flex-col gap-3">
               <Link
-                to="#"
+                to="/donate"
                 onClick={() => setOpen(false)}
                 className="inline-flex items-center justify-center rounded-full bg-gradient-to-r from-[#D4AF37] to-[#F2D27C] text-[#0C1220] font-bold px-5 py-3.5 text-sm shadow-elegant hover:scale-[1.02] active:scale-[0.97] transition duration-200"
               >

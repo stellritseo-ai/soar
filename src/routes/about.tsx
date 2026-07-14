@@ -3,16 +3,52 @@ import { SiteLayout } from "@/components/site/Layout";
 import { PageHeader } from "@/components/site/PageHeader";
 import { ArrowRight, Sparkles, Compass, Target, Heart, Linkedin, Mail } from "lucide-react";
 import aboutImg from "@/assets/program-family.jpg";
-import team1 from "@/assets/team1.jpg";
-import team2 from "@/assets/team2.jpeg";
-import team3 from "@/assets/team3.jpg";
-import team4 from "@/assets/team4.jpg";
+import secretaryBettyImg from "@/assets/team/Arhelo Betty (Secretary).png";
+import vpBettyImg from "@/assets/team/Betty Arhelo (vice president ).jpg";
+import presMyrtleImg from "@/assets/team/Dixon, Myrtle ( President ).png";
+import founderMyrtleImg from "@/assets/team/Myrtle Dixon ( Founder & President ).jpeg";
+import presTerryImg from "@/assets/team/Terry-Ann Taylor-Beckford (president).jpg";
+import dirTamaraImg from "@/assets/team/tamara girly (director).jpg";
 
-const team = [
-  { name: "Dr. Amara Johnson", role: "Founder & Executive Director", bio: "Visionary leader championing women's empowerment for over 20 years.", img: team1 },
-  { name: "Sofia Ramirez", role: "Director of Programs", bio: "Architect of SOAR's mentorship and financial literacy curriculum.", img: team2 },
-  { name: "Zara Okonkwo", role: "Head of Community", bio: "Builds the sisterhood — events, outreach, and volunteer care.", img: team3 },
-  { name: "Elena Whitfield", role: "Chief Partnerships Officer", bio: "Cultivates sponsors and strategic partners advancing our mission.", img: team4 },
+import { useTeam } from "@/lib/cms";
+
+const fallbackTeam = [
+  {
+    name: "Myrtle Dixon",
+    role: "President",
+    bio: "Visionary leader championing women's empowerment for over 20 years.",
+    img: founderMyrtleImg,
+  },
+  {
+    name: "Dixon, Myrtle",
+    role: "President",
+    bio: "Leading strategic direction and advocacy for sustainable housing.",
+    img: presMyrtleImg,
+  },
+  {
+    name: "Terry-Ann Taylor-Beckford",
+    role: "President",
+    bio: "Architect of SOAR's mentorship and financial literacy curriculum.",
+    img: presTerryImg,
+  },
+  {
+    name: "Betty Arhelo",
+    role: "Vice President",
+    bio: "Cultivating community support and organizing outreach programs.",
+    img: vpBettyImg,
+  },
+  {
+    name: "Arhelo Betty",
+    role: "Secretary",
+    bio: "Builds the sisterhood — events, outreach, and volunteer care.",
+    img: secretaryBettyImg,
+  },
+  {
+    name: "Tamara Girly",
+    role: "Director",
+    bio: "Cultivates sponsors and strategic partners advancing our mission.",
+    img: dirTamaraImg,
+  },
 ];
 
 export const Route = createFileRoute("/about")({
@@ -29,13 +65,23 @@ export const Route = createFileRoute("/about")({
 });
 
 const timeline = [
-  { year: "2020", title: "A sisterhood begins", copy: "Founded to walk beside women rebuilding after adversity." },
+  { year: "2014", title: "A sisterhood begins", copy: "Founded to walk beside women rebuilding after adversity." },
   { year: "2022", title: "First workshops", copy: "Financial literacy and mentorship programs launch." },
   { year: "2024", title: "Homeownership pathway", copy: "SOAR partners open the first homeownership education track." },
   { year: "2026", title: "100 women goal", copy: "Expanding to three states with a bold new impact target." },
 ];
 
 function About() {
+  const { data: dbTeam } = useTeam();
+  const team = dbTeam && dbTeam.length > 0
+    ? dbTeam.map(member => ({
+        name: member.name,
+        role: member.role,
+        bio: member.bio || "",
+        img: member.image_url || fallbackTeam.find(t => t.name === member.name)?.img || ""
+      }))
+    : fallbackTeam;
+
   return (
     <SiteLayout>
       <PageHeader
@@ -44,7 +90,7 @@ function About() {
         subtitle="We exist so no woman has to walk her hardest road alone. SOAR is a global sisterhood building bridges from survival to sovereignty."
       />
 
-      <section className="mx-auto grid max-w-7xl items-center gap-14 px-6 pb-24 lg:grid-cols-2 lg:px-10">
+      <section className="mx-auto grid max-w-7xl items-center gap-14 px-6 pb-24 lg:grid-cols-2 lg:px-10 mt-[50px]">
         <div className="relative">
           <div className="absolute -inset-6 rounded-[36px] gradient-brand opacity-20 blur-3xl" />
           <div className="relative overflow-hidden rounded-[32px] shadow-elegant">

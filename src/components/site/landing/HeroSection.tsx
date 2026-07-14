@@ -1,14 +1,20 @@
 import { Link } from "@tanstack/react-router";
 import heroVideo from "@/assets/hero.mp4";
-
-const stats = [
-  { value: "100+", label: "Women Empowered" },
-  { value: "25+", label: "Community Partners" },
-  { value: "5", label: "Core Programs" },
-  { value: "100%", label: "Hope Driven" },
-];
+import { useSetting, HeroSettings } from "@/lib/cms";
 
 export function HeroSection() {
+  const { data: heroData } = useSetting<HeroSettings>("hero");
+
+  const eyebrow = heroData?.eyebrow || "A future where everyone can soar";
+  const headline = heroData?.headline || "Empowering Women to Dream Again.";
+  const subheadline = heroData?.subheadline || "SOAR Global Foundation Inc. helps women overcome adversity through education, mentorship, financial literacy, family support, and pathways to homeownership.";
+
+  const stats = [
+    { value: heroData?.stat1_value || "100+", label: heroData?.stat1_label || "Women Empowered" },
+    { value: heroData?.stat2_value || "25+", label: heroData?.stat2_label || "Community Partners" },
+    { value: heroData?.stat3_value || "5", label: heroData?.stat3_label || "Core Programs" },
+    { value: "100%", label: "Hope Driven" },
+  ];
 
   // Helper to dynamically inject premium gradient styling into key phrases
   const formatHeadline = (text: string) => {
@@ -61,30 +67,30 @@ export function HeroSection() {
             <span className="relative inline-flex rounded-full h-2 w-2 bg-[#D4AF37]"></span>
           </span>
           <span>Now live –</span>
-          <span className="text-[#D4AF37] font-semibold">A future where everyone can soar</span>
+          <span className="text-[#D4AF37] font-semibold">{eyebrow}</span>
           <span className="text-white/50 text-[10px] ml-0.5">&gt;</span>
         </div>
 
         {/* Centered Heading */}
         <h1 className="font-sans font-bold text-[28px] sm:text-[34px] md:text-[40px] text-white tracking-tight leading-tight max-w-4xl animate-fade-up mb-[-20px] capitalize">
-          {formatHeadline("Empowering Women to Dream Again.")}
+          {formatHeadline(headline)}
         </h1>
 
         {/* Centered Subheadline */}
         <p className="mt-6 text-sm sm:text-base lg:text-lg text-white max-w-3xl leading-relaxed font-medium animate-fade-up px-2">
-          SOAR Global Foundation Inc. helps women overcome adversity through education, mentorship, financial literacy, family support, and pathways to homeownership.
+          {subheadline}
         </p>
 
         {/* Buttons side-by-side */}
         <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4 w-full sm:w-auto animate-fade-up">
           <Link
-            to="#"
+            to="/donate"
             className="w-full sm:w-auto inline-flex items-center justify-center rounded-full gradient-brand text-white font-bold px-7 py-3.5 text-sm shadow-elegant transition duration-200 hover:scale-[1.02] active:scale-[0.97]"
           >
             Donate Now
           </Link>
           <Link
-            to="#"
+            to="/volunteer"
             className="w-full sm:w-auto inline-flex items-center justify-center rounded-full gradient-gold text-[#0C1220] font-bold px-7 py-3.5 text-sm shadow-elegant transition duration-200 hover:scale-[1.02] active:scale-[0.97]"
           >
             Become a Volunteer

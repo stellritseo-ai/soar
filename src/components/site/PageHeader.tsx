@@ -5,15 +5,27 @@ export function PageHeader({
   title,
   subtitle,
   children,
+  bgImage,
 }: {
   eyebrow?: string;
   title: ReactNode;
   subtitle?: ReactNode;
   children?: ReactNode;
+  bgImage?: string;
 }) {
   return (
     <section className="relative overflow-hidden pt-36 pb-20">
-      <div className="absolute inset-0 gradient-soft" />
+      {bgImage ? (
+        <>
+          <div 
+            className="absolute inset-0 bg-cover bg-center" 
+            style={{ backgroundImage: `url(${bgImage})` }} 
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-[#FFFDF9]/95 via-[#FDFBF7]/90 to-background" />
+        </>
+      ) : (
+        <div className="absolute inset-0 gradient-soft" />
+      )}
       <div className="absolute -top-24 right-0 size-[420px] rounded-full bg-primary/10 blur-3xl" />
       <div className="absolute bottom-0 left-0 size-[380px] rounded-full bg-accent/15 blur-3xl" />
       <div className="relative mx-auto max-w-4xl px-6 text-center lg:px-10">

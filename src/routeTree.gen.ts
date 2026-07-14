@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as WaysToGiveRouteImport } from './routes/ways-to-give'
 import { Route as VolunteerRouteImport } from './routes/volunteer'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as SuccessStoriesRouteImport } from './routes/success-stories'
@@ -16,6 +17,11 @@ import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as ProgramsRouteImport } from './routes/programs'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as PartnersRouteImport } from './routes/partners'
+import { Route as OurStoryRouteImport } from './routes/our-story'
+import { Route as OurImpactRouteImport } from './routes/our-impact'
+import { Route as NewsAndEventsRouteImport } from './routes/news-and-events'
+import { Route as MeetOurTeamRouteImport } from './routes/meet-our-team'
+import { Route as HowWeWorkRouteImport } from './routes/how-we-work'
 import { Route as GalleryRouteImport } from './routes/gallery'
 import { Route as EventsRouteImport } from './routes/events'
 import { Route as DonateRouteImport } from './routes/donate'
@@ -27,6 +33,11 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 
+const WaysToGiveRoute = WaysToGiveRouteImport.update({
+  id: '/ways-to-give',
+  path: '/ways-to-give',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const VolunteerRoute = VolunteerRouteImport.update({
   id: '/volunteer',
   path: '/volunteer',
@@ -60,6 +71,31 @@ const PrivacyRoute = PrivacyRouteImport.update({
 const PartnersRoute = PartnersRouteImport.update({
   id: '/partners',
   path: '/partners',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OurStoryRoute = OurStoryRouteImport.update({
+  id: '/our-story',
+  path: '/our-story',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OurImpactRoute = OurImpactRouteImport.update({
+  id: '/our-impact',
+  path: '/our-impact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NewsAndEventsRoute = NewsAndEventsRouteImport.update({
+  id: '/news-and-events',
+  path: '/news-and-events',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MeetOurTeamRoute = MeetOurTeamRouteImport.update({
+  id: '/meet-our-team',
+  path: '/meet-our-team',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HowWeWorkRoute = HowWeWorkRouteImport.update({
+  id: '/how-we-work',
+  path: '/how-we-work',
   getParentRoute: () => rootRouteImport,
 } as any)
 const GalleryRoute = GalleryRouteImport.update({
@@ -121,6 +157,11 @@ export interface FileRoutesByFullPath {
   '/donate': typeof DonateRoute
   '/events': typeof EventsRoute
   '/gallery': typeof GalleryRoute
+  '/how-we-work': typeof HowWeWorkRoute
+  '/meet-our-team': typeof MeetOurTeamRoute
+  '/news-and-events': typeof NewsAndEventsRoute
+  '/our-impact': typeof OurImpactRoute
+  '/our-story': typeof OurStoryRoute
   '/partners': typeof PartnersRoute
   '/privacy': typeof PrivacyRoute
   '/programs': typeof ProgramsRoute
@@ -128,6 +169,7 @@ export interface FileRoutesByFullPath {
   '/success-stories': typeof SuccessStoriesRoute
   '/terms': typeof TermsRoute
   '/volunteer': typeof VolunteerRoute
+  '/ways-to-give': typeof WaysToGiveRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
 }
 export interface FileRoutesByTo {
@@ -139,6 +181,11 @@ export interface FileRoutesByTo {
   '/donate': typeof DonateRoute
   '/events': typeof EventsRoute
   '/gallery': typeof GalleryRoute
+  '/how-we-work': typeof HowWeWorkRoute
+  '/meet-our-team': typeof MeetOurTeamRoute
+  '/news-and-events': typeof NewsAndEventsRoute
+  '/our-impact': typeof OurImpactRoute
+  '/our-story': typeof OurStoryRoute
   '/partners': typeof PartnersRoute
   '/privacy': typeof PrivacyRoute
   '/programs': typeof ProgramsRoute
@@ -146,6 +193,7 @@ export interface FileRoutesByTo {
   '/success-stories': typeof SuccessStoriesRoute
   '/terms': typeof TermsRoute
   '/volunteer': typeof VolunteerRoute
+  '/ways-to-give': typeof WaysToGiveRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
 }
 export interface FileRoutesById {
@@ -159,6 +207,11 @@ export interface FileRoutesById {
   '/donate': typeof DonateRoute
   '/events': typeof EventsRoute
   '/gallery': typeof GalleryRoute
+  '/how-we-work': typeof HowWeWorkRoute
+  '/meet-our-team': typeof MeetOurTeamRoute
+  '/news-and-events': typeof NewsAndEventsRoute
+  '/our-impact': typeof OurImpactRoute
+  '/our-story': typeof OurStoryRoute
   '/partners': typeof PartnersRoute
   '/privacy': typeof PrivacyRoute
   '/programs': typeof ProgramsRoute
@@ -166,6 +219,7 @@ export interface FileRoutesById {
   '/success-stories': typeof SuccessStoriesRoute
   '/terms': typeof TermsRoute
   '/volunteer': typeof VolunteerRoute
+  '/ways-to-give': typeof WaysToGiveRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
 }
 export interface FileRouteTypes {
@@ -179,6 +233,11 @@ export interface FileRouteTypes {
     | '/donate'
     | '/events'
     | '/gallery'
+    | '/how-we-work'
+    | '/meet-our-team'
+    | '/news-and-events'
+    | '/our-impact'
+    | '/our-story'
     | '/partners'
     | '/privacy'
     | '/programs'
@@ -186,6 +245,7 @@ export interface FileRouteTypes {
     | '/success-stories'
     | '/terms'
     | '/volunteer'
+    | '/ways-to-give'
     | '/dashboard'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -197,6 +257,11 @@ export interface FileRouteTypes {
     | '/donate'
     | '/events'
     | '/gallery'
+    | '/how-we-work'
+    | '/meet-our-team'
+    | '/news-and-events'
+    | '/our-impact'
+    | '/our-story'
     | '/partners'
     | '/privacy'
     | '/programs'
@@ -204,6 +269,7 @@ export interface FileRouteTypes {
     | '/success-stories'
     | '/terms'
     | '/volunteer'
+    | '/ways-to-give'
     | '/dashboard'
   id:
     | '__root__'
@@ -216,6 +282,11 @@ export interface FileRouteTypes {
     | '/donate'
     | '/events'
     | '/gallery'
+    | '/how-we-work'
+    | '/meet-our-team'
+    | '/news-and-events'
+    | '/our-impact'
+    | '/our-story'
     | '/partners'
     | '/privacy'
     | '/programs'
@@ -223,6 +294,7 @@ export interface FileRouteTypes {
     | '/success-stories'
     | '/terms'
     | '/volunteer'
+    | '/ways-to-give'
     | '/_authenticated/dashboard'
   fileRoutesById: FileRoutesById
 }
@@ -236,6 +308,11 @@ export interface RootRouteChildren {
   DonateRoute: typeof DonateRoute
   EventsRoute: typeof EventsRoute
   GalleryRoute: typeof GalleryRoute
+  HowWeWorkRoute: typeof HowWeWorkRoute
+  MeetOurTeamRoute: typeof MeetOurTeamRoute
+  NewsAndEventsRoute: typeof NewsAndEventsRoute
+  OurImpactRoute: typeof OurImpactRoute
+  OurStoryRoute: typeof OurStoryRoute
   PartnersRoute: typeof PartnersRoute
   PrivacyRoute: typeof PrivacyRoute
   ProgramsRoute: typeof ProgramsRoute
@@ -243,10 +320,18 @@ export interface RootRouteChildren {
   SuccessStoriesRoute: typeof SuccessStoriesRoute
   TermsRoute: typeof TermsRoute
   VolunteerRoute: typeof VolunteerRoute
+  WaysToGiveRoute: typeof WaysToGiveRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/ways-to-give': {
+      id: '/ways-to-give'
+      path: '/ways-to-give'
+      fullPath: '/ways-to-give'
+      preLoaderRoute: typeof WaysToGiveRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/volunteer': {
       id: '/volunteer'
       path: '/volunteer'
@@ -294,6 +379,41 @@ declare module '@tanstack/react-router' {
       path: '/partners'
       fullPath: '/partners'
       preLoaderRoute: typeof PartnersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/our-story': {
+      id: '/our-story'
+      path: '/our-story'
+      fullPath: '/our-story'
+      preLoaderRoute: typeof OurStoryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/our-impact': {
+      id: '/our-impact'
+      path: '/our-impact'
+      fullPath: '/our-impact'
+      preLoaderRoute: typeof OurImpactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/news-and-events': {
+      id: '/news-and-events'
+      path: '/news-and-events'
+      fullPath: '/news-and-events'
+      preLoaderRoute: typeof NewsAndEventsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/meet-our-team': {
+      id: '/meet-our-team'
+      path: '/meet-our-team'
+      fullPath: '/meet-our-team'
+      preLoaderRoute: typeof MeetOurTeamRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/how-we-work': {
+      id: '/how-we-work'
+      path: '/how-we-work'
+      fullPath: '/how-we-work'
+      preLoaderRoute: typeof HowWeWorkRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/gallery': {
@@ -390,6 +510,11 @@ const rootRouteChildren: RootRouteChildren = {
   DonateRoute: DonateRoute,
   EventsRoute: EventsRoute,
   GalleryRoute: GalleryRoute,
+  HowWeWorkRoute: HowWeWorkRoute,
+  MeetOurTeamRoute: MeetOurTeamRoute,
+  NewsAndEventsRoute: NewsAndEventsRoute,
+  OurImpactRoute: OurImpactRoute,
+  OurStoryRoute: OurStoryRoute,
   PartnersRoute: PartnersRoute,
   PrivacyRoute: PrivacyRoute,
   ProgramsRoute: ProgramsRoute,
@@ -397,6 +522,7 @@ const rootRouteChildren: RootRouteChildren = {
   SuccessStoriesRoute: SuccessStoriesRoute,
   TermsRoute: TermsRoute,
   VolunteerRoute: VolunteerRoute,
+  WaysToGiveRoute: WaysToGiveRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

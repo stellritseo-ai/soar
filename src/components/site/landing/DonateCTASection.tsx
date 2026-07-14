@@ -68,14 +68,14 @@ export function DonateCTASection() {
               {/* Buttons Capsules */}
               <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
                 <Link
-                  to="#"
+                  to="/donate"
                   className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-[#D4AF37] to-[#F2D27C] text-[#0C1220] font-bold px-8 py-4 text-sm shadow-elegant transition duration-200 hover:scale-[1.02] active:scale-[0.97]"
                 >
                   <Heart className="size-4 fill-current text-[#0C1220]/75" />
                   Donate Now
                 </Link>
                 <Link
-                  to="#"
+                  to="/partners"
                   className="group w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-full border border-white/30 bg-white/10 px-8 py-4 text-sm font-bold text-white backdrop-blur-sm transition duration-200 hover:bg-white/20 hover:scale-[1.02] active:scale-[0.97]"
                 >
                   Become a Sponsor

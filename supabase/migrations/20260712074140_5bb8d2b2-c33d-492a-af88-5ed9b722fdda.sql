@@ -1,4 +1,0 @@
-
-CREATE POLICY "admin manage site-media" ON storage.objects FOR ALL TO authenticated
-  USING (bucket_id = 'site-media' AND public.has_role(auth.uid(), 'admin'))
-  WITH CHECK (bucket_id = 'site-media' AND public.has_role(auth.uid(), 'admin'));
