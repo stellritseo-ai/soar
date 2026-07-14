@@ -3,12 +3,12 @@ import { SiteLayout } from "@/components/site/Layout";
 import { PageHeader } from "@/components/site/PageHeader";
 import { Sparkles, BookOpen, Users, Heart, Shield, ArrowRight, ArrowLeft } from "lucide-react";
 import programMentorImg from "@/assets/program-mentor.jpg";
-import secretaryBettyImg from "@/assets/team/Arhelo Betty (Secretary).png";
-import vpBettyImg from "@/assets/team/Betty Arhelo (vice president ).jpg";
-import presMyrtleImg from "@/assets/team/Dixon, Myrtle ( President ).png";
-import founderMyrtleImg from "@/assets/team/Myrtle Dixon ( Founder & President ).jpeg";
+import founderMyrtleImg from "@/assets/team/Myrtle Dixon (Founder).jpeg";
 import presTerryImg from "@/assets/team/Terry-Ann Taylor-Beckford (president).jpg";
-import dirTamaraImg from "@/assets/team/tamara girly (director).jpg";
+import vpBettyImg from "@/assets/team/Betty Arhelo (vice president ).jpg";
+import secretaryBettyImg from "@/assets/team/Arhelo Betty ( Secretary ).png";
+import dirTamaraImg from "@/assets/team/Tamara Girly (director).JPG";
+import dirTamarImg from "@/assets/team/Tamar Raby (director).png";
 import { useTeam } from "@/lib/cms";
 
 export const Route = createFileRoute("/meet-our-team")({
@@ -27,17 +27,10 @@ export const Route = createFileRoute("/meet-our-team")({
 const fallbackLeaders = [
   {
     name: "Myrtle Dixon",
-    role: "President",
-    bio: "Myrtle Dixon is a visionary leader with over 20 years of experience championing women's empowerment and community development. As Founder and President of SOAR Global Foundation Inc., she provides strategic direction and ensures the organization remains steadfast in its mission to help women find their dreams through homeownership.\n\nWith a deep understanding of the challenges women face in accessing stable housing, Myrtle has dedicated her career to creating innovative programs that address systemic barriers. Her leadership is characterized by compassion, resilience, and an unshakeable belief in the power of community.",
+    role: "Founder",
+    bio: "Myrtle Dixon is a visionary leader with over 20 years of experience championing women's empowerment and community development. As Founder of SOAR Global Foundation Inc., she provides strategic direction and ensures the organization remains steadfast in its mission to help women find their dreams through homeownership.\n\nWith a deep understanding of the challenges women face in accessing stable housing, Myrtle has dedicated her career to creating innovative programs that address systemic barriers. Her leadership is characterized by compassion, resilience, and an unshakeable belief in the power of community.",
     img: founderMyrtleImg,
     focus: ["Strategic Vision", "Community Empowerment", "Organizational Leadership"],
-  },
-  {
-    name: "Dixon, Myrtle",
-    role: "President",
-    bio: "Serving as President, Myrtle leads strategic policy, advocacy campaigns, and housing outreach programs to unlock permanent homeownership tracks. Her governance ensures that the Foundation's initiatives remain effective and accountable at every state branch level.\n\nHer experience brings deep institutional knowledge, cultivating strong developer partnerships and community trusts that sustain SOAR's long-term housing access program.",
-    img: presMyrtleImg,
-    focus: ["Housing Advocacy", "Strategic Policy", "External Relations"],
   },
   {
     name: "Terry-Ann Taylor-Beckford",
@@ -49,14 +42,14 @@ const fallbackLeaders = [
   {
     name: "Betty Arhelo",
     role: "Vice President",
-    bio: "Betty Arhelo is the heart of our sisterhood. As Vice President, she assists in board governance, manages organization records, and helps oversee team efforts. But her impact extends far beyond administration — Betty cultivates community through events, outreach, and volunteer care.\n\nHer warmth and dedication create an environment where every woman feels welcomed, valued, and supported. Betty's commitment to detail and transparency ensures that SOAR operates with integrity and accountability.",
+    bio: "Betty Arhelo is the Vice President of SOAR Global Foundation Inc., where she coordinates community outreach initiatives and builds strategic partnerships to advance the organization's mission.\n\nBetty has a background in social services and is committed to fostering supportive environments where women can thrive. She believes that stable housing is the foundation of individual and family well-being, and she works tirelessly to ensure that SOAR's programs are accessible and impactful.",
     img: vpBettyImg,
-    focus: ["Outreach Programs", "Partner Integrations", "Volunteer Support"],
+    focus: ["Outreach Initiatives", "Community Care", "Volunteer Networks"],
   },
   {
     name: "Arhelo Betty",
     role: "Secretary",
-    bio: "Maintaining exact records of Board sessions, managing correspondence, and facilitating governance compliance. Betty’s attention to administrative detail ensures SOAR meets all local and federal regulations while coordinating community workshops.\n\nHer operational diligence keeps program resources highly coordinated and accessible, supporting smooth workflow operations for both our staff and program participants.",
+    bio: "Arhelo Betty serves as the Secretary, maintaining administrative excellence, records, and coordinating operations across SOAR's programs to ensure smooth outreach execution.\n\nHer dedication ensures that all resources are optimally utilized and communication flows transparently across volunteers, branches, and stakeholders. Betty's attention to administrative detail ensures SOAR meets all local and federal regulations while coordinating community workshops.",
     img: secretaryBettyImg,
     focus: ["Board Governance", "Records Compliance", "Sisterhood Care"],
   },
@@ -66,6 +59,13 @@ const fallbackLeaders = [
     bio: "Tamara Girly is a strategic relationship builder who cultivates sponsors and partners to advance SOAR's mission. As a Director, she works tirelessly to secure the resources needed to expand programs and reach more women in need.\n\nTamara's expertise in partnership development has been instrumental in growing SOAR's network of community allies, corporate sponsors, and philanthropic supporters. Her ability to connect people and organizations around a shared purpose strengthens the Foundation's capacity to create lasting impact.",
     img: dirTamaraImg,
     focus: ["Sponsorships", "Strategic Partnerships", "Resource Mobilization"],
+  },
+  {
+    name: "Tamar Raby",
+    role: "Director",
+    bio: "Tamar Raby serves as a Director, bringing deep expertise in community relations and public outreach to strengthen SOAR's localized impact.\n\nHer dedication to women's causes drives our sponsor programs and localized community partnerships, unlocking resources to expand our homeownership tracks.",
+    img: dirTamarImg,
+    focus: ["Community Relations", "Outreach Programs", "Local Sponsorships"],
   },
 ];
 
@@ -81,15 +81,15 @@ function MeetOurTeam() {
   const { data: dbTeam } = useTeam();
   const leaders = dbTeam && dbTeam.length > 0
     ? dbTeam.map(member => {
-        const fb = fallbackLeaders.find(t => t.name === member.name);
-        return {
-          name: member.name,
-          role: member.role,
-          bio: member.bio || fb?.bio || "",
-          img: member.image_url || fb?.img || "",
-          focus: fb?.focus || ["Strategic Vision", "Community Support"]
-        };
-      })
+      const fb = fallbackLeaders.find(t => t.name === member.name);
+      return {
+        name: member.name,
+        role: member.role,
+        bio: member.bio || fb?.bio || "",
+        img: member.image_url || fb?.img || "",
+        focus: fb?.focus || ["Strategic Vision", "Community Support"]
+      };
+    })
     : fallbackLeaders;
 
   return (

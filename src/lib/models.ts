@@ -105,53 +105,65 @@ export async function seedDatabase() {
     ]);
   }
 
-  const teamCount = await TeamMember.countDocuments();
-  if (teamCount === 0) {
-    console.log("Seeding default team members into MongoDB...");
-    await TeamMember.insertMany([
+  console.log("Synchronizing default team members in MongoDB...");
+  const defaultTeam = [
+    {
+      name: "Myrtle Dixon",
+      role: "Founder",
+      bio: "Visionary leader championing women's empowerment for over 20 years.",
+      sort_order: 1
+    },
+    {
+      name: "Terry-Ann Taylor-Beckford",
+      role: "President",
+      bio: "Architect of SOAR's mentorship and financial literacy curriculum.",
+      sort_order: 2
+    },
+    {
+      name: "Betty Arhelo",
+      role: "Vice President",
+      bio: "Cultivating community support and organizing outreach programs.",
+      sort_order: 3
+    },
+    {
+      name: "Arhelo Betty",
+      role: "Secretary",
+      bio: "Builds the sisterhood — events, outreach, and volunteer care.",
+      sort_order: 4
+    },
+    {
+      name: "Tamara Girly",
+      role: "Director",
+      bio: "Cultivates sponsors and strategic partners advancing our mission.",
+      sort_order: 5
+    },
+    {
+      name: "Tamar Raby",
+      role: "Director",
+      bio: "Cultivates community relations and local sponsorships.",
+      sort_order: 6
+    }
+  ];
+
+  // Remove any team members not in the default team list (e.g. duplicate or inverted names)
+  await TeamMember.deleteMany({ name: { $nin: defaultTeam.map(t => t.name) } });
+
+  // Upsert the 6 correct board members
+  for (const member of defaultTeam) {
+    await TeamMember.updateOne(
+      { name: member.name },
       {
-        name: "Myrtle Dixon",
-        role: "Founder & President",
-        bio: "Visionary leader championing women's empowerment for over 20 years.",
-        image_url: "",
-        sort_order: 1
+        $set: {
+          role: member.role,
+          bio: member.bio,
+          sort_order: member.sort_order
+        },
+        $setOnInsert: {
+          image_url: ""
+        }
       },
-      {
-        name: "Dixon, Myrtle",
-        role: "President",
-        bio: "Leading strategic direction and advocacy for sustainable housing.",
-        image_url: "",
-        sort_order: 2
-      },
-      {
-        name: "Terry-Ann Taylor-Beckford",
-        role: "President",
-        bio: "Architect of SOAR's mentorship and financial literacy curriculum.",
-        image_url: "",
-        sort_order: 3
-      },
-      {
-        name: "Betty Arhelo",
-        role: "Vice President",
-        bio: "Cultivating community support and organizing outreach programs.",
-        image_url: "",
-        sort_order: 4
-      },
-      {
-        name: "Arhelo Betty",
-        role: "Secretary",
-        bio: "Builds the sisterhood — events, outreach, and volunteer care.",
-        image_url: "",
-        sort_order: 5
-      },
-      {
-        name: "Tamara Girly",
-        role: "Director",
-        bio: "Cultivates sponsors and strategic partners advancing our mission.",
-        image_url: "",
-        sort_order: 6
-      }
-    ]);
+      { upsert: true }
+    );
   }
 
   const eventCount = await EventModel.countDocuments();

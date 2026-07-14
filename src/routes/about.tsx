@@ -3,27 +3,21 @@ import { SiteLayout } from "@/components/site/Layout";
 import { PageHeader } from "@/components/site/PageHeader";
 import { ArrowRight, Sparkles, Compass, Target, Heart, Linkedin, Mail } from "lucide-react";
 import aboutImg from "@/assets/program-family.jpg";
-import secretaryBettyImg from "@/assets/team/Arhelo Betty (Secretary).png";
-import vpBettyImg from "@/assets/team/Betty Arhelo (vice president ).jpg";
-import presMyrtleImg from "@/assets/team/Dixon, Myrtle ( President ).png";
-import founderMyrtleImg from "@/assets/team/Myrtle Dixon ( Founder & President ).jpeg";
+import founderMyrtleImg from "@/assets/team/Myrtle Dixon (Founder).jpeg";
 import presTerryImg from "@/assets/team/Terry-Ann Taylor-Beckford (president).jpg";
-import dirTamaraImg from "@/assets/team/tamara girly (director).jpg";
+import vpBettyImg from "@/assets/team/Betty Arhelo (vice president ).jpg";
+import secretaryBettyImg from "@/assets/team/Arhelo Betty ( Secretary ).png";
+import dirTamaraImg from "@/assets/team/Tamara Girly (director).JPG";
+import dirTamarImg from "@/assets/team/Tamar Raby (director).png";
 
 import { useTeam } from "@/lib/cms";
 
 const fallbackTeam = [
   {
     name: "Myrtle Dixon",
-    role: "President",
+    role: "Founder",
     bio: "Visionary leader championing women's empowerment for over 20 years.",
     img: founderMyrtleImg,
-  },
-  {
-    name: "Dixon, Myrtle",
-    role: "President",
-    bio: "Leading strategic direction and advocacy for sustainable housing.",
-    img: presMyrtleImg,
   },
   {
     name: "Terry-Ann Taylor-Beckford",
@@ -48,6 +42,12 @@ const fallbackTeam = [
     role: "Director",
     bio: "Cultivates sponsors and strategic partners advancing our mission.",
     img: dirTamaraImg,
+  },
+  {
+    name: "Tamar Raby",
+    role: "Director",
+    bio: "Cultivates community relations and local sponsorships.",
+    img: dirTamarImg,
   },
 ];
 

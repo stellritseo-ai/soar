@@ -1,55 +1,55 @@
 import { Link } from "@tanstack/react-router";
 import { Linkedin, Mail, ChevronRight } from "lucide-react";
 import { useTeam } from "@/lib/cms";
-import secretaryBettyImg from "@/assets/team/Arhelo Betty (Secretary).png";
-import vpBettyImg from "@/assets/team/Betty Arhelo (vice president ).jpg";
-import presMyrtleImg from "@/assets/team/Dixon, Myrtle ( President ).png";
-import founderMyrtleImg from "@/assets/team/Myrtle Dixon ( Founder & President ).jpeg";
+import founderMyrtleImg from "@/assets/team/Myrtle Dixon (Founder).jpeg";
 import presTerryImg from "@/assets/team/Terry-Ann Taylor-Beckford (president).jpg";
-import dirTamaraImg from "@/assets/team/tamara girly (director).jpg";
+import vpBettyImg from "@/assets/team/Betty Arhelo (vice president ).jpg";
+import secretaryBettyImg from "@/assets/team/Arhelo Betty ( Secretary ).png";
+import dirTamaraImg from "@/assets/team/Tamara Girly (director).JPG";
+import dirTamarImg from "@/assets/team/Tamar Raby (director).png";
 
 const fallbackTeam = [
   {
     id: "1",
     name: "Myrtle Dixon",
-    role: "President",
+    role: "Founder",
     bio: "Visionary leader championing women's empowerment for over 20 years.",
     image_url: founderMyrtleImg,
   },
   {
     id: "2",
-    name: "Dixon, Myrtle",
-    role: "President",
-    bio: "Leading strategic direction and advocacy for sustainable housing.",
-    image_url: presMyrtleImg,
-  },
-  {
-    id: "3",
     name: "Terry-Ann Taylor-Beckford",
     role: "President",
     bio: "Architect of SOAR's mentorship and financial literacy curriculum.",
     image_url: presTerryImg,
   },
   {
-    id: "4",
+    id: "3",
     name: "Betty Arhelo",
     role: "Vice President",
     bio: "Cultivating community support and organizing outreach programs.",
     image_url: vpBettyImg,
   },
   {
-    id: "5",
+    id: "4",
     name: "Arhelo Betty",
     role: "Secretary",
     bio: "Builds the sisterhood — events, outreach, and volunteer care.",
     image_url: secretaryBettyImg,
   },
   {
-    id: "6",
+    id: "5",
     name: "Tamara Girly",
     role: "Director",
     bio: "Cultivates sponsors and strategic partners advancing our mission.",
     image_url: dirTamaraImg,
+  },
+  {
+    id: "6",
+    name: "Tamar Raby",
+    role: "Director",
+    bio: "Cultivates community relations and local sponsorships.",
+    image_url: dirTamarImg,
   },
 ];
 
@@ -57,12 +57,12 @@ export function TeamSection() {
   const { data: dbTeam } = useTeam();
   const team = dbTeam && dbTeam.length > 0
     ? dbTeam.map(member => ({
-        id: member.id,
-        name: member.name,
-        role: member.role,
-        bio: member.bio || "",
-        image_url: member.image_url || fallbackTeam.find(t => t.name === member.name)?.image_url || ""
-      }))
+      id: member.id,
+      name: member.name,
+      role: member.role,
+      bio: member.bio || "",
+      image_url: member.image_url || fallbackTeam.find(t => t.name === member.name)?.image_url || ""
+    }))
     : fallbackTeam;
 
   return (
