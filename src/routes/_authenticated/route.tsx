@@ -7,7 +7,7 @@ export const Route = createFileRoute("/_authenticated")({
     if (!isAuthenticated) {
       throw redirect({ to: "/auth", search: { redirect: location.href } });
     }
-    return { user: { email: "admin@soarglobal.org" } };
+    return { user: { email: "sistersoar14@gmail.com" } };
   },
   component: () => <Outlet />,
 });

@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { createServerFn } from "@tanstack/react-start";
 import { connectToDatabase } from "./mongodb";
-import { SiteSetting, TeamMember, EventModel, BlogPost, GalleryImage, ContactInquiry, ChatMessage, seedDatabase } from "./models";
+import { SiteSetting, TeamMember, EventModel, BlogPost, GalleryImage, ContactInquiry, ChatMessage, NewsletterSubscriber, seedDatabase } from "./models";
 
 export type TeamMemberType = {
   id: string;
@@ -56,6 +56,15 @@ export type ContactSettings = {
   phone?: string;
   address?: string;
   hours?: string;
+};
+
+export type PopupSettings = {
+  enabled?: boolean;
+  imageUrl?: string;
+  linkUrl?: string;
+  title?: string;
+  description?: string;
+  buttonText?: string;
 };
 
 // ----------------------------------------------------
@@ -482,9 +491,58 @@ export function useChatConversations() {
   });
 }
 
+export type NewsletterSubscriberType = {
+  id: string;
+  email: string;
+  created_at: string;
+};
+
+export const subscribeNewsletterFn = createServerFn({ method: "POST" })
+  .validator((email: string) => email)
+  .handler(async ({ data: email }) => {
+    await connectToDatabase();
+    const cleanEmail = email?.trim().toLowerCase();
+    if (!cleanEmail) throw new Error("Email is required");
+    const exists = await NewsletterSubscriber.findOne({ email: cleanEmail });
+    if (exists) return { success: true, message: "Already subscribed" };
+    await NewsletterSubscriber.create({ email: cleanEmail });
+    return { success: true };
+  });
+
+export const getNewsletterSubscribersFn = createServerFn({ method: "GET" })
+  .handler(async () => {
+    const { checkAdminAuth } = await import("./auth.server");
+    checkAdminAuth();
+    await connectToDatabase();
+    const list = await NewsletterSubscriber.find({}).sort({ created_at: -1 });
+    return list.map(doc => ({
+      id: doc._id.toString(),
+      email: doc.email,
+      created_at: doc.created_at.toISOString()
+    })) as NewsletterSubscriberType[];
+  });
+
+export const deleteNewsletterSubscriberFn = createServerFn({ method: "POST" })
+  .validator((id: string) => id)
+  .handler(async ({ data: id }) => {
+    const { checkAdminAuth } = await import("./auth.server");
+    checkAdminAuth();
+    await connectToDatabase();
+    await NewsletterSubscriber.findByIdAndDelete(id);
+    return { success: true };
+  });
+
+export function useNewsletterSubscribers() {
+  return useQuery({
+    queryKey: ["cms", "subscribers"],
+    queryFn: () => getNewsletterSubscribersFn(),
+  });
+}
+
 // Preserve original exports mapping for backward compatibility
 export type TeamMember = TeamMemberType;
 export type BlogPost = BlogPostType;
 export type GalleryImage = GalleryImageType;
 export type ContactInquiry = ContactInquiryType;
 export type ChatMessage = ChatMessageType;
+export type NewsletterSubscriber = NewsletterSubscriberType;

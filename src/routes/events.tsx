@@ -56,7 +56,7 @@ const timelineEvents = [
     ],
     date: "Thursday, December 5, 2026",
     time: "6:00 PM – 8:30 PM EST",
-    loc: "SOAR HQ, 3311 N Powers Dr, Orlando, FL 32818",
+    loc: "SOAR HQ, Orlando, FL 32818",
     cost: "Free",
     audience: "Open to all women",
     btnText: "Register Now"
@@ -93,7 +93,7 @@ const timelineEvents = [
     ],
     date: "Saturday, February 2027 (Date TBA)",
     time: "10:00 AM – 12:30 PM EST",
-    loc: "SOAR HQ, 3311 N Powers Dr, Orlando, FL 32818",
+    loc: "SOAR HQ, Orlando, FL 32818",
     cost: "Invitation Only",
     audience: "SOAR Volunteers",
     btnText: "Invitation Only"
@@ -598,7 +598,7 @@ function EventsPage() {
               <MapPin className="size-5 text-primary shrink-0" />
               <div className="text-xs">
                 <strong className="text-foreground block">Orlando Branch</strong>
-                <span className="text-muted-foreground">3311 N Powers Dr, Orlando, FL 32818</span>
+                <span className="text-muted-foreground">Orlando, FL 32818</span>
               </div>
             </div>
             <div className="flex items-center gap-3">

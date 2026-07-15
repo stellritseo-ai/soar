@@ -66,6 +66,12 @@ const ChatMessageSchema = new Schema({
   created_at: { type: Date, default: Date.now }
 });
 
+// NewsletterSubscriber Schema
+const NewsletterSubscriberSchema = new Schema({
+  email: { type: String, required: true, unique: true, lowercase: true },
+  created_at: { type: Date, default: Date.now }
+});
+
 export const SiteSetting = mongoose.models.SiteSetting || mongoose.model("SiteSetting", SiteSettingSchema);
 export const TeamMember = mongoose.models.TeamMember || mongoose.model("TeamMember", TeamMemberSchema);
 export const EventModel = mongoose.models.Event || mongoose.model("Event", EventSchema);
@@ -73,6 +79,7 @@ export const BlogPost = mongoose.models.BlogPost || mongoose.model("BlogPost", B
 export const GalleryImage = mongoose.models.GalleryImage || mongoose.model("GalleryImage", GalleryImageSchema);
 export const ContactInquiry = mongoose.models.ContactInquiry || mongoose.model("ContactInquiry", ContactInquirySchema);
 export const ChatMessage = mongoose.models.ChatMessage || mongoose.model("ChatMessage", ChatMessageSchema);
+export const NewsletterSubscriber = mongoose.models.NewsletterSubscriber || mongoose.model("NewsletterSubscriber", NewsletterSubscriberSchema);
 
 export async function seedDatabase() {
   const settingsCount = await SiteSetting.countDocuments();
@@ -96,13 +103,33 @@ export async function seedDatabase() {
       {
         key: "contact",
         value: {
-          email: "hello@soarglobal.org",
+          email: "sistersoar14@gmail.com",
           phone: "+1 (321) 710-7145",
-          address: "3311 N Powers Dr, Orlando, FL 32818",
+          address: "Orlando, FL 32818",
           hours: "Mon–Fri, 9am–6pm PT"
         }
       }
     ]);
+  }
+
+  // Self-healing database update to ensure existing database reflects the email & address shift
+  const contactSetting = await SiteSetting.findOne({ key: "contact" });
+  if (contactSetting && contactSetting.value) {
+    let modified = false;
+    if (contactSetting.value.email === "hello@soarglobal.org") {
+      contactSetting.value.email = "sistersoar14@gmail.com";
+      modified = true;
+      console.log("Database contact settings email automatically updated to sistersoar14@gmail.com");
+    }
+    if (contactSetting.value.address === "3311 N Powers Dr, Orlando, FL 32818") {
+      contactSetting.value.address = "Orlando, FL 32818";
+      modified = true;
+      console.log("Database contact settings address automatically updated to Orlando, FL 32818");
+    }
+    if (modified) {
+      contactSetting.markModified("value");
+      await contactSetting.save();
+    }
   }
 
   // Check if we have the old duplicate entries and clean them up to trigger a fresh aligned re-seed
@@ -138,7 +165,7 @@ export async function seedDatabase() {
         sort_order: 3
       },
       {
-        name: "Harrison Kameka",
+        name: "Kameka Harrison",
         role: "Secretary",
         bio: "Builds the sisterhood — events, outreach, and volunteer care.",
         image_url: "",

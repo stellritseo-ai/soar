@@ -356,7 +356,6 @@ function WaysToGive() {
                   Please make check payments payable to:
                   <strong className="block text-foreground mt-2">SOAR Global Foundation Inc.</strong>
                   <span className="block mt-1 font-medium bg-slate-50 border border-border/50 rounded-lg p-2.5 text-foreground/80">
-                    3311 N Powers Dr<br />
                     Orlando, FL 32818
                   </span>
                 </p>

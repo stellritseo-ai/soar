@@ -120,7 +120,6 @@ function Contact() {
                     <div className="text-[10px] uppercase tracking-[0.2em] text-primary/80 font-bold">Location</div>
                     <h4 className="text-foreground font-extrabold mt-1 text-sm">Headquarters</h4>
                     <p className="mt-1 text-sm text-muted-foreground leading-relaxed">
-                      3311 N Powers Dr<br />
                       Orlando, FL 32818
                     </p>
                   </div>
@@ -159,37 +158,16 @@ function Contact() {
                 </div>
               </div>
 
-              {/* Premium Vector Mock Map */}
+              {/* Google Maps Embed */}
               <div className="glass rounded-[24px] overflow-hidden p-1 shadow-soft group hover:border-[#D4AF37]/30 transition duration-300">
-                <div className="relative aspect-[16/10] w-full rounded-[20px] bg-[#EAE8F2] overflow-hidden border border-black/5 flex items-center justify-center">
-                  {/* Map Grid Pattern representation */}
-                  <div className="absolute inset-0 bg-[linear-gradient(rgba(0,0,0,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(0,0,0,0.03)_1px,transparent_1px)] bg-[size:20px_20px]" />
-                  {/* Decorative Map Road Graphics */}
-                  <div className="absolute top-1/2 left-0 w-full h-3 bg-white border-y border-black/5 -translate-y-1/2 rotate-12" />
-                  <div className="absolute top-0 left-1/3 w-4 h-full bg-white border-x border-black/5 -translate-x-1/2 -rotate-45" />
-                  <div className="absolute top-0 right-1/4 w-3.5 h-full bg-white border-x border-black/5 -translate-x-1/2 rotate-45" />
-                  
-                  {/* Glowing Location Pins */}
-                  <div className="absolute top-[42%] left-[45%] z-10 flex flex-col items-center">
-                    <span className="relative flex h-5 w-5">
-                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
-                      <span className="relative inline-flex rounded-full h-5 w-5 bg-gradient-to-r from-primary to-accent border-2 border-white shadow-soft"></span>
-                    </span>
-                    <span className="mt-1 bg-[#3A0A63] text-[9px] text-white font-extrabold uppercase px-2 py-0.5 rounded-full shadow-md whitespace-nowrap">
-                      SOAR HQ
-                    </span>
-                  </div>
-
-                  <div className="absolute bottom-3 right-3 z-10">
-                    <a 
-                      href="https://maps.google.com/?q=821+Good+Homes+Road,+Orlando,+FL+32818" 
-                      target="_blank" 
-                      rel="noopener noreferrer" 
-                      className="inline-flex items-center gap-1.5 rounded-lg bg-white border border-border px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-foreground hover:bg-slate-50 transition shadow-sm"
-                    >
-                      <Map className="size-3 text-primary" /> Directions <ExternalLink className="size-2.5" />
-                    </a>
-                  </div>
+                <div className="relative aspect-[16/10] w-full rounded-[20px] overflow-hidden border border-black/5">
+                  <iframe 
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d56051.514886844765!2d-81.53999323988847!3d28.59318577540817!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x88e7782113ef8b79%3A0xaf758d864b82eece!2sHiawassee%2C%20FL%2032818%2C%20USA!5e0!3m2!1sen!2snp!4v1784131469296!5m2!1sen!2snp"
+                    className="w-full h-full border-0" 
+                    allowFullScreen 
+                    loading="lazy" 
+                    referrerPolicy="strict-origin-when-cross-origin"
+                  />
                 </div>
               </div>
             </div>
@@ -362,7 +340,7 @@ function Contact() {
             </p>
             <div className="flex justify-center gap-4 pt-2">
               {[
-                { icon: Facebook, href: "https://facebook.com", label: "Facebook" },
+                { icon: Facebook, href: "https://www.facebook.com/profile.php?id=100068064036234", label: "Facebook" },
                 { icon: Instagram, href: "https://instagram.com", label: "Instagram" },
                 { icon: Linkedin, href: "https://linkedin.com", label: "LinkedIn" },
                 { icon: Youtube, href: "https://youtube.com", label: "YouTube" }

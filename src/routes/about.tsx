@@ -6,7 +6,7 @@ import aboutImg from "@/assets/program-family.jpg";
 import founderMyrtleImg from "@/assets/team/Myrtle Dixon (Founder).jpeg";
 import presTerryImg from "@/assets/team/Terry-Ann Taylor-Beckford (president).jpg";
 import vpBettyImg from "@/assets/team/Betty Arhelo (vice president ).jpg";
-import secretaryBettyImg from "@/assets/team/Harrison Kameka ( Secretary ).png";
+import secretaryBettyImg from "@/assets/team/Kameka Harrison ( Secretary ).jpg";
 import dirTamaraImg from "@/assets/team/Tamara Girly (director).JPG";
 import dirTamarImg from "@/assets/team/Tamar Raby (director).png";
 
@@ -32,7 +32,7 @@ const fallbackTeam = [
     img: vpBettyImg,
   },
   {
-    name: "Harrison Kameka",
+    name: "Kameka Harrison",
     role: "Secretary",
     bio: "Builds the sisterhood — events, outreach, and volunteer care.",
     img: secretaryBettyImg,
@@ -73,14 +73,14 @@ const timeline = [
 
 function About() {
   const { data: dbTeam } = useTeam();
-  const team = dbTeam && dbTeam.length > 0
+  const team = (dbTeam && dbTeam.length > 0
     ? dbTeam.map(member => ({
         name: member.name,
         role: member.role,
         bio: member.bio || "",
-        img: member.image_url || fallbackTeam.find(t => t.name === member.name)?.img || ""
+        img: member.image_url || fallbackTeam.find(t => t.name === member.name || (member.name === "Harrison Kameka" && t.name === "Kameka Harrison"))?.img || ""
       }))
-    : fallbackTeam;
+    : fallbackTeam).filter(m => m.name !== "Myrtle Dixon");
 
   return (
     <SiteLayout>

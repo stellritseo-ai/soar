@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import { LogOut, Users, Calendar, Newspaper, Image as ImageIcon, Mail, Sparkles, Home, ChevronRight, BarChart3, Clock, MessageSquare } from "lucide-react";
+import { LogOut, Users, Calendar, Newspaper, Image as ImageIcon, Mail, Sparkles, Home, ChevronRight, BarChart3, Clock, MessageSquare, Megaphone } from "lucide-react";
 import { TeamManager } from "@/components/admin/TeamManager";
 import { EventsManager } from "@/components/admin/EventsManager";
 import { BlogManager } from "@/components/admin/BlogManager";
@@ -9,6 +9,7 @@ import { GalleryManager } from "@/components/admin/GalleryManager";
 import { HeroManager, ContactManager } from "@/components/admin/SettingsManagers";
 import { InboxManager } from "@/components/admin/InboxManager";
 import { LiveChatManager } from "@/components/admin/LiveChatManager";
+import { PopupManager } from "@/components/admin/PopupManager";
 import { useTeam, useEventsList, useAllPosts, useGallery, useInquiries, useChatConversations } from "@/lib/cms";
 import logoImg from "@/assets/logo.png";
 
@@ -26,7 +27,7 @@ function Dashboard() {
   const { user } = Route.useRouteContext();
   const navigate = useNavigate();
   const qc = useQueryClient();
-  const [tab, setTab] = useState<"team" | "events" | "blog" | "gallery" | "hero" | "contact" | "inbox" | "chat">("team");
+  const [tab, setTab] = useState<"team" | "events" | "blog" | "gallery" | "hero" | "contact" | "inbox" | "chat" | "popup">("team");
 
   // Fetching data for statistics counters in the sidebar/dashboard
   const { data: team } = useTeam();
@@ -55,6 +56,7 @@ function Dashboard() {
     { key: "chat", label: "Live Chat", icon: MessageSquare, count: activeChats?.length ?? 0, group: "Communications" },
     { key: "hero", label: "Hero Banner Copy", icon: Sparkles, group: "Customization" },
     { key: "contact", label: "Contact Information", icon: Mail, group: "Customization" },
+    { key: "popup", label: "Website Pop Up", icon: Megaphone, group: "Customization" },
   ] as const;
 
   const Active = {
@@ -66,6 +68,7 @@ function Dashboard() {
     chat: LiveChatManager,
     hero: HeroManager,
     contact: ContactManager,
+    popup: PopupManager,
   }[tab];
 
   const currentDateString = new Date().toLocaleDateString(undefined, {
@@ -162,7 +165,7 @@ function Dashboard() {
             </div>
             <div className="flex flex-col min-w-0 leading-none">
               <span className="text-xs font-bold text-white truncate">Administrator</span>
-              <span className="text-[9px] text-white/40 mt-1 truncate">{user?.email || "admin@soarglobal.org"}</span>
+              <span className="text-[9px] text-white/40 mt-1 truncate">{user?.email || "sistersoar14@gmail.com"}</span>
             </div>
           </div>
           <button

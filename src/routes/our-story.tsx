@@ -7,7 +7,7 @@ import story1 from "@/assets/story-1.jpg";
 import founderMyrtleImg from "@/assets/team/Myrtle Dixon (Founder).jpeg";
 import presTerryImg from "@/assets/team/Terry-Ann Taylor-Beckford (president).jpg";
 import vpBettyImg from "@/assets/team/Betty Arhelo (vice president ).jpg";
-import secretaryBettyImg from "@/assets/team/Harrison Kameka ( Secretary ).png";
+import secretaryBettyImg from "@/assets/team/Kameka Harrison ( Secretary ).jpg";
 import dirTamaraImg from "@/assets/team/Tamara Girly (director).JPG";
 import dirTamarImg from "@/assets/team/Tamar Raby (director).png";
 import { useTeam } from "@/lib/cms";
@@ -36,7 +36,7 @@ const fallbackTeam = [
   { name: "Myrtle Dixon", role: "Founder", bio: "A visionary leader championing women's empowerment for over 20 years, Myrtle provides strategic direction and ensures the Foundation remains steadfast in its mission.", img: founderMyrtleImg },
   { name: "Terry-Ann Taylor-Beckford", role: "President", bio: "The architect behind SOAR's mentorship and financial literacy curriculum, Terry-Ann designs programs that equip women with practical skills for lifelong success.", img: presTerryImg },
   { name: "Betty Arhelo", role: "Vice President", bio: "Cultivating community support, designing outreach initiatives, and managing program coordination.", img: vpBettyImg },
-  { name: "Harrison Kameka", role: "Secretary", bio: "The heart of our sisterhood, Betty maintains accurate records and cultivates community through events and volunteer care.", img: secretaryBettyImg },
+  { name: "Kameka Harrison", role: "Secretary", bio: "The heart of our sisterhood, Betty maintains accurate records and cultivates community through events and volunteer care.", img: secretaryBettyImg },
   { name: "Tamara Girly", role: "Director", bio: "Tamara builds bridges with sponsors and strategic partners, advancing our mission through meaningful collaborations.", img: dirTamaraImg },
   { name: "Tamar Raby", role: "Director", bio: "Tamar builds bridges with community partners and local sponsors.", img: dirTamarImg },
 ];
@@ -58,14 +58,14 @@ const testimonials = [
 
 function OurStory() {
   const { data: dbTeam } = useTeam();
-  const team = dbTeam && dbTeam.length > 0
+  const team = (dbTeam && dbTeam.length > 0
     ? dbTeam.map(member => ({
       name: member.name,
       role: member.role,
       bio: member.bio || "",
-      img: member.image_url || fallbackTeam.find(t => t.name === member.name)?.img || ""
+      img: member.image_url || fallbackTeam.find(t => t.name === member.name || (member.name === "Harrison Kameka" && t.name === "Kameka Harrison"))?.img || ""
     }))
-    : fallbackTeam;
+    : fallbackTeam).filter(m => m.name !== "Myrtle Dixon");
 
   return (
     <SiteLayout>

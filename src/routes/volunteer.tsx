@@ -4,6 +4,7 @@ import { PageHeader } from "@/components/site/PageHeader";
 import { Sparkles, Heart, Award, Users, BookOpen, Clock, CheckCircle2, ChevronDown, UserCheck, MessageSquare, ClipboardList, HelpingHand, MapPin, Mail, Phone, Calendar } from "lucide-react";
 import { useState } from "react";
 import programMentorImg from "@/assets/program-mentor.jpg";
+import { submitInquiryFn } from "@/lib/cms";
 
 export const Route = createFileRoute("/volunteer")({
   head: () => ({
@@ -182,6 +183,39 @@ const faqs = [
 
 function Volunteer() {
   const [activeFaq, setActiveFaq] = useState<number | null>(null);
+
+  const [formState, setFormState] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    role: "Mentor",
+    message: ""
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
+
+  const handleFormSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!formState.name || !formState.email || !formState.phone || !formState.message) return;
+    setIsSubmitting(true);
+    try {
+      await submitInquiryFn({
+        data: {
+          name: formState.name,
+          email: formState.email,
+          subject: `Volunteer Application - ${formState.role}`,
+          message: `Phone: ${formState.phone}\nRole Interested: ${formState.role}\n\nExperience/Reason:\n${formState.message}`
+        }
+      });
+      setIsSuccess(true);
+      setFormState({ name: "", email: "", phone: "", role: "Mentor", message: "" });
+      setTimeout(() => setIsSuccess(false), 5000);
+    } catch (err) {
+      console.error("Failed to submit volunteer application", err);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <SiteLayout>
@@ -422,10 +456,102 @@ function Volunteer() {
               ))}
             </div>
 
-            <div className="flex justify-center mt-6">
-              <Link to="/contact" className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-primary to-accent px-8 py-3.5 text-xs font-bold uppercase tracking-wider text-white hover:scale-[1.02] active:scale-[0.98] transition shadow-soft cursor-pointer">
-                Apply to Volunteer Now <HelpingHand className="size-4 shrink-0" />
-              </Link>
+            {/* Volunteer Application Form Card */}
+            <div className="glass rounded-[32px] p-6 md:p-10 border border-white/60 shadow-elegant max-w-2xl mx-auto relative overflow-hidden mt-8 text-left">
+              <div className="absolute top-0 right-0 w-24 h-24 bg-primary/5 rounded-full blur-2xl pointer-events-none" />
+              
+              <h4 className="text-xl font-extrabold text-foreground tracking-tight text-center">
+                Volunteer Application
+              </h4>
+              <p className="text-xs text-muted-foreground text-center mt-2 max-w-md mx-auto leading-relaxed">
+                Complete the form below to start your volunteering journey. Our coordinator will contact you shortly to schedule an orientation.
+              </p>
+
+              {isSuccess ? (
+                <div className="mt-8 rounded-2xl bg-green-500/10 border border-green-500/20 p-6 text-center text-green-700 animate-fadeIn space-y-3">
+                  <CheckCircle2 className="size-10 mx-auto text-green-600 animate-bounce" />
+                  <h5 className="font-extrabold text-sm">Application Submitted!</h5>
+                  <p className="text-xs leading-relaxed max-w-sm mx-auto">
+                    Thank you for applying to volunteer. A copy of your application has been sent to our community coordinators, and we will reach out to you within 2-3 business days.
+                  </p>
+                </div>
+              ) : (
+                <form onSubmit={handleFormSubmit} className="mt-8 space-y-5">
+                  <div className="grid gap-5 sm:grid-cols-2">
+                    <label className="block">
+                      <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-primary/80">Full Name</span>
+                      <input
+                        type="text"
+                        required
+                        value={formState.name}
+                        onChange={(e) => setFormState({ ...formState, name: e.target.value })}
+                        placeholder="Jane Doe"
+                        className="mt-2 w-full rounded-xl border border-border bg-white/50 px-4 py-3 text-xs text-foreground placeholder:text-muted-foreground/45 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/10 transition-all"
+                      />
+                    </label>
+                    <label className="block">
+                      <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-primary/80">Email Address</span>
+                      <input
+                        type="email"
+                        required
+                        value={formState.email}
+                        onChange={(e) => setFormState({ ...formState, email: e.target.value })}
+                        placeholder="jane@example.com"
+                        className="mt-2 w-full rounded-xl border border-border bg-white/50 px-4 py-3 text-xs text-foreground placeholder:text-muted-foreground/45 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/10 transition-all"
+                      />
+                    </label>
+                  </div>
+
+                  <div className="grid gap-5 sm:grid-cols-2">
+                    <label className="block">
+                      <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-primary/80">Phone Number</span>
+                      <input
+                        type="tel"
+                        required
+                        value={formState.phone}
+                        onChange={(e) => setFormState({ ...formState, phone: e.target.value })}
+                        placeholder="(321) 555-0199"
+                        className="mt-2 w-full rounded-xl border border-border bg-white/50 px-4 py-3 text-xs text-foreground placeholder:text-muted-foreground/45 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/10 transition-all"
+                      />
+                    </label>
+                    <label className="block">
+                      <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-primary/80">Area of Interest</span>
+                      <select
+                        value={formState.role}
+                        onChange={(e) => setFormState({ ...formState, role: e.target.value })}
+                        className="mt-2 w-full rounded-xl border border-border bg-white px-4 py-3 text-xs text-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/10 transition-all cursor-pointer"
+                      >
+                        <option value="Mentor">Mentor</option>
+                        <option value="Workshop Facilitator">Workshop Facilitator</option>
+                        <option value="Event Volunteer">Event Volunteer</option>
+                        <option value="Administrative Support">Administrative Support</option>
+                        <option value="Other">Other interest</option>
+                      </select>
+                    </label>
+                  </div>
+
+                  <label className="block">
+                    <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-primary/80">Experience & Message</span>
+                    <textarea
+                      rows={4}
+                      required
+                      value={formState.message}
+                      onChange={(e) => setFormState({ ...formState, message: e.target.value })}
+                      placeholder="Tell us a little bit about yourself and why you'd like to volunteer..."
+                      className="mt-2 w-full rounded-xl border border-border bg-white/50 px-4 py-3 text-xs text-foreground placeholder:text-muted-foreground/45 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/10 transition-all"
+                    />
+                  </label>
+
+                  <button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl bg-gradient-to-r from-primary to-accent text-white font-bold text-xs uppercase tracking-wider transition-all hover:scale-[1.01] active:scale-[0.99] disabled:opacity-50 cursor-pointer shadow-soft"
+                  >
+                    {isSubmitting ? "Submitting Application..." : "Submit Volunteer Application"}
+                    <HelpingHand className="size-4 shrink-0" />
+                  </button>
+                </form>
+              )}
             </div>
           </div>
 
@@ -491,7 +617,7 @@ function Volunteer() {
               <MapPin className="size-5 text-primary shrink-0" />
               <div className="text-xs">
                 <strong className="text-foreground block">Location</strong>
-                <span className="text-muted-foreground">3311 N Powers Dr, Orlando, FL 32818</span>
+                <span className="text-muted-foreground">Orlando, FL 32818</span>
               </div>
             </div>
             <div className="flex items-center gap-3">

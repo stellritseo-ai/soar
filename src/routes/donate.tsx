@@ -988,7 +988,6 @@ function DonatePage() {
                 </p>
                 <div className="bg-secondary/40 p-3.5 rounded-xl border border-border/40 text-xs">
                   <strong>Mailing Address:</strong><br />
-                  3311 N Powers Dr<br />
                   Orlando, FL 32818
                 </div>
                 <p className="text-[10px] text-muted-foreground">

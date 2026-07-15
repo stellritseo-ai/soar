@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import { Nav } from "./Nav";
 import { Footer } from "./Footer";
 import { ChatWidget } from "./ChatWidget";
+import { PromoPopup } from "./PromoPopup";
 
 export function SiteLayout({ children }: { children: ReactNode }) {
   return (
@@ -10,6 +11,7 @@ export function SiteLayout({ children }: { children: ReactNode }) {
       <main>{children}</main>
       <Footer />
       <ChatWidget />
+      <PromoPopup />
     </div>
   );
 }

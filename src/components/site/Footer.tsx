@@ -160,7 +160,7 @@ export function Footer() {
                   <MapPin className="size-4" />
                 </div>
                 <span className="text-white/70">
-                  3311 N Powers Dr, Orlando, FL 32818
+                  Orlando, FL 32818
                 </span>
               </li>
             </ul>

@@ -4,7 +4,7 @@ import { Loader2, Save } from "lucide-react";
 import { useSetting, saveSettingFn, type HeroSettings, type ContactSettings } from "@/lib/cms";
 import { Field } from "./TeamManager";
 
-function useSettingForm<T extends Record<string, unknown>>(key: string) {
+export function useSettingForm<T extends Record<string, unknown>>(key: string) {
   const { data, isLoading } = useSetting<T>(key);
   const qc = useQueryClient();
   const [form, setForm] = useState<T>({} as T);
