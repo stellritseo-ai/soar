@@ -51,10 +51,10 @@ export function PopupManager() {
   if (settingsLoading) return <p className="text-sm text-white/50">Loading settings panel…</p>;
 
   const imageSrc = form.imageUrl || defaultPopupImg;
-  const titleText = form.title || "HELP WOMEN SOAR";
-  const descText = form.description || "Subscribe now to receive updates on upcoming events, mentorship bootcamps, and inspiring stories of resilience.";
-  const buttonText = form.buttonText || "JOIN THE MISSION";
-  const linkUrl = form.linkUrl || "/events";
+  const titleText = form.title || "ANNUAL GALA INVITATION";
+  const descText = form.description || "Join us for the Purple Heart Annual Gala. Reserve your tickets today!";
+  const buttonText = form.buttonText || "Get Gala Tickets";
+  const linkUrl = form.linkUrl || "https://www.zeffy.com/en-US/ticketing/purple-heart-annual-gala";
 
   // Copy all emails list to clipboard helper
   function copyAllEmails() {

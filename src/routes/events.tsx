@@ -247,9 +247,14 @@ function EventsPage() {
                   </div>
                 </div>
                 
-                <Link to="/contact" className="inline-flex items-center justify-center gap-2 w-full rounded-full bg-gradient-to-r from-primary to-accent py-3 text-xs font-bold uppercase tracking-wider text-white hover:scale-[1.02] transition shadow-soft cursor-pointer">
-                  Get Tickets Now
-                </Link>
+                <a
+                  href="https://www.zeffy.com/en-US/ticketing/purple-heart-annual-gala"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center justify-center gap-2 w-full rounded-full bg-gradient-to-r from-primary to-accent py-3 text-xs font-bold uppercase tracking-wider text-white hover:scale-[1.02] transition shadow-soft cursor-pointer"
+                >
+                  Get Gala Tickets Now
+                </a>
               </div>
             </div>
           </div>
@@ -340,9 +345,14 @@ function EventsPage() {
                   </div>
 
                   <div className="pt-4 border-t border-border/40 mt-6 flex justify-between items-center text-xs">
-                    <Link to="/contact" className="font-bold text-primary hover:text-accent transition">
-                      {evt.btnText} →
-                    </Link>
+                    <a
+                      href="https://www.zeffy.com/en-US/ticketing/purple-heart-annual-gala"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="font-bold text-primary hover:text-accent transition flex items-center gap-1"
+                    >
+                      {evt.btnText === "Invitation Only" ? "Invitation Details" : "Book Ticket / Register →"}
+                    </a>
                   </div>
                 </div>
               ))}

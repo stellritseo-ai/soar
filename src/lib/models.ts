@@ -221,6 +221,18 @@ export async function seedDatabase() {
     }
   }
 
+  // Self-healing database update for popup Zeffy ticketing link
+  const popupSetting = await SiteSetting.findOne({ key: "popup" });
+  if (popupSetting && popupSetting.value) {
+    const zeffyLink = "https://www.zeffy.com/en-US/ticketing/purple-heart-annual-gala";
+    if (popupSetting.value.linkUrl !== zeffyLink) {
+      popupSetting.value.linkUrl = zeffyLink;
+      popupSetting.markModified("value");
+      await popupSetting.save();
+      console.log("Database popup settings linkUrl automatically updated to Zeffy ticketing link.");
+    }
+  }
+
   // Check if we have the old duplicate entries and clean them up to trigger a fresh aligned re-seed
   const hasDuplicates = await TeamMember.exists({ name: { $in: ["Dixon, Myrtle", "Arhelo Betty"] } });
   if (hasDuplicates) {

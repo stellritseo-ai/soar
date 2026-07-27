@@ -61,8 +61,8 @@ export function PromoPopup() {
   // Decide which image, link, and texts to show (defaults with fallbacks)
   const imageSrc = settings?.imageUrl || defaultPopupImg;
   const titleText = settings?.title || "ANNUAL GALA INVITATION";
-  const buttonText = settings?.buttonText || "Get Tickets Now";
-  const linkUrl = settings?.linkUrl || "/donate";
+  const buttonText = settings?.buttonText || "Get Gala Tickets";
+  const linkUrl = settings?.linkUrl || "https://www.zeffy.com/en-US/ticketing/purple-heart-annual-gala";
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>

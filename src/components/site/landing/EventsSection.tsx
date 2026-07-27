@@ -138,13 +138,15 @@ export function EventsSection() {
 
               {/* Action Button */}
               <div className="mt-10 pt-4 flex flex-wrap items-center gap-4">
-                <Link
-                  to="/events"
-                  className="inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-[#D4AF37] to-[#F2D27C] text-[#0C1220] font-bold px-8 py-3.5 text-sm shadow-elegant transition duration-200 hover:scale-[1.02] active:scale-[0.97]"
+                <a
+                  href="https://www.zeffy.com/en-US/ticketing/purple-heart-annual-gala"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-[#D4AF37] to-[#F2D27C] text-[#0C1220] font-bold px-8 py-3.5 text-sm shadow-elegant transition duration-200 hover:scale-[1.02] active:scale-[0.97] cursor-pointer"
                 >
                   <Ticket className="size-4 fill-current text-[#0C1220]/75" />
-                  Get Tickets
-                </Link>
+                  Get Gala Tickets
+                </a>
                 <div className="text-xs text-white/60 font-semibold uppercase tracking-wider">
                   Benefiting SOAR Pathways Program
                 </div>
