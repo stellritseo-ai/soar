@@ -1,7 +1,9 @@
 import { Link, useLocation } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Menu, X, ChevronDown } from "lucide-react";
+import { Menu, X, ChevronDown, ShoppingBag } from "lucide-react";
 import logoImg from "@/assets/logo.png";
+import { useCart } from "@/lib/cart";
+import { CartDrawer } from "./CartDrawer";
 
 type SubMenuItem = {
   to: string;
@@ -26,7 +28,6 @@ const menuItems: MenuItem[] = [
     label: "What We Do",
     children: [
       { to: "/how-we-work", label: "How We Work" },
-      // { to: "#", label: "Our Partners" },
     ],
   },
   {
@@ -46,9 +47,12 @@ const menuItems: MenuItem[] = [
     label: "News & Events",
     children: [
       { to: "/news-and-events", label: "News & Events" },
-      // { to: "/blog", label: "Blog" },
       { to: "/events", label: "Events" },
     ],
+  },
+  {
+    to: "/shop",
+    label: "Shop",
   },
   {
     to: "/contact",
@@ -61,6 +65,7 @@ export function Nav() {
   const [open, setOpen] = useState(false);
   const [mobileExpanded, setMobileExpanded] = useState<number | null>(null);
   const location = useLocation();
+  const { cartCount, setIsCartOpen } = useCart();
 
   useEffect(() => {
     const on = () => setScrolled(window.scrollY > 20);
@@ -144,7 +149,21 @@ export function Nav() {
         </div>
 
         {/* RIGHT SIDE BUTTONS */}
-        <div className="hidden items-center gap-6 lg:flex">
+        <div className="hidden items-center gap-4 lg:flex">
+          {/* Shopping Cart Button */}
+          <button
+            onClick={() => setIsCartOpen(true)}
+            className="relative grid size-10 place-items-center rounded-full border border-border bg-background/60 hover:bg-secondary hover:border-primary/40 text-foreground transition cursor-pointer group"
+            title="View Shopping Cart"
+          >
+            <ShoppingBag className="size-5 transition-transform group-hover:scale-110" />
+            {cartCount > 0 && (
+              <span className="absolute -top-1 -right-1 size-5 rounded-full bg-gradient-to-tr from-[#5E2B97] to-[#D4AF37] text-white font-extrabold text-[10px] grid place-items-center shadow-md animate-scaleUp">
+                {cartCount}
+              </span>
+            )}
+          </button>
+
           <Link
             to="/donate"
             className="inline-flex items-center justify-center rounded-full gradient-brand px-6 py-2.5 text-sm font-semibold text-primary-foreground shadow-elegant hover:scale-[1.02] active:scale-[0.98] transition-all duration-200"
@@ -153,16 +172,30 @@ export function Nav() {
           </Link>
         </div>
 
-        {/* MOBILE MENU TOGGLE WITH DONATE BUTTON */}
-        <div className="flex items-center gap-3 lg:hidden">
+        {/* MOBILE MENU TOGGLE WITH DONATE & CART BUTTON */}
+        <div className="flex items-center gap-2.5 lg:hidden">
+          <button
+            onClick={() => setIsCartOpen(true)}
+            className="relative grid size-10 place-items-center rounded-full border border-input bg-background/50 hover:bg-secondary text-foreground transition cursor-pointer"
+            title="View Cart"
+          >
+            <ShoppingBag className="size-4" />
+            {cartCount > 0 && (
+              <span className="absolute -top-1 -right-1 size-4.5 rounded-full bg-gradient-to-tr from-[#5E2B97] to-[#D4AF37] text-white font-extrabold text-[9px] grid place-items-center shadow-md">
+                {cartCount}
+              </span>
+            )}
+          </button>
+
           <Link
             to="/donate"
-            className="inline-flex items-center justify-center rounded-full bg-gradient-to-r from-[#D4AF37] to-[#F2D27C] text-[#0C1220] font-bold h-10 px-5 text-xs shadow-soft transition-all duration-200 hover:scale-[1.02] active:scale-[0.97]"
+            className="inline-flex items-center justify-center rounded-full bg-gradient-to-r from-[#D4AF37] to-[#F2D27C] text-[#0C1220] font-bold h-10 px-4 text-xs shadow-soft transition-all duration-200 hover:scale-[1.02] active:scale-[0.97]"
           >
             Donate
           </Link>
+
           <button
-            className="grid size-10 place-items-center rounded-full border border-input bg-background/50 hover:bg-secondary transition"
+            className="grid size-10 place-items-center rounded-full border border-input bg-background/50 hover:bg-secondary transition cursor-pointer"
             onClick={() => setOpen((v) => !v)}
             aria-label="Toggle menu"
           >

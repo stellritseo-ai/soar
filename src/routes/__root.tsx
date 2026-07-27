@@ -112,7 +112,7 @@ function RootShell({ children }: { children: ReactNode }) {
       <head>
         <HeadContent />
       </head>
-      <body>
+      <body suppressHydrationWarning>
         {children}
         <Scripts />
       </body>
@@ -120,15 +120,21 @@ function RootShell({ children }: { children: ReactNode }) {
   );
 }
 
+import { CartProvider } from "@/lib/cart";
+import { CartDrawer } from "@/components/site/CartDrawer";
+
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   const location = useLocation();
-  const isDashboard = location.pathname.startsWith("/dashboard");
+  const isDashboard = location.pathname.includes("dashboard");
 
   return (
     <QueryClientProvider client={queryClient}>
-      <Outlet />
-      {!isDashboard && <ChatWidget />}
+      <CartProvider>
+        <Outlet />
+        {!isDashboard && <CartDrawer />}
+        {!isDashboard && <ChatWidget />}
+      </CartProvider>
     </QueryClientProvider>
   );
 }

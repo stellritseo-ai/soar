@@ -3,11 +3,18 @@ import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
 export const Route = createFileRoute("/_authenticated")({
   ssr: false,
   beforeLoad: async ({ location }) => {
-    const isAuthenticated = typeof window !== "undefined" && localStorage.getItem("admin_auth") === "true";
-    if (!isAuthenticated) {
-      throw redirect({ to: "/auth", search: { redirect: location.href } });
+    if (typeof window !== "undefined") {
+      const isAuthLocal = localStorage.getItem("admin_auth") === "true";
+      const isAuthCookie = document.cookie.includes("admin_auth=true");
+      if (!isAuthLocal && !isAuthCookie) {
+        throw redirect({ to: "/auth", search: { redirect: location.href } });
+      }
     }
     return { user: { email: "sistersoar14@gmail.com" } };
   },
-  component: () => <Outlet />,
+  component: AuthenticatedLayout,
 });
+
+function AuthenticatedLayout() {
+  return <Outlet />;
+}

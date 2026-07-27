@@ -1,7 +1,8 @@
+import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { createServerFn } from "@tanstack/react-start";
 import { connectToDatabase } from "./mongodb";
-import { SiteSetting, TeamMember, EventModel, BlogPost, GalleryImage, ContactInquiry, ChatMessage, NewsletterSubscriber, seedDatabase } from "./models";
+import { SiteSetting, TeamMember, EventModel, BlogPost, GalleryImage, ContactInquiry, ChatMessage, NewsletterSubscriber, Product, Order, CustomerProfile, seedDatabase } from "./models";
 
 export type TeamMemberType = {
   id: string;
@@ -539,6 +540,537 @@ export function useNewsletterSubscribers() {
   });
 }
 
+// ==========================================
+// E-COMMERCE CMS TYPES & SERVER FUNCTIONS
+// ==========================================
+
+export type ProductReviewType = {
+  id: string;
+  user: string;
+  avatar?: string;
+  rating: number;
+  comment: string;
+  date: string;
+};
+
+export type ProductVariantType = {
+  name: string;
+  options: string[];
+};
+
+export type ProductType = {
+  id: string;
+  name: string;
+  slug: string;
+  price: number;
+  salePrice?: number | null;
+  category: string;
+  shortDescription?: string | null;
+  description?: string | null;
+  images: string[];
+  variants: ProductVariantType[];
+  sku?: string | null;
+  stock: number;
+  status: "Published" | "Draft";
+  isFeatured: boolean;
+  rating: number;
+  numReviews: number;
+  reviews: ProductReviewType[];
+  created_at: string;
+  updated_at: string;
+};
+
+export type OrderItemType = {
+  productId: string;
+  name: string;
+  price: number;
+  quantity: number;
+  image?: string;
+  variant?: string;
+};
+
+export type OrderType = {
+  id: string;
+  orderNumber: string;
+  customer: {
+    name: string;
+    email: string;
+    phone?: string;
+    address: {
+      street: string;
+      city: string;
+      state: string;
+      zip: string;
+      country: string;
+    };
+  };
+  items: OrderItemType[];
+  subtotal: number;
+  tax: number;
+  shipping: number;
+  total: number;
+  paymentStatus: "Paid" | "Pending" | "Refunded";
+  paymentMethod: string;
+  orderStatus: "Pending" | "Processing" | "Shipped" | "Delivered" | "Cancelled";
+  created_at: string;
+  updated_at: string;
+};
+
+export type CustomerProfileType = {
+  id: string;
+  name: string;
+  email: string;
+  phone?: string;
+  totalOrders: number;
+  totalSpent: number;
+  lastOrderDate: string;
+};
+
+export type ShopAnalyticsType = {
+  totalSales: number;
+  totalOrders: number;
+  averageOrderValue: number;
+  lowStockCount: number;
+  bestSellers: Array<{ name: string; category: string; sold: number; revenue: number; image?: string }>;
+  recentOrders: OrderType[];
+};
+
+// 1. PRODUCTS SERVER FUNCTIONS
+export const getProductsFn = createServerFn({ method: "GET" })
+  .handler(async () => {
+    await connectToDatabase();
+    await seedDatabase();
+    const docs = await Product.find({}).sort({ created_at: -1 }).lean();
+    return docs.map((doc: any) => ({
+      id: doc._id ? doc._id.toString() : `prod-${Math.random()}`,
+      name: doc.name,
+      slug: doc.slug,
+      price: doc.price,
+      salePrice: doc.salePrice || null,
+      category: doc.category || "Apparel",
+      shortDescription: doc.shortDescription || "",
+      description: doc.description || "",
+      images: (doc.images || []).map((img: string) => img.replace("/src/assets/products/", "/products/")),
+      variants: (doc.variants || []).map((v: any) => ({
+        name: v.name,
+        options: v.options || []
+      })),
+      sku: doc.sku || "",
+      stock: doc.stock ?? 0,
+      status: doc.status || "Published",
+      isFeatured: !!doc.isFeatured,
+      rating: doc.rating || 5.0,
+      numReviews: doc.numReviews || 0,
+      reviews: (doc.reviews || []).map((r: any) => ({
+        id: r.id || (r._id ? r._id.toString() : `rev-${Math.random()}`),
+        user: r.user || "Verified Buyer",
+        avatar: r.avatar || "",
+        rating: r.rating || 5,
+        comment: r.comment || "",
+        date: r.date || ""
+      })),
+      created_at: safeIsoDate(doc.created_at),
+      updated_at: safeIsoDate(doc.updated_at),
+    })) as ProductType[];
+  });
+
+export const getProductBySlugFn = createServerFn({ method: "POST" })
+  .validator((slug: string) => slug)
+  .handler(async ({ data: slug }) => {
+    await connectToDatabase();
+    await seedDatabase();
+    const doc = (await Product.findOne({ slug }).lean()) as any;
+    if (!doc) return null;
+    return {
+      id: doc._id ? doc._id.toString() : `prod-${Math.random()}`,
+      name: doc.name,
+      slug: doc.slug,
+      price: doc.price,
+      salePrice: doc.salePrice || null,
+      category: doc.category || "Apparel",
+      shortDescription: doc.shortDescription || "",
+      description: doc.description || "",
+      images: (doc.images || []).map((img: string) => img.replace("/src/assets/products/", "/products/")),
+      variants: (doc.variants || []).map((v: any) => ({
+        name: v.name,
+        options: v.options || []
+      })),
+      sku: doc.sku || "",
+      stock: doc.stock ?? 0,
+      status: doc.status || "Published",
+      isFeatured: !!doc.isFeatured,
+      rating: doc.rating || 5.0,
+      numReviews: doc.numReviews || 0,
+      reviews: (doc.reviews || []).map((r: any) => ({
+        id: r.id || (r._id ? r._id.toString() : `rev-${Math.random()}`),
+        user: r.user || "Verified Buyer",
+        avatar: r.avatar || "",
+        rating: r.rating || 5,
+        comment: r.comment || "",
+        date: r.date || ""
+      })),
+      created_at: safeIsoDate(doc.created_at),
+      updated_at: safeIsoDate(doc.updated_at),
+    } as ProductType;
+  });
+
+export const upsertProductFn = createServerFn({ method: "POST" })
+  .validator((data: Partial<ProductType>) => data)
+  .handler(async ({ data }) => {
+    const { checkAdminAuth } = await import("./auth.server");
+    checkAdminAuth();
+    await connectToDatabase();
+
+    const slug = data.slug || data.name?.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+
+    const payload = {
+      name: data.name,
+      slug,
+      price: Number(data.price),
+      salePrice: data.salePrice ? Number(data.salePrice) : null,
+      category: data.category || "Apparel",
+      shortDescription: data.shortDescription,
+      description: data.description,
+      images: data.images && data.images.length > 0 ? data.images : ["/products/hoodie.png"],
+      variants: data.variants || [],
+      sku: data.sku || `SOAR-SKU-${Math.floor(1000 + Math.random() * 9000)}`,
+      stock: Number(data.stock ?? 0),
+      status: data.status || "Published",
+      isFeatured: !!data.isFeatured,
+      updated_at: new Date()
+    };
+
+    if (data.id) {
+      await Product.findByIdAndUpdate(data.id, payload);
+    } else {
+      await Product.create(payload);
+    }
+    return { success: true };
+  });
+
+export const deleteProductFn = createServerFn({ method: "POST" })
+  .validator((id: string) => id)
+  .handler(async ({ data: id }) => {
+    const { checkAdminAuth } = await import("./auth.server");
+    checkAdminAuth();
+    await connectToDatabase();
+    await Product.findByIdAndDelete(id);
+    return { success: true };
+  });
+
+export const addProductReviewFn = createServerFn({ method: "POST" })
+  .validator((data: { slug: string; user: string; rating: number; comment: string }) => data)
+  .handler(async ({ data }) => {
+    await connectToDatabase();
+    const product = await Product.findOne({ slug: data.slug });
+    if (!product) throw new Error("Product not found");
+
+    const newReview = {
+      id: `rev-${Date.now()}`,
+      user: data.user || "Verified Buyer",
+      rating: Number(data.rating),
+      comment: data.comment,
+      date: new Date().toISOString().split("T")[0]
+    };
+
+    const reviews = [newReview, ...(product.reviews || [])];
+    const avgRating = Number((reviews.reduce((acc, r) => acc + r.rating, 0) / reviews.length).toFixed(1));
+
+    product.reviews = reviews;
+    product.numReviews = reviews.length;
+    product.rating = avgRating;
+    await product.save();
+
+    return { success: true };
+  });
+
+function safeIsoDate(val: any): string {
+  if (!val) return new Date().toISOString();
+  try {
+    const d = new Date(val);
+    if (isNaN(d.getTime())) return new Date().toISOString();
+    return d.toISOString();
+  } catch {
+    return new Date().toISOString();
+  }
+}
+
+// 2. ORDERS SERVER FUNCTIONS
+export const getOrdersFn = createServerFn({ method: "GET" })
+  .handler(async () => {
+    await connectToDatabase();
+    await seedDatabase();
+    const docs = await Order.find({}).sort({ created_at: -1 }).lean();
+    return docs.map((doc: any) => ({
+      id: doc._id ? doc._id.toString() : `ord-${Math.random()}`,
+      orderNumber: doc.orderNumber || `SOAR-${Math.floor(1000 + Math.random() * 9000)}`,
+      customer: doc.customer || { name: "Customer", email: "customer@example.com", address: { street: "", city: "", state: "", zip: "", country: "" } },
+      items: (doc.items || []).map((i: any) => ({
+        productId: i.productId || "",
+        name: i.name || "Merchandise Item",
+        price: Number(i.price || 0),
+        quantity: Number(i.quantity || 1),
+        image: i.image || "/products/hoodie.png",
+        variant: i.variant || ""
+      })),
+      subtotal: Number(doc.subtotal || 0),
+      tax: Number(doc.tax || 0),
+      shipping: Number(doc.shipping || 0),
+      total: Number(doc.total || 0),
+      paymentStatus: doc.paymentStatus || "Paid",
+      paymentMethod: doc.paymentMethod || "Credit Card",
+      orderStatus: doc.orderStatus || "Processing",
+      created_at: safeIsoDate(doc.created_at),
+      updated_at: safeIsoDate(doc.updated_at),
+    })) as OrderType[];
+  });
+
+export const createOrderFn = createServerFn({ method: "POST" })
+  .validator((data: any) => data)
+  .handler(async ({ data }) => {
+    await connectToDatabase();
+    const count = await Order.countDocuments();
+    const orderNumber = `SOAR-${1000 + count + 1}`;
+
+    // Create Order in MongoDB
+    const newOrder = await Order.create({
+      customer: data.customer,
+      items: data.items,
+      subtotal: Number(data.subtotal),
+      tax: Number(data.tax),
+      shipping: Number(data.shipping),
+      total: Number(data.total),
+      paymentStatus: data.paymentStatus || "Paid",
+      paymentMethod: data.paymentMethod || "Credit Card",
+      orderStatus: data.orderStatus || "Processing",
+      created_at: new Date(),
+      updated_at: new Date()
+    });
+
+    // Deduct stock for each product ordered
+    if (data.items && Array.isArray(data.items)) {
+      for (const item of data.items) {
+        if (item.productId && !item.productId.startsWith("seed-")) {
+          await Product.findByIdAndUpdate(item.productId, {
+            $inc: { stock: -Number(item.quantity || 1) }
+          });
+        }
+      }
+    }
+
+    // Upsert Customer Profile
+    if (data.customer && data.customer.email) {
+      const email = data.customer.email.toLowerCase().trim();
+      const existingCustomer = await CustomerProfile.findOne({ email });
+      if (existingCustomer) {
+        existingCustomer.totalOrders += 1;
+        existingCustomer.totalSpent += Number(data.total || 0);
+        existingCustomer.lastOrderDate = new Date();
+        if (data.customer.phone) existingCustomer.phone = data.customer.phone;
+        await existingCustomer.save();
+      } else {
+        await CustomerProfile.create({
+          name: data.customer.name,
+          email,
+          phone: data.customer.phone || "",
+          totalOrders: 1,
+          totalSpent: Number(data.total || 0),
+          lastOrderDate: new Date()
+        });
+      }
+    }
+
+    return {
+      success: true,
+      orderNumber,
+      orderId: newOrder._id.toString()
+    };
+  });
+
+export const updateOrderStatusFn = createServerFn({ method: "POST" })
+  .validator((data: { id: string; orderStatus?: OrderType["orderStatus"]; paymentStatus?: OrderType["paymentStatus"] }) => data)
+  .handler(async ({ data }) => {
+    const { checkAdminAuth } = await import("./auth.server");
+    checkAdminAuth();
+    await connectToDatabase();
+
+    const update: Record<string, unknown> = { updated_at: new Date() };
+    if (data.orderStatus) update.orderStatus = data.orderStatus;
+    if (data.paymentStatus) update.paymentStatus = data.paymentStatus;
+
+    await Order.findByIdAndUpdate(data.id, update);
+    return { success: true };
+  });
+
+// 3. CUSTOMERS SERVER FUNCTIONS
+export const getCustomersFn = createServerFn({ method: "GET" })
+  .handler(async () => {
+    await connectToDatabase();
+    await seedDatabase();
+    const docs = await CustomerProfile.find({}).sort({ totalSpent: -1 }).lean();
+    return docs.map((doc: any) => ({
+      id: doc._id ? doc._id.toString() : `cust-${Math.random()}`,
+      name: doc.name || "Customer",
+      email: doc.email || "customer@example.com",
+      phone: doc.phone || "",
+      totalOrders: Number(doc.totalOrders || 0),
+      totalSpent: Number(doc.totalSpent || 0),
+      lastOrderDate: safeIsoDate(doc.lastOrderDate)
+    })) as CustomerProfileType[];
+  });
+
+// 4. SHOP ANALYTICS SERVER FUNCTION
+export const getShopAnalyticsFn = createServerFn({ method: "GET" })
+  .handler(async () => {
+    await connectToDatabase();
+    await seedDatabase();
+
+    const orders = await Order.find({}).sort({ created_at: -1 }).lean();
+    const products = await Product.find({}).lean();
+
+    const totalSales = orders.reduce((acc: number, o: any) => acc + (o.paymentStatus === "Paid" ? Number(o.total || 0) : 0), 0);
+    const totalOrders = orders.length;
+    const averageOrderValue = totalOrders > 0 ? totalSales / totalOrders : 0;
+    const lowStockCount = products.filter((p: any) => Number(p.stock ?? 0) <= 10).length;
+
+    // Best sellers aggregate
+    const productSalesMap: Record<string, { name: string; category: string; sold: number; revenue: number; image?: string }> = {};
+    orders.forEach((ord: any) => {
+      if (ord.items && Array.isArray(ord.items)) {
+        ord.items.forEach((item: any) => {
+          const itemName = item.name || "Merchandise Item";
+          if (!productSalesMap[itemName]) {
+            productSalesMap[itemName] = {
+              name: itemName,
+              category: "Merchandise",
+              sold: 0,
+              revenue: 0,
+              image: item.image || "/products/hoodie.png"
+            };
+          }
+          productSalesMap[itemName].sold += Number(item.quantity || 1);
+          productSalesMap[itemName].revenue += Number(item.price || 0) * Number(item.quantity || 1);
+        });
+      }
+    });
+
+    const bestSellers = Object.values(productSalesMap).sort((a, b) => b.revenue - a.revenue).slice(0, 5);
+
+    const recentOrders = orders.slice(0, 5).map((doc: any) => ({
+      id: doc._id ? doc._id.toString() : `ord-${Math.random()}`,
+      orderNumber: doc.orderNumber || `SOAR-${Math.floor(1000 + Math.random() * 9000)}`,
+      customer: doc.customer || { name: "Customer", email: "customer@example.com", address: { street: "", city: "", state: "", zip: "", country: "" } },
+      items: doc.items || [],
+      subtotal: Number(doc.subtotal || 0),
+      tax: Number(doc.tax || 0),
+      shipping: Number(doc.shipping || 0),
+      total: Number(doc.total || 0),
+      paymentStatus: doc.paymentStatus || "Paid",
+      paymentMethod: doc.paymentMethod || "Credit Card",
+      orderStatus: doc.orderStatus || "Processing",
+      created_at: safeIsoDate(doc.created_at),
+      updated_at: safeIsoDate(doc.updated_at),
+    })) as OrderType[];
+
+    return {
+      totalSales,
+      totalOrders,
+      averageOrderValue,
+      lowStockCount,
+      bestSellers,
+      recentOrders
+    } as ShopAnalyticsType;
+  });
+
+// REACT QUERY HOOKS FOR SHOP
+export function useProducts() {
+  return useQuery({
+    queryKey: ["cms", "products"],
+    queryFn: () => getProductsFn(),
+  });
+}
+
+export function useProductBySlug(slug: string) {
+  return useQuery({
+    queryKey: ["cms", "product", slug],
+    queryFn: () => getProductBySlugFn({ data: slug }),
+    enabled: !!slug,
+  });
+}
+
+export function useOrders() {
+  return useQuery({
+    queryKey: ["cms", "orders"],
+    queryFn: () => getOrdersFn(),
+  });
+}
+
+export function useCustomers() {
+  return useQuery({
+    queryKey: ["cms", "customers"],
+    queryFn: () => getCustomersFn(),
+  });
+}
+
+export function useShopAnalytics() {
+  const { data: serverAnalytics, isLoading: isServerLoading, error: serverError, refetch } = useQuery({
+    queryKey: ["cms", "shop-analytics"],
+    queryFn: () => getShopAnalyticsFn(),
+    staleTime: 2000,
+  });
+
+  const { data: orders = [] } = useOrders();
+  const { data: products = [] } = useProducts();
+
+  const data: ShopAnalyticsType = useMemo(() => {
+    if (serverAnalytics) return serverAnalytics;
+
+    const totalSales = orders.reduce((acc, o) => acc + (o.paymentStatus === "Paid" ? Number(o.total || 0) : 0), 0);
+    const totalOrders = orders.length;
+    const averageOrderValue = totalOrders > 0 ? totalSales / totalOrders : 0;
+    const lowStockCount = products.filter(p => Number(p.stock ?? 0) <= 10).length;
+
+    const productSalesMap: Record<string, { name: string; category: string; sold: number; revenue: number; image?: string }> = {};
+    orders.forEach(ord => {
+      (ord.items || []).forEach(item => {
+        const itemName = item.name || "Merchandise Item";
+        if (!productSalesMap[itemName]) {
+          productSalesMap[itemName] = {
+            name: itemName,
+            category: "Merchandise",
+            sold: 0,
+            revenue: 0,
+            image: item.image || "/products/hoodie.png"
+          };
+        }
+        productSalesMap[itemName].sold += Number(item.quantity || 1);
+        productSalesMap[itemName].revenue += Number(item.price || 0) * Number(item.quantity || 1);
+      });
+    });
+
+    const bestSellers = Object.values(productSalesMap).sort((a, b) => b.revenue - a.revenue).slice(0, 5);
+    const recentOrders = orders.slice(0, 5);
+
+    return {
+      totalSales,
+      totalOrders,
+      averageOrderValue,
+      lowStockCount,
+      bestSellers,
+      recentOrders
+    };
+  }, [serverAnalytics, orders, products]);
+
+  const isLoading = isServerLoading && orders.length === 0 && products.length === 0;
+
+  return {
+    data,
+    isLoading,
+    isError: !!serverError && !data,
+    refetch
+  };
+}
+
 // Preserve original exports mapping for backward compatibility
 export type TeamMember = TeamMemberType;
 export type BlogPost = BlogPostType;
@@ -546,3 +1078,28 @@ export type GalleryImage = GalleryImageType;
 export type ContactInquiry = ContactInquiryType;
 export type ChatMessage = ChatMessageType;
 export type NewsletterSubscriber = NewsletterSubscriberType;
+
+// Stripe Server Function for Live Payment Intents
+export const createStripePaymentIntentFn = createServerFn({ method: "POST" })
+  .validator((amount: number) => amount)
+  .handler(async ({ data: amount }) => {
+    try {
+      const Stripe = (await import("stripe")).default;
+      const stripeSecret = process.env.STRIPE_SECRET_KEY || "";
+      const stripe = new Stripe(stripeSecret, {
+        apiVersion: "2023-10-16" as any,
+      });
+
+      const amountInCents = Math.max(50, Math.round(amount * 100));
+      const paymentIntent = await stripe.paymentIntents.create({
+        amount: amountInCents,
+        currency: "usd",
+        automatic_payment_methods: { enabled: true },
+      });
+
+      return { clientSecret: paymentIntent.client_secret, id: paymentIntent.id };
+    } catch (err: any) {
+      console.error("Stripe PaymentIntent Error:", err);
+      return { clientSecret: null, error: err?.message || "Failed to create Stripe PaymentIntent" };
+    }
+  });

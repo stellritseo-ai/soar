@@ -54,6 +54,7 @@ export function PopupManager() {
   const titleText = form.title || "HELP WOMEN SOAR";
   const descText = form.description || "Subscribe now to receive updates on upcoming events, mentorship bootcamps, and inspiring stories of resilience.";
   const buttonText = form.buttonText || "JOIN THE MISSION";
+  const linkUrl = form.linkUrl || "/events";
 
   // Copy all emails list to clipboard helper
   function copyAllEmails() {

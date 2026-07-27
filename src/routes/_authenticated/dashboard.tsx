@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import { LogOut, Users, Calendar, Newspaper, Image as ImageIcon, Mail, Sparkles, Home, ChevronRight, BarChart3, Clock, MessageSquare, Megaphone } from "lucide-react";
+import { LogOut, Users, Calendar, Newspaper, Image as ImageIcon, Mail, Sparkles, Home, ChevronRight, BarChart3, Clock, MessageSquare, Megaphone, ShoppingBag, Package, TrendingUp, DollarSign, Sun, Moon } from "lucide-react";
 import { TeamManager } from "@/components/admin/TeamManager";
 import { EventsManager } from "@/components/admin/EventsManager";
 import { BlogManager } from "@/components/admin/BlogManager";
@@ -10,7 +10,11 @@ import { HeroManager, ContactManager } from "@/components/admin/SettingsManagers
 import { InboxManager } from "@/components/admin/InboxManager";
 import { LiveChatManager } from "@/components/admin/LiveChatManager";
 import { PopupManager } from "@/components/admin/PopupManager";
-import { useTeam, useEventsList, useAllPosts, useGallery, useInquiries, useChatConversations } from "@/lib/cms";
+import { ShopProductsManager } from "@/components/admin/ShopProductsManager";
+import { ShopOrdersManager } from "@/components/admin/ShopOrdersManager";
+import { ShopCustomersManager } from "@/components/admin/ShopCustomersManager";
+import { ShopAnalyticsManager } from "@/components/admin/ShopAnalyticsManager";
+import { useTeam, useEventsList, useAllPosts, useGallery, useInquiries, useChatConversations, useProducts, useOrders, useCustomers } from "@/lib/cms";
 import logoImg from "@/assets/logo.png";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
@@ -24,10 +28,32 @@ export const Route = createFileRoute("/_authenticated/dashboard")({
 });
 
 function Dashboard() {
-  const { user } = Route.useRouteContext();
+  const context = Route.useRouteContext();
+  const user = context?.user || { email: "sistersoar14@gmail.com" };
   const navigate = useNavigate();
   const qc = useQueryClient();
-  const [tab, setTab] = useState<"team" | "events" | "blog" | "gallery" | "hero" | "contact" | "inbox" | "chat" | "popup">("team");
+  const [tab, setTab] = useState<
+    "team" | "events" | "blog" | "gallery" | "inbox" | "chat" | "hero" | "contact" | "popup" | "products" | "orders" | "customers" | "analytics"
+  >("analytics");
+
+  const [themeMode, setThemeMode] = useState<"dark" | "light">("dark");
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+    const saved = localStorage.getItem("admin_theme_mode") as "dark" | "light";
+    if (saved === "light" || saved === "dark") {
+      setThemeMode(saved);
+    }
+  }, []);
+
+  const toggleTheme = () => {
+    const next = themeMode === "dark" ? "light" : "dark";
+    setThemeMode(next);
+    if (typeof window !== "undefined") {
+      localStorage.setItem("admin_theme_mode", next);
+    }
+  };
 
   // Fetching data for statistics counters in the sidebar/dashboard
   const { data: team } = useTeam();
@@ -36,6 +62,9 @@ function Dashboard() {
   const { data: gallery } = useGallery();
   const { data: inquiries } = useInquiries();
   const { data: activeChats } = useChatConversations();
+  const { data: products } = useProducts();
+  const { data: orders } = useOrders();
+  const { data: customers } = useCustomers();
 
   async function signOut() {
     await qc.cancelQueries();
@@ -48,6 +77,10 @@ function Dashboard() {
   }
 
   const TABS = [
+    { key: "analytics", label: "Shop Analytics", icon: TrendingUp, group: "E-Commerce Store" },
+    { key: "products", label: "Shop Products", icon: Package, count: products?.length ?? 0, group: "E-Commerce Store" },
+    { key: "orders", label: "Customer Orders", icon: ShoppingBag, count: orders?.length ?? 0, group: "E-Commerce Store" },
+    { key: "customers", label: "Shop Customers", icon: Users, count: customers?.length ?? 0, group: "E-Commerce Store" },
     { key: "team", label: "Team Directory", icon: Users, count: team?.length ?? 0, group: "Collections" },
     { key: "events", label: "Upcoming Events", icon: Calendar, count: events?.length ?? 0, group: "Collections" },
     { key: "blog", label: "Blog Editorial", icon: Newspaper, count: posts?.length ?? 0, group: "Collections" },
@@ -60,6 +93,10 @@ function Dashboard() {
   ] as const;
 
   const Active = {
+    analytics: ShopAnalyticsManager,
+    products: ShopProductsManager,
+    orders: ShopOrdersManager,
+    customers: ShopCustomersManager,
     team: TeamManager,
     events: EventsManager,
     blog: BlogManager,
@@ -71,15 +108,19 @@ function Dashboard() {
     popup: PopupManager,
   }[tab];
 
-  const currentDateString = new Date().toLocaleDateString(undefined, {
-    weekday: 'long',
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric'
-  });
+  const currentDateString = mounted
+    ? new Date().toLocaleDateString('en-US', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      })
+    : '';
 
   return (
-    <div className="min-h-dvh bg-[#07000F] text-white flex flex-col lg:flex-row relative overflow-hidden">
+    <div className={`min-h-dvh flex flex-col lg:flex-row relative overflow-hidden transition-colors duration-300 ${
+      themeMode === "light" ? "dashboard-light bg-[#F3F4F8] text-slate-900" : "dashboard-dark bg-[#07000F] text-white"
+    }`}>
       {/* Decorative ambient gradient glows */}
       <div className="absolute top-[-20%] left-[-10%] w-[500px] h-[500px] rounded-full bg-[#5E2B97]/15 blur-[120px] pointer-events-none" />
       <div className="absolute bottom-[-10%] right-[-10%] w-[600px] h-[600px] rounded-full bg-[#D4AF37]/5 blur-[140px] pointer-events-none" />
@@ -94,7 +135,7 @@ function Dashboard() {
               <img src={logoImg} alt="SOAR Logo" className="relative h-10 w-auto object-contain rounded-lg" />
             </div>
             <div className="flex flex-col leading-none">
-              <span className="font-display text-base font-extrabold tracking-tight text-white">SOAR Global</span>
+              <span className="font-display text-base font-extrabold tracking-tight">SOAR Global</span>
               <span className="text-[10px] uppercase tracking-[0.25em] text-[#D4AF37] font-bold mt-1">Admin Suite</span>
             </div>
           </div>
@@ -104,14 +145,14 @@ function Dashboard() {
             <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#D4AF37] mb-2.5">
               <BarChart3 className="size-3.5" /> Database Metrics
             </div>
-            <div className="grid grid-cols-2 gap-2 text-xs text-white/60">
+            <div className="grid grid-cols-2 gap-2 text-xs opacity-70">
               <div className="bg-white/5 border border-white/5 rounded-lg p-2">
                 <div>Team</div>
-                <div className="font-display text-base font-extrabold text-white mt-1">{team?.length ?? 0}</div>
+                <div className="font-display text-base font-extrabold mt-1">{team?.length ?? 0}</div>
               </div>
               <div className="bg-white/5 border border-white/5 rounded-lg p-2">
                 <div>Events</div>
-                <div className="font-display text-base font-extrabold text-white mt-1">{events?.length ?? 0}</div>
+                <div className="font-display text-base font-extrabold mt-1">{events?.length ?? 0}</div>
               </div>
             </div>
           </div>
@@ -119,9 +160,9 @@ function Dashboard() {
           {/* Navigation Tab Links */}
           <nav className="p-4 flex gap-2 overflow-x-auto lg:flex-col lg:overflow-visible lg:space-y-6 scrollbar-none">
             {/* Category Groups */}
-            {(["Collections", "Communications", "Customization"] as const).map((groupName) => (
+            {(["E-Commerce Store", "Collections", "Communications", "Customization"] as const).map((groupName) => (
               <div key={groupName} className="flex flex-col shrink-0 lg:shrink w-full">
-                <span className="hidden lg:block text-[10px] uppercase tracking-[0.25em] text-white/30 font-bold px-3 mb-2">
+                <span className="hidden lg:block text-[10px] uppercase tracking-[0.25em] opacity-40 font-bold px-3 mb-2">
                   {groupName}
                 </span>
                 <div className="flex gap-1.5 lg:flex-col">
@@ -133,17 +174,17 @@ function Dashboard() {
                         onClick={() => setTab(t.key)}
                         className={`group inline-flex items-center justify-between rounded-xl px-3 py-2.5 text-xs font-bold uppercase tracking-wider transition-all duration-300 w-full cursor-pointer border ${
                           isActive
-                            ? "bg-gradient-to-r from-[#5E2B97]/30 to-[#D4AF37]/15 border-[#D4AF37]/35 text-white shadow-glow"
-                            : "border-transparent text-white/50 hover:bg-white/5 hover:text-white"
+                            ? "bg-gradient-to-r from-[#5E2B97]/30 to-[#D4AF37]/15 border-[#D4AF37]/35 text-primary font-extrabold shadow-glow"
+                            : "border-transparent opacity-60 hover:opacity-100 hover:bg-white/5"
                         }`}
                       >
                         <span className="flex items-center gap-2.5">
-                          <t.icon className={`size-4 transition-colors duration-300 ${isActive ? "text-[#D4AF37]" : "text-white/30 group-hover:text-white/70"}`} />
+                          <t.icon className={`size-4 transition-colors duration-300 ${isActive ? "text-[#D4AF37]" : "opacity-40 group-hover:opacity-80"}`} />
                           {t.label}
                         </span>
                         {"count" in t && (
                           <span className={`hidden lg:inline-flex size-5 place-items-center rounded-md text-[10px] font-extrabold transition-all duration-300 ${
-                            isActive ? "bg-[#D4AF37] text-[#0C1220]" : "bg-white/5 text-white/40 group-hover:bg-white/10"
+                            isActive ? "bg-[#D4AF37] text-[#0C1220]" : "bg-white/5 opacity-50 group-hover:opacity-100"
                           }`}>
                             {t.count}
                           </span>
@@ -164,8 +205,8 @@ function Dashboard() {
               AD
             </div>
             <div className="flex flex-col min-w-0 leading-none">
-              <span className="text-xs font-bold text-white truncate">Administrator</span>
-              <span className="text-[9px] text-white/40 mt-1 truncate">{user?.email || "sistersoar14@gmail.com"}</span>
+              <span className="text-xs font-bold truncate">Administrator</span>
+              <span className="text-[9px] opacity-40 mt-1 truncate">{user?.email || "sistersoar14@gmail.com"}</span>
             </div>
           </div>
           <button
@@ -183,17 +224,40 @@ function Dashboard() {
         {/* Workspace Top Header Bar */}
         <header className="px-6 py-5 lg:px-10 border-b border-white/10 bg-[#07000F]/60 backdrop-blur-md flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div>
-            <div className="flex items-center gap-2 text-xs text-white/50 font-bold uppercase tracking-wider">
+            <div className="flex items-center gap-2 text-xs opacity-60 font-bold uppercase tracking-wider">
               <Clock className="size-3.5 text-[#D4AF37]" /> {currentDateString}
             </div>
-            <h1 className="text-2xl font-extrabold text-white tracking-tight mt-1">
-              Welcome Back, <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-white to-[#D4AF37]">Admin</span>
+            <h1 className="text-2xl font-extrabold tracking-tight mt-1">
+              Welcome Back, <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-primary to-[#D4AF37]">Admin</span>
             </h1>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-3">
+            {/* Dark / Light Mode Toggle Button */}
+            <button
+              onClick={toggleTheme}
+              className={`inline-flex items-center gap-2 rounded-full border px-4 py-2 text-xs font-bold uppercase tracking-wider transition-all duration-300 cursor-pointer shadow-soft hover:scale-105 active:scale-95 ${
+                themeMode === "light"
+                  ? "bg-white border-slate-300 text-slate-900 hover:bg-slate-50"
+                  : "bg-white/10 border-white/15 text-white hover:bg-white/20"
+              }`}
+              title="Toggle Light / Dark Theme"
+            >
+              {themeMode === "light" ? (
+                <>
+                  <Moon className="size-4 text-purple-600 fill-purple-600/20" />
+                  <span>Dark Mode</span>
+                </>
+              ) : (
+                <>
+                  <Sun className="size-4 text-[#D4AF37] fill-[#D4AF37]/20" />
+                  <span>Light Mode</span>
+                </>
+              )}
+            </button>
+
             <Link
               to="/"
-              className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 hover:bg-white/10 hover:border-white/20 transition px-5 py-2.5 text-xs font-bold uppercase tracking-wider text-white shadow-soft"
+              className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 hover:bg-white/10 hover:border-white/20 transition px-5 py-2.5 text-xs font-bold uppercase tracking-wider shadow-soft"
             >
               <Home className="size-3.5 text-[#D4AF37]" /> Live Website
             </Link>

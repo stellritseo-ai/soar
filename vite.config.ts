@@ -22,6 +22,7 @@ export default defineConfig({
       {
         name: "socket-server",
         configureServer() {
+          // @ts-ignore
           import("./scripts/chat-server.js").catch(err => {
             console.error("Failed to start socket server in Vite plugin:", err);
           });

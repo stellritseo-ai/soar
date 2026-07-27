@@ -1,28 +1,34 @@
 import { createServerFn } from "@tanstack/react-start";
-import * as fs from "fs/promises";
-import * as path from "path";
 
-// Server-side function to save uploaded images to the local public/uploads directory
+// Server-side function to upload images directly to Cloudinary
 export const uploadFileServerFn = createServerFn({ method: "POST" })
-  .validator((payload: { name: string; type: string; base64: string }) => payload)
-  .handler(async ({ data: { name, base64 } }) => {
-    const ext = name.split(".").pop() ?? "bin";
-    const filename = `${crypto.randomUUID()}.${ext}`;
-    
-    const uploadDir = path.resolve(process.cwd(), "public/uploads");
-    
-    // Ensure directory exists
-    await fs.mkdir(uploadDir, { recursive: true });
-    
-    const buffer = Buffer.from(base64, "base64");
-    const filePath = path.join(uploadDir, filename);
-    await fs.writeFile(filePath, buffer);
-    
-    return { url: `/uploads/${filename}` };
+  .validator((payload: { name: string; type: string; base64: string; folder?: string }) => payload)
+  .handler(async ({ data: { type, base64, folder = "general" } }) => {
+    try {
+      // Dynamic server-only import of Cloudinary to prevent Vite from bundling Node SDK into client JS
+      const { v2: cloudinary } = await import("cloudinary");
+      cloudinary.config({
+        cloud_name: process.env.CLOUDINARY_CLOUD_NAME || "",
+        api_key: process.env.CLOUDINARY_API_KEY || "",
+        api_secret: process.env.CLOUDINARY_API_SECRET || "",
+        secure: true,
+      });
+
+      const dataUri = `data:${type || "image/jpeg"};base64,${base64}`;
+      const result = await cloudinary.uploader.upload(dataUri, {
+        folder: `soar/${folder}`,
+        resource_type: "auto",
+      });
+
+      return { url: result.secure_url };
+    } catch (err: any) {
+      console.error("Cloudinary Upload Error:", err);
+      throw new Error(err?.message || "Failed to upload image to Cloudinary");
+    }
   });
 
-// Client-side helper function to convert files to base64 and call the server function
-export async function uploadImage(file: File, folder: string): Promise<string> {
+// Client-side helper function to convert files to base64 and upload to Cloudinary
+export async function uploadImage(file: File, folder: string = "general"): Promise<string> {
   const base64 = await new Promise<string>((resolve, reject) => {
     const reader = new FileReader();
     reader.onload = () => {
@@ -38,8 +44,9 @@ export async function uploadImage(file: File, folder: string): Promise<string> {
     data: {
       name: file.name,
       type: file.type,
-      base64
-    }
+      base64,
+      folder,
+    },
   });
 
   return res.url;
