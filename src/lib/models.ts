@@ -168,7 +168,14 @@ export const CustomerProfile = mongoose.models.CustomerProfile || mongoose.model
 
 let isSeeded = false;
 
+export async function connectDB() {
+  if (mongoose.connection.readyState >= 1) return;
+  const uri = process.env.MONGODB_URI || "mongodb+srv://sora_db_user:dF8rsHBOMdKSkvGa@sora.8mllofs.mongodb.net/soar?appName=sora";
+  await mongoose.connect(uri);
+}
+
 export async function seedDatabase() {
+  await connectDB();
   if (isSeeded) return;
   isSeeded = true;
   const settingsCount = await SiteSetting.countDocuments();
