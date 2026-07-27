@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import { LogOut, Users, Calendar, Newspaper, Image as ImageIcon, Mail, Sparkles, Home, ChevronRight, BarChart3, Clock, MessageSquare, Megaphone, ShoppingBag, Package, TrendingUp, DollarSign, Sun, Moon } from "lucide-react";
+import { LogOut, Users, Calendar, Newspaper, Image as ImageIcon, Mail, Sparkles, Home, ChevronRight, BarChart3, Clock, MessageSquare, Megaphone, ShoppingBag, Package, TrendingUp, DollarSign, Sun, Moon, Heart } from "lucide-react";
 import { TeamManager } from "@/components/admin/TeamManager";
 import { EventsManager } from "@/components/admin/EventsManager";
 import { BlogManager } from "@/components/admin/BlogManager";
@@ -14,7 +14,8 @@ import { ShopProductsManager } from "@/components/admin/ShopProductsManager";
 import { ShopOrdersManager } from "@/components/admin/ShopOrdersManager";
 import { ShopCustomersManager } from "@/components/admin/ShopCustomersManager";
 import { ShopAnalyticsManager } from "@/components/admin/ShopAnalyticsManager";
-import { useTeam, useEventsList, useAllPosts, useGallery, useInquiries, useChatConversations, useProducts, useOrders, useCustomers } from "@/lib/cms";
+import { DonationsManager } from "@/components/admin/DonationsManager";
+import { useTeam, useEventsList, useAllPosts, useGallery, useInquiries, useChatConversations, useProducts, useOrders, useCustomers, useDonations } from "@/lib/cms";
 import logoImg from "@/assets/logo.png";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
@@ -33,8 +34,8 @@ function Dashboard() {
   const navigate = useNavigate();
   const qc = useQueryClient();
   const [tab, setTab] = useState<
-    "team" | "events" | "blog" | "gallery" | "inbox" | "chat" | "hero" | "contact" | "popup" | "products" | "orders" | "customers" | "analytics"
-  >("analytics");
+    "donations" | "team" | "events" | "blog" | "gallery" | "inbox" | "chat" | "hero" | "contact" | "popup" | "products" | "orders" | "customers" | "analytics"
+  >("donations");
 
   const [themeMode, setThemeMode] = useState<"dark" | "light">("dark");
   const [mounted, setMounted] = useState(false);
@@ -65,6 +66,7 @@ function Dashboard() {
   const { data: products } = useProducts();
   const { data: orders } = useOrders();
   const { data: customers } = useCustomers();
+  const { data: donations } = useDonations();
 
   async function signOut() {
     await qc.cancelQueries();
@@ -77,6 +79,7 @@ function Dashboard() {
   }
 
   const TABS = [
+    { key: "donations", label: "Donations 💖", icon: Heart, count: donations?.length ?? 0, group: "Foundation & Giving" },
     { key: "analytics", label: "Shop Analytics", icon: TrendingUp, group: "E-Commerce Store" },
     { key: "products", label: "Shop Products", icon: Package, count: products?.length ?? 0, group: "E-Commerce Store" },
     { key: "orders", label: "Customer Orders", icon: ShoppingBag, count: orders?.length ?? 0, group: "E-Commerce Store" },
@@ -93,6 +96,7 @@ function Dashboard() {
   ] as const;
 
   const Active = {
+    donations: DonationsManager,
     analytics: ShopAnalyticsManager,
     products: ShopProductsManager,
     orders: ShopOrdersManager,
@@ -160,7 +164,7 @@ function Dashboard() {
           {/* Navigation Tab Links */}
           <nav className="p-4 flex gap-2 overflow-x-auto lg:flex-col lg:overflow-visible lg:space-y-6 scrollbar-none">
             {/* Category Groups */}
-            {(["E-Commerce Store", "Collections", "Communications", "Customization"] as const).map((groupName) => (
+            {(["Foundation & Giving", "E-Commerce Store", "Collections", "Communications", "Customization"] as const).map((groupName) => (
               <div key={groupName} className="flex flex-col shrink-0 lg:shrink w-full">
                 <span className="hidden lg:block text-[10px] uppercase tracking-[0.25em] opacity-40 font-bold px-3 mb-2">
                   {groupName}

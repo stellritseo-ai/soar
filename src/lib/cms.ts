@@ -1103,3 +1103,82 @@ export const createStripePaymentIntentFn = createServerFn({ method: "POST" })
       return { clientSecret: null, error: err?.message || "Failed to create Stripe PaymentIntent" };
     }
   });
+
+// Donation Type Definition
+export type DonationType = {
+  id: string;
+  donorName: string;
+  donorEmail: string;
+  donorPhone?: string;
+  amount: number;
+  giftType: string;
+  fundCategory: string;
+  paymentMethod: string;
+  paymentStatus: string;
+  stripePaymentId?: string;
+  tributeName?: string;
+  isTribute?: boolean;
+  message?: string;
+  created_at: string;
+};
+
+// Create Donation Server Function
+export const createDonationFn = createServerFn({ method: "POST" })
+  .validator((data: Omit<DonationType, "id" | "created_at">) => data)
+  .handler(async ({ data }) => {
+    try {
+      const { connectDB, Donation } = await import("./models");
+      await connectDB();
+
+      const newDonation = await Donation.create({
+        ...data,
+        paymentStatus: data.paymentStatus || "Completed",
+        created_at: new Date()
+      });
+
+      return { success: true, donationId: newDonation._id.toString() };
+    } catch (err: any) {
+      console.error("Failed to save donation:", err);
+      return { success: false, error: err?.message || "Database insert failed" };
+    }
+  });
+
+// Fetch All Donations Server Function
+export const getDonationsFn = createServerFn({ method: "GET" })
+  .handler(async (): Promise<DonationType[]> => {
+    try {
+      const { connectDB, Donation } = await import("./models");
+      await connectDB();
+
+      const docs = await Donation.find({}).sort({ created_at: -1 }).lean();
+      return docs.map((doc: any) => ({
+        id: doc._id.toString(),
+        donorName: doc.donorName,
+        donorEmail: doc.donorEmail,
+        donorPhone: doc.donorPhone || "",
+        amount: doc.amount,
+        giftType: doc.giftType || "One-time",
+        fundCategory: doc.fundCategory || "Where needed most",
+        paymentMethod: doc.paymentMethod || "Stripe Credit Card",
+        paymentStatus: doc.paymentStatus || "Completed",
+        stripePaymentId: doc.stripePaymentId || "",
+        tributeName: doc.tributeName || "",
+        isTribute: !!doc.isTribute,
+        message: doc.message || "",
+        created_at: doc.created_at ? new Date(doc.created_at).toISOString() : new Date().toISOString()
+      }));
+    } catch (err) {
+      console.error("Failed to fetch donations:", err);
+      return [];
+    }
+  });
+
+// React Query Hooks for Donations
+export function useDonations() {
+  return useQuery({
+    queryKey: ["cms", "donations"],
+    queryFn: () => getDonationsFn(),
+    staleTime: 1000 * 30,
+  });
+}
+

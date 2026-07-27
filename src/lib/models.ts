@@ -591,5 +591,88 @@ export async function seedDatabase() {
       }
     ]);
   }
+
+  const donationCount = await Donation.countDocuments();
+  if (donationCount === 0) {
+    console.log("Seeding initial foundation donations into MongoDB...");
+    await Donation.insertMany([
+      {
+        donorName: "Elena Rostova",
+        donorEmail: "elena.rostova@example.com",
+        donorPhone: "(407) 555-0192",
+        amount: 500,
+        giftType: "Sponsor a Family",
+        fundCategory: "Homeownership Education",
+        paymentMethod: "Stripe Credit Card",
+        paymentStatus: "Completed",
+        stripePaymentId: "ch_3N8v_seed_001",
+        message: "Dedicated to supporting women building generational wealth through homeownership.",
+        created_at: new Date(Date.now() - 86400000 * 1)
+      },
+      {
+        donorName: "Marcus Vance",
+        donorEmail: "marcus.v@example.com",
+        donorPhone: "(321) 555-0811",
+        amount: 100,
+        giftType: "Monthly",
+        fundCategory: "Financial Literacy Workshops",
+        paymentMethod: "Stripe Card",
+        paymentStatus: "Completed",
+        stripePaymentId: "ch_3N8v_seed_002",
+        created_at: new Date(Date.now() - 86400000 * 3)
+      },
+      {
+        donorName: "Dr. Patricia King",
+        donorEmail: "patricia.k@example.com",
+        donorPhone: "(407) 555-0431",
+        amount: 1000,
+        giftType: "One-time",
+        fundCategory: "Where needed most",
+        paymentMethod: "Stripe Credit Card",
+        paymentStatus: "Completed",
+        stripePaymentId: "ch_3N8v_seed_003",
+        isTribute: true,
+        tributeName: "In memory of Sarah King",
+        message: "In honor of my mother who taught me the true value of independence.",
+        created_at: new Date(Date.now() - 86400000 * 5)
+      }
+    ]);
+  }
 }
+
+// Donation Interface & Model
+export interface IDonation extends Document {
+  donorName: string;
+  donorEmail: string;
+  donorPhone?: string;
+  amount: number;
+  giftType: string;
+  fundCategory: string;
+  paymentMethod: string;
+  paymentStatus: string;
+  stripePaymentId?: string;
+  tributeName?: string;
+  isTribute?: boolean;
+  message?: string;
+  created_at: Date;
+}
+
+const DonationSchema = new Schema<IDonation>({
+  donorName: { type: String, required: true },
+  donorEmail: { type: String, required: true },
+  donorPhone: { type: String, default: "" },
+  amount: { type: Number, required: true },
+  giftType: { type: String, default: "One-time" },
+  fundCategory: { type: String, default: "Where needed most" },
+  paymentMethod: { type: String, default: "Stripe Credit Card" },
+  paymentStatus: { type: String, default: "Completed" },
+  stripePaymentId: { type: String, default: "" },
+  tributeName: { type: String, default: "" },
+  isTribute: { type: Boolean, default: false },
+  message: { type: String, default: "" },
+  created_at: { type: Date, default: Date.now },
+});
+
+export const Donation = mongoose.models.Donation || mongoose.model<IDonation>("Donation", DonationSchema);
+
 
