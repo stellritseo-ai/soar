@@ -1,12 +1,33 @@
+import { useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { Facebook, Mail, Phone, MapPin, Heart, Instagram, Twitter, Linkedin } from "lucide-react";
-import { useSetting, type ContactSettings } from "@/lib/cms";
+import { Facebook, Mail, Phone, MapPin, Heart, Instagram, Twitter, Linkedin, Loader2, Check } from "lucide-react";
+import { useSetting, subscribeNewsletterFn, type ContactSettings } from "@/lib/cms";
 import footerLogoImg from "@/assets/footer-logo.png";
 
 export function Footer() {
   const { data } = useSetting<ContactSettings>("contact");
   const phone = data?.phone ?? "(321) 710-7145";
   const email = data?.email ?? "sistersoar14@gmail.com";
+
+  const [newsletterEmail, setNewsletterEmail] = useState("");
+  const [subscribing, setSubscribing] = useState(false);
+  const [subscribed, setSubscribed] = useState(false);
+
+  const handleNewsletterSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newsletterEmail.trim()) return;
+    setSubscribing(true);
+    try {
+      await subscribeNewsletterFn({ data: newsletterEmail.trim() });
+      setSubscribed(true);
+      setNewsletterEmail("");
+      setTimeout(() => setSubscribed(false), 5000);
+    } catch {
+      // safe fallback
+    } finally {
+      setSubscribing(false);
+    }
+  };
 
   return (
     <footer className="relative bg-gradient-to-b from-[#110123] via-[#07000F] to-[#030007] overflow-hidden border-t-2 border-[#D4AF37]/40">
@@ -49,16 +70,30 @@ export function Footer() {
               <h3 className="font-display text-xl sm:text-2xl font-bold text-white tracking-tight">Stay Connected</h3>
               <p className="mt-2 text-sm text-white/70 font-medium">Receive stories of impact and updates from our community.</p>
             </div>
-            <form className="flex w-full lg:w-auto max-w-md gap-2.5 shrink-0" onSubmit={(e) => e.preventDefault()}>
-              <input
-                type="email"
-                placeholder="you@example.com"
-                className="w-full lg:w-72 rounded-[10px] border border-white/10 bg-[#120224]/80 px-4 py-3 text-sm text-white placeholder:text-white/40 focus:border-[#D4AF37] focus:outline-none focus:ring-4 focus:ring-[#D4AF37]/10 transition-all duration-200"
-              />
-              <button className="rounded-[10px] bg-gradient-to-r from-[#D4AF37] to-[#F2D27C] hover:scale-[1.02] active:scale-[0.97] transition duration-200 px-5 py-3 text-sm font-bold text-[#0C1220] cursor-pointer shrink-0">
-                Join
-              </button>
-            </form>
+            {subscribed ? (
+              <div className="flex items-center gap-2 text-sm text-emerald-400 font-bold bg-emerald-500/10 border border-emerald-500/20 px-5 py-3 rounded-[10px]">
+                <Check className="size-4" /> Thank you for subscribing!
+              </div>
+            ) : (
+              <form className="flex w-full lg:w-auto max-w-md gap-2.5 shrink-0" onSubmit={handleNewsletterSubmit}>
+                <input
+                  type="email"
+                  required
+                  disabled={subscribing}
+                  value={newsletterEmail}
+                  onChange={(e) => setNewsletterEmail(e.target.value)}
+                  placeholder="you@example.com"
+                  className="w-full lg:w-72 rounded-[10px] border border-white/10 bg-[#120224]/80 px-4 py-3 text-sm text-white placeholder:text-white/40 focus:border-[#D4AF37] focus:outline-none focus:ring-4 focus:ring-[#D4AF37]/10 transition-all duration-200"
+                />
+                <button
+                  type="submit"
+                  disabled={subscribing}
+                  className="inline-flex items-center justify-center gap-2 rounded-[10px] bg-gradient-to-r from-[#D4AF37] to-[#F2D27C] hover:scale-[1.02] active:scale-[0.97] transition duration-200 px-5 py-3 text-sm font-bold text-[#0C1220] cursor-pointer shrink-0 disabled:opacity-50"
+                >
+                  {subscribing ? <Loader2 className="size-4 animate-spin" /> : "Join"}
+                </button>
+              </form>
+            )}
           </div>
         </div>
 

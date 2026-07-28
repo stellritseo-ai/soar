@@ -1,8 +1,14 @@
 import { useState } from "react";
+import { Loader2 } from "lucide-react";
+import { useQueryClient } from "@tanstack/react-query";
+import { submitInquiryFn } from "@/lib/cms";
 import imgMentorship from "@/assets/value-mentorship.png";
 
 export function ContactCTASection() {
+  const qc = useQueryClient();
   const [submitted, setSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -11,14 +17,38 @@ export function ContactCTASection() {
     acceptedTerms: false,
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.acceptedTerms) {
       alert("Please accept the terms to proceed.");
       return;
     }
-    // Simulate premium submit transition
-    setSubmitted(true);
+
+    setIsSubmitting(true);
+    setErrorMsg(null);
+    try {
+      await submitInquiryFn({
+        data: {
+          name: formData.name,
+          email: formData.email,
+          subject: formData.role ? `Role: ${formData.role}` : "Landing Page Connect Inquiry",
+          message: formData.message,
+        },
+      });
+      await qc.invalidateQueries({ queryKey: ["cms", "inquiries"] });
+      setSubmitted(true);
+      setFormData({
+        name: "",
+        email: "",
+        role: "",
+        message: "",
+        acceptedTerms: false,
+      });
+    } catch (err: any) {
+      setErrorMsg(err?.message || "Failed to send message. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -45,17 +75,22 @@ export function ContactCTASection() {
             <div className="rounded-[10px] border border-green-500/20 bg-green-500/5 p-6 text-left animate-fade-up">
               <h3 className="font-display text-xl font-bold text-green-600">Thank you!</h3>
               <p className="mt-2 text-sm text-muted-foreground font-medium">
-                Your message has been sent successfully. One of our coordinators will get back to you shortly.
+                Your message has been saved to our inbox and sent to our team's email. One of our coordinators will get back to you shortly.
               </p>
               <button
                 onClick={() => setSubmitted(false)}
-                className="mt-4 text-xs font-bold text-[#5E2B97] hover:underline"
+                className="mt-4 text-xs font-bold text-[#5E2B97] hover:underline cursor-pointer"
               >
                 Send another message
               </button>
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+              {errorMsg && (
+                <div className="p-3.5 rounded-[10px] bg-red-500/10 border border-red-500/20 text-xs font-semibold text-red-500">
+                  {errorMsg}
+                </div>
+              )}
               
               {/* Row 1: Name and Email */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -67,6 +102,7 @@ export function ContactCTASection() {
                     id="form-name"
                     type="text"
                     required
+                    disabled={isSubmitting}
                     placeholder="Your name"
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
@@ -82,6 +118,7 @@ export function ContactCTASection() {
                     id="form-email"
                     type="email"
                     required
+                    disabled={isSubmitting}
                     placeholder="Your email address"
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
@@ -98,15 +135,16 @@ export function ContactCTASection() {
                 <select
                   id="form-role"
                   required
+                  disabled={isSubmitting}
                   value={formData.role}
                   onChange={(e) => setFormData({ ...formData, role: e.target.value })}
                   className="w-full rounded-[10px] border border-border bg-white/70 backdrop-blur-sm px-4 py-3.5 text-sm text-foreground focus:border-[#5E2B97] focus:bg-white focus:outline-none focus:ring-4 focus:ring-[#5E2B97]/10 transition-all duration-200 appearance-none bg-[url('data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22currentColor%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E')] bg-[length:1.25em_1.25em] bg-[right_1rem_center] bg-no-repeat"
                 >
                   <option value="" disabled>Select one...</option>
-                  <option value="support">A woman seeking support</option>
-                  <option value="volunteer">Interested in volunteering</option>
-                  <option value="sponsor">A prospective sponsor / partner</option>
-                  <option value="other">Other inquiry</option>
+                  <option value="A woman seeking support">A woman seeking support</option>
+                  <option value="Interested in volunteering">Interested in volunteering</option>
+                  <option value="A prospective sponsor / partner">A prospective sponsor / partner</option>
+                  <option value="Other inquiry">Other inquiry</option>
                 </select>
               </div>
 
@@ -118,6 +156,7 @@ export function ContactCTASection() {
                 <textarea
                   id="form-message"
                   required
+                  disabled={isSubmitting}
                   rows={4}
                   placeholder="Type your message..."
                   value={formData.message}
@@ -132,6 +171,7 @@ export function ContactCTASection() {
                   id="form-terms"
                   type="checkbox"
                   required
+                  disabled={isSubmitting}
                   checked={formData.acceptedTerms}
                   onChange={(e) => setFormData({ ...formData, acceptedTerms: e.target.checked })}
                   className="size-4 rounded border-border text-[#5E2B97] focus:ring-[#5E2B97] cursor-pointer"
@@ -147,9 +187,11 @@ export function ContactCTASection() {
               {/* Row 5: Submit Button */}
               <button
                 type="submit"
-                className="mt-4 self-start inline-flex items-center justify-center rounded-full bg-gradient-to-r from-[#5E2B97] to-[#481E7A] text-white font-bold px-10 py-4 text-sm shadow-elegant transition duration-200 hover:scale-[1.02] hover:shadow-glow active:scale-[0.97] cursor-pointer"
+                disabled={isSubmitting}
+                className="mt-4 self-start inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-[#5E2B97] to-[#481E7A] text-white font-bold px-10 py-4 text-sm shadow-elegant transition duration-200 hover:scale-[1.02] hover:shadow-glow active:scale-[0.97] disabled:opacity-60 cursor-pointer"
               >
-                Submit
+                {isSubmitting ? <Loader2 className="size-4 animate-spin" /> : null}
+                {isSubmitting ? "Sending..." : "Submit"}
               </button>
 
             </form>
