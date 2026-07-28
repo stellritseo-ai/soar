@@ -25,12 +25,13 @@ import pFamily from "@/assets/program-family.jpg";
 export const Route = createFileRoute("/programs")({
   head: () => ({
     meta: [
-      { title: "Core Programs — SOAR Global Foundation" },
-      { name: "description", content: "Discover our educational pathways: Financial Literacy, Homeownership Education, Mentorship, Family Support, and Housing Access." },
-      { property: "og:title", content: "Core Programs — SOAR Global Foundation" },
-      { property: "og:url", content: "/programs" },
+      { title: "Women Empowerment Programs — Financial Literacy & Homeownership | SOAR" },
+      { name: "description", content: "Explore SOAR Global Foundation's core programs in Orlando, FL: Financial Literacy Workshops, Homeownership Education, 1-on-1 Mentorship, and Family Support." },
+      { name: "keywords", content: "financial literacy workshops Orlando, first time homebuyer education women, women mentorship program Florida, credit repair classes Orlando, SOAR foundation programs" },
+      { property: "og:title", content: "Women Empowerment Programs — SOAR Global Foundation Inc." },
+      { property: "og:url", content: "https://soarglobalfoundation.org/programs" },
     ],
-    links: [{ rel: "canonical", href: "/programs" }],
+    links: [{ rel: "canonical", href: "https://soarglobalfoundation.org/programs" }],
   }),
   component: ProgramsPage,
 });

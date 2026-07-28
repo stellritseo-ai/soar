@@ -199,7 +199,7 @@ export async function seedDatabase() {
       {
         key: "contact",
         value: {
-          email: "sistersoar14@gmail.com",
+          email: "shoutgospelworship@gmail.com",
           phone: "+1 (321) 710-7145",
           address: "Orlando, FL 32818",
           hours: "Mon–Fri, 9am–6pm PT"
@@ -212,10 +212,10 @@ export async function seedDatabase() {
   const contactSetting = await SiteSetting.findOne({ key: "contact" });
   if (contactSetting && contactSetting.value) {
     let modified = false;
-    if (contactSetting.value.email === "hello@soarglobal.org") {
-      contactSetting.value.email = "sistersoar14@gmail.com";
+    if (contactSetting.value.email === "hello@soarglobal.org" || contactSetting.value.email === "sistersoar14@gmail.com") {
+      contactSetting.value.email = "shoutgospelworship@gmail.com";
       modified = true;
-      console.log("Database contact settings email automatically updated to sistersoar14@gmail.com");
+      console.log("Database contact settings email automatically updated to shoutgospelworship@gmail.com");
     }
     if (contactSetting.value.address === "3311 N Powers Dr, Orlando, FL 32818") {
       contactSetting.value.address = "Orlando, FL 32818";
@@ -693,5 +693,32 @@ const DonationSchema = new Schema<IDonation>({
 });
 
 export const Donation = mongoose.models.Donation || mongoose.model<IDonation>("Donation", DonationSchema);
+
+// AdminUser Interface & Schema
+export interface IAdminUser {
+  username: string;
+  password: string;
+  email: string;
+  name: string;
+  avatar_url?: string;
+  role?: string;
+  failed_attempts?: number;
+  lockout_until?: Date | null;
+  updated_at: Date;
+}
+
+const AdminUserSchema = new Schema<IAdminUser>({
+  username: { type: String, required: true, default: "admin" },
+  password: { type: String, required: true, default: "admin" },
+  email: { type: String, default: "sistersoar14@gmail.com" },
+  name: { type: String, default: "Myrtle Dixon" },
+  avatar_url: { type: String, default: "" },
+  role: { type: String, default: "Super Administrator" },
+  failed_attempts: { type: Number, default: 0 },
+  lockout_until: { type: Date, default: null },
+  updated_at: { type: Date, default: Date.now },
+});
+
+export const AdminUser = mongoose.models.AdminUser || mongoose.model<IAdminUser>("AdminUser", AdminUserSchema);
 
 

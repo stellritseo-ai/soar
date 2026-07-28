@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { SiteLayout } from "@/components/site/Layout";
 import { PageHeader } from "@/components/site/PageHeader";
-import { Calendar, MapPin, Clock, Ticket, Award, Sparkles, BookOpen, Heart, Users, HelpCircle, ChevronDown, Landmark, Star, ShieldCheck, Mail, Phone, Image as ImageIcon } from "lucide-react";
+import { Calendar, MapPin, Clock, Ticket, Award, Sparkles, BookOpen, Heart, Users, HelpCircle, ChevronDown, Landmark, Star, ShieldCheck, Mail, Phone, Image as ImageIcon, ArrowRight } from "lucide-react";
 import { useState } from "react";
 import { useEventsList } from "@/lib/cms";
 import programMentorImg from "@/assets/program-mentor.jpg";
@@ -9,6 +9,7 @@ import story1 from "@/assets/story-1.jpg";
 import story2 from "@/assets/story-2.jpg";
 import story3 from "@/assets/story-3.jpg";
 import heroImg from "@/assets/hero.jpg";
+import popupImg from "@/assets/popup.jpg";
 
 export const Route = createFileRoute("/events")({
   head: () => ({
@@ -198,12 +199,22 @@ function EventsPage() {
           <div className="absolute top-[8%] right-10 w-[550px] h-[550px] rounded-full bg-primary/5 blur-[120px] pointer-events-none" />
 
           {/* Featured Gala Event */}
-          <div className="glass rounded-[32px] p-6 md:p-10 border border-[#D4AF37]/35 shadow-elegant relative overflow-hidden max-w-5xl mx-auto">
+          <div className="glass rounded-[32px] p-6 md:p-10 border border-[#D4AF37]/35 shadow-elegant relative overflow-hidden max-w-6xl mx-auto">
             <div className="absolute top-[-30%] right-[-10%] w-[300px] h-[300px] rounded-full bg-accent/5 blur-[80px] pointer-events-none" />
             <div className="absolute left-0 top-0 h-full w-1.5 bg-gradient-to-b from-[#D4AF37] to-primary" />
             
-            <div className="grid gap-8 lg:grid-cols-[1.5fr_1fr]">
-              <div className="space-y-5">
+            <div className="grid gap-8 lg:grid-cols-12 items-center">
+              {/* Left Column: Gala Flyer Image */}
+              <div className="lg:col-span-4 overflow-hidden rounded-2xl border border-white/40 shadow-md group/img relative">
+                <img
+                  src={popupImg}
+                  alt="Purple Hearts Gala Flyer"
+                  className="w-full h-auto object-cover group-hover/img:scale-105 transition-transform duration-700"
+                />
+              </div>
+
+              {/* Middle Column: Event Details */}
+              <div className="lg:col-span-5 space-y-4">
                 <span className="inline-flex items-center gap-1.5 rounded-full bg-[#D4AF37]/10 border border-[#D4AF37]/30 px-3 py-1 text-[10px] font-extrabold uppercase tracking-widest text-[#D4AF37]">
                   💜 Signature Benefit Gala
                 </span>
@@ -213,7 +224,7 @@ function EventsPage() {
                   Our signature annual benefit is the highlight of the SOAR calendar. The Purple Hearts Gala brings together community leaders, supporters, and the women we serve for an unforgettable evening of inspiration and impact.
                 </p>
                 
-                <div className="bg-primary/5 border border-primary/10 rounded-xl p-4 text-[11px] text-muted-foreground space-y-2.5">
+                <div className="bg-primary/5 border border-primary/10 rounded-xl p-3.5 text-[11px] text-muted-foreground space-y-1.5">
                   <span className="text-[10px] uppercase font-bold tracking-widest text-primary block">What to Expect:</span>
                   <div className="flex gap-1.5"><span>✔</span> <strong>Keynote Address:</strong> State Representative Lisa Dunkley</div>
                   <div className="flex gap-1.5"><span>✔</span> <strong>Special Performance:</strong> Psalmist Minister Blessing Chigozie</div>
@@ -222,27 +233,27 @@ function EventsPage() {
                 </div>
               </div>
 
-              {/* Gala Coordinates Card */}
-              <div className="bg-slate-50 border border-border/80 rounded-2xl p-6 flex flex-col justify-between space-y-4">
-                <div className="space-y-3.5 text-xs text-muted-foreground">
+              {/* Right Column: Gala Coordinates Card */}
+              <div className="lg:col-span-3 bg-slate-50/90 border border-border/80 rounded-2xl p-5 flex flex-col justify-between space-y-4 shadow-sm h-full">
+                <div className="space-y-3 text-xs text-muted-foreground">
                   <div className="flex items-center gap-2">
-                    <Calendar className="size-4.5 text-[#D4AF37]" />
-                    <span><strong>Date:</strong> Saturday, October 24, 2026</span>
+                    <Calendar className="size-4 text-[#D4AF37] shrink-0" />
+                    <span><strong>Date:</strong> Saturday, Oct 24, 2026</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <Clock className="size-4.5 text-[#D4AF37]" />
+                    <Clock className="size-4 text-[#D4AF37] shrink-0" />
                     <span><strong>Time:</strong> 5:00 PM – 9:00 PM</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <MapPin className="size-4.5 text-[#D4AF37]" />
+                    <MapPin className="size-4 text-[#D4AF37] shrink-0" />
                     <span><strong>Location:</strong> Greater Vision Center, Ocoee, FL</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <Ticket className="size-4.5 text-[#D4AF37]" />
-                    <span><strong>Contribution:</strong> $50 per person</span>
+                    <Ticket className="size-4 text-[#D4AF37] shrink-0" />
+                    <span><strong>Contribution:</strong> $50</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <Award className="size-4.5 text-[#D4AF37]" />
+                    <Award className="size-4 text-[#D4AF37] shrink-0" />
                     <span><strong>Attire:</strong> Purple & Gold Formal</span>
                   </div>
                 </div>
@@ -251,9 +262,10 @@ function EventsPage() {
                   href="https://www.zeffy.com/en-US/ticketing/purple-heart-annual-gala"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center justify-center gap-2 w-full rounded-full bg-gradient-to-r from-primary to-accent py-3 text-xs font-bold uppercase tracking-wider text-white hover:scale-[1.02] transition shadow-soft cursor-pointer"
+                  className="inline-flex items-center justify-center gap-2 w-full rounded-full bg-gradient-to-r from-[#D4AF37] to-[#F2D27C] text-[#0C1220] py-3 text-xs font-black uppercase tracking-wider hover:scale-[1.02] active:scale-[0.98] transition shadow-soft cursor-pointer text-center"
                 >
-                  Get Gala Tickets Now
+                  Get Tickets Now
+                  <ArrowRight className="size-4" />
                 </a>
               </div>
             </div>

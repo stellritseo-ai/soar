@@ -214,7 +214,7 @@ export function PopupManager() {
               <div className="p-5 space-y-3">
                 <div className="space-y-0.5">
                   <span className="text-[8px] font-bold uppercase tracking-wider text-[#D4AF37]">Upcoming Event</span>
-                  <h4 className="font-serif text-base font-extrabold tracking-tight text-white leading-tight uppercase truncate">
+                  <h4 className="font-serif text-sm font-extrabold tracking-tight text-white leading-tight uppercase break-words">
                     {titleText}
                   </h4>
                 </div>

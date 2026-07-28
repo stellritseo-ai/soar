@@ -4,27 +4,32 @@ import { createServerFn } from "@tanstack/react-start";
 export const uploadFileServerFn = createServerFn({ method: "POST" })
   .validator((payload: { name: string; type: string; base64: string; folder?: string }) => payload)
   .handler(async ({ data: { type, base64, folder = "general" } }) => {
-    try {
-      // Dynamic server-only import of Cloudinary to prevent Vite from bundling Node SDK into client JS
-      const { v2: cloudinary } = await import("cloudinary");
-      cloudinary.config({
-        cloud_name: process.env.CLOUDINARY_CLOUD_NAME || "",
-        api_key: process.env.CLOUDINARY_API_KEY || "",
-        api_secret: process.env.CLOUDINARY_API_SECRET || "",
-        secure: true,
-      });
+    const dataUri = `data:${type || "image/jpeg"};base64,${base64}`;
 
-      const dataUri = `data:${type || "image/jpeg"};base64,${base64}`;
-      const result = await cloudinary.uploader.upload(dataUri, {
-        folder: `soar/${folder}`,
-        resource_type: "auto",
-      });
+    if (process.env.CLOUDINARY_CLOUD_NAME && process.env.CLOUDINARY_API_KEY) {
+      try {
+        const { v2: cloudinary } = await import("cloudinary");
+        cloudinary.config({
+          cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+          api_key: process.env.CLOUDINARY_API_KEY,
+          api_secret: process.env.CLOUDINARY_API_SECRET || "",
+          secure: true,
+        });
 
-      return { url: result.secure_url };
-    } catch (err: any) {
-      console.error("Cloudinary Upload Error:", err);
-      throw new Error(err?.message || "Failed to upload image to Cloudinary");
+        const result = await cloudinary.uploader.upload(dataUri, {
+          folder: `soar/${folder}`,
+          resource_type: "auto",
+        });
+
+        if (result && result.secure_url) {
+          return { url: result.secure_url };
+        }
+      } catch (err: any) {
+        console.warn("Cloudinary upload failed, falling back to base64 Data URI:", err?.message);
+      }
     }
+
+    return { url: dataUri };
   });
 
 // Client-side helper function to convert files to base64 and upload to Cloudinary

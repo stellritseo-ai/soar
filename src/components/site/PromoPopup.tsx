@@ -101,7 +101,7 @@ export function PromoPopup() {
               <span className="text-[9px] sm:text-[10px] md:text-xs font-bold uppercase tracking-[0.25em] text-[#D4AF37]">
                 Upcoming Event
               </span>
-              <h3 className="font-serif text-lg sm:text-xl md:text-2xl lg:text-3xl font-extrabold tracking-tight bg-gradient-to-r from-[#D4AF37] via-[#F2D27C] to-[#D4AF37] bg-clip-text text-transparent leading-tight select-text whitespace-normal sm:whitespace-nowrap">
+              <h3 className="font-serif text-lg sm:text-xl md:text-2xl lg:text-3xl font-extrabold tracking-tight bg-gradient-to-r from-[#D4AF37] via-[#F2D27C] to-[#D4AF37] bg-clip-text text-transparent leading-tight select-text break-words pb-1">
                 {titleText}
               </h3>
             </div>

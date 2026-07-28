@@ -14,13 +14,21 @@ import { ContactCTASection } from "@/components/site/landing/ContactCTASection";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "SOAR Global Foundation — Helping Women Dream Again" },
+      { title: "SOAR Global Foundation Inc. — Empowering Women & Homeownership in Orlando, FL" },
       {
         name: "description",
         content:
-          "Empowering women through education, mentorship, financial literacy, and pathways to homeownership. Donate, volunteer, or partner with SOAR.",
+          "SOAR Global Foundation Inc. empowers women to overcome adversity through education, mentorship, financial literacy workshops, and pathways to homeownership in Orlando, FL.",
       },
+      {
+        name: "keywords",
+        content:
+          "women empowerment non profit Orlando FL, 501c3 foundation Orlando, first-time homebuyer education women, financial literacy workshops, women mentorship Florida, purple hearts gala 2026, donate to women charity Orlando",
+      },
+      { property: "og:title", content: "SOAR Global Foundation Inc. — Helping Women Dream Again" },
+      { property: "og:url", content: "https://soarglobalfoundation.org/" },
     ],
+    links: [{ rel: "canonical", href: "https://soarglobalfoundation.org/" }],
   }),
   component: Home,
 });

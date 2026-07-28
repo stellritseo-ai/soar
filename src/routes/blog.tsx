@@ -41,7 +41,7 @@ function Blog() {
           {posts.map((p, i) => (
             <article key={p.id} className="group overflow-hidden rounded-3xl border border-border bg-card shadow-soft transition-all hover:-translate-y-1 hover:shadow-elegant">
               <div className="aspect-[16/10] overflow-hidden">
-                <img src={p.image_url ?? fallbackImages[i % fallbackImages.length]} alt={p.title} loading="lazy" className="size-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                <img src={p.image_url || fallbackImages[i % fallbackImages.length]} alt={p.title} loading="lazy" className="size-full object-cover transition-transform duration-700 group-hover:scale-105" />
               </div>
               <div className="p-8">
                 <h3 className="mt-2 font-display text-2xl">{p.title}</h3>

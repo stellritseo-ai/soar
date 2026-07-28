@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import { LogOut, Users, Calendar, Newspaper, Image as ImageIcon, Mail, Sparkles, Home, ChevronRight, BarChart3, Clock, MessageSquare, Megaphone, ShoppingBag, Package, TrendingUp, DollarSign, Sun, Moon, Heart } from "lucide-react";
+import { LogOut, Users, Calendar, Newspaper, Image as ImageIcon, Mail, Sparkles, Home, ChevronRight, BarChart3, Clock, MessageSquare, Megaphone, ShoppingBag, Package, TrendingUp, DollarSign, Sun, Moon, Heart, ShieldCheck } from "lucide-react";
 import { TeamManager } from "@/components/admin/TeamManager";
 import { EventsManager } from "@/components/admin/EventsManager";
 import { BlogManager } from "@/components/admin/BlogManager";
@@ -15,7 +15,8 @@ import { ShopOrdersManager } from "@/components/admin/ShopOrdersManager";
 import { ShopCustomersManager } from "@/components/admin/ShopCustomersManager";
 import { ShopAnalyticsManager } from "@/components/admin/ShopAnalyticsManager";
 import { DonationsManager } from "@/components/admin/DonationsManager";
-import { useTeam, useEventsList, useAllPosts, useGallery, useInquiries, useChatConversations, useProducts, useOrders, useCustomers, useDonations } from "@/lib/cms";
+import { ProfileManager } from "@/components/admin/ProfileManager";
+import { useTeam, useEventsList, useAllPosts, useGallery, useInquiries, useChatConversations, useProducts, useOrders, useCustomers, useDonations, useAdminProfile } from "@/lib/cms";
 import logoImg from "@/assets/logo.png";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
@@ -34,7 +35,7 @@ function Dashboard() {
   const navigate = useNavigate();
   const qc = useQueryClient();
   const [tab, setTab] = useState<
-    "donations" | "team" | "events" | "blog" | "gallery" | "inbox" | "chat" | "hero" | "contact" | "popup" | "products" | "orders" | "customers" | "analytics"
+    "donations" | "team" | "events" | "blog" | "gallery" | "inbox" | "chat" | "profile" | "hero" | "contact" | "popup" | "products" | "orders" | "customers" | "analytics"
   >("donations");
 
   const [themeMode, setThemeMode] = useState<"dark" | "light">("dark");
@@ -67,6 +68,7 @@ function Dashboard() {
   const { data: orders } = useOrders();
   const { data: customers } = useCustomers();
   const { data: donations } = useDonations();
+  const { data: adminProfile } = useAdminProfile();
 
   async function signOut() {
     await qc.cancelQueries();
@@ -90,6 +92,7 @@ function Dashboard() {
     { key: "gallery", label: "Media Gallery", icon: ImageIcon, count: gallery?.length ?? 0, group: "Collections" },
     { key: "inbox", label: "Web Email", icon: Mail, count: inquiries?.filter(i => !i.read).length ?? 0, group: "Communications" },
     { key: "chat", label: "Live Chat", icon: MessageSquare, count: activeChats?.length ?? 0, group: "Communications" },
+    { key: "profile", label: "Profile & Security", icon: ShieldCheck, group: "Customization" },
     { key: "hero", label: "Hero Banner Copy", icon: Sparkles, group: "Customization" },
     { key: "contact", label: "Contact Information", icon: Mail, group: "Customization" },
     { key: "popup", label: "Website Pop Up", icon: Megaphone, group: "Customization" },
@@ -107,6 +110,7 @@ function Dashboard() {
     gallery: GalleryManager,
     inbox: InboxManager,
     chat: LiveChatManager,
+    profile: ProfileManager,
     hero: HeroManager,
     contact: ContactManager,
     popup: PopupManager,
@@ -144,22 +148,7 @@ function Dashboard() {
             </div>
           </div>
 
-          {/* Quick Stats Panel in Sidebar */}
-          <div className="px-6 py-4 border-b border-white/10 hidden lg:block bg-white/2">
-            <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#D4AF37] mb-2.5">
-              <BarChart3 className="size-3.5" /> Database Metrics
-            </div>
-            <div className="grid grid-cols-2 gap-2 text-xs opacity-70">
-              <div className="bg-white/5 border border-white/5 rounded-lg p-2">
-                <div>Team</div>
-                <div className="font-display text-base font-extrabold mt-1">{team?.length ?? 0}</div>
-              </div>
-              <div className="bg-white/5 border border-white/5 rounded-lg p-2">
-                <div>Events</div>
-                <div className="font-display text-base font-extrabold mt-1">{events?.length ?? 0}</div>
-              </div>
-            </div>
-          </div>
+
 
           {/* Navigation Tab Links */}
           <nav className="p-4 flex gap-2 overflow-x-auto lg:flex-col lg:overflow-visible lg:space-y-6 scrollbar-none">
@@ -204,15 +193,22 @@ function Dashboard() {
 
         {/* Profile Card / Footer inside Sidebar */}
         <div className="p-4 border-t border-white/10 bg-[#07000F]/60 flex items-center justify-between gap-3">
-          <div className="flex items-center gap-2.5 min-w-0">
-            <div className="size-9 rounded-full bg-gradient-to-tr from-[#5E2B97] to-[#D4AF37] grid place-items-center text-xs font-bold text-white uppercase tracking-wider shrink-0">
-              AD
-            </div>
+          <button
+            onClick={() => setTab("profile")}
+            className="flex items-center gap-2.5 min-w-0 text-left cursor-pointer group hover:opacity-90 transition"
+          >
+            {adminProfile?.avatar_url ? (
+              <img src={adminProfile.avatar_url} alt={adminProfile.name} className="size-9 rounded-full object-cover border border-[#D4AF37]/50 shrink-0" />
+            ) : (
+              <div className="size-9 rounded-full bg-gradient-to-tr from-[#5E2B97] to-[#D4AF37] grid place-items-center text-xs font-bold text-white uppercase tracking-wider shrink-0 shadow-sm">
+                {(adminProfile?.name || "Admin").slice(0, 2).toUpperCase()}
+              </div>
+            )}
             <div className="flex flex-col min-w-0 leading-none">
-              <span className="text-xs font-bold truncate">Administrator</span>
-              <span className="text-[9px] opacity-40 mt-1 truncate">{user?.email || "sistersoar14@gmail.com"}</span>
+              <span className="text-xs font-bold truncate group-hover:text-[#D4AF37] transition">{adminProfile?.name || "Administrator"}</span>
+              <span className="text-[9px] opacity-40 mt-1 truncate">{adminProfile?.email || user?.email || "sistersoar14@gmail.com"}</span>
             </div>
-          </div>
+          </button>
           <button
             onClick={signOut}
             title="Sign Out"

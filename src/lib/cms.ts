@@ -2,7 +2,8 @@ import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { createServerFn } from "@tanstack/react-start";
 import { connectToDatabase } from "./mongodb";
-import { SiteSetting, TeamMember, EventModel, BlogPost, GalleryImage, ContactInquiry, ChatMessage, NewsletterSubscriber, Product, Order, CustomerProfile, seedDatabase } from "./models";
+import { SiteSetting, TeamMember, EventModel, BlogPost, GalleryImage, ContactInquiry, ChatMessage, NewsletterSubscriber, Product, Order, CustomerProfile, Donation, AdminUser, seedDatabase } from "./models";
+import { sendOrderNotificationEmail, sendInquiryNotificationEmail, sendNewsletterNotificationEmail, sendDonationNotificationEmail } from "./email";
 
 export type TeamMemberType = {
   id: string;
@@ -365,6 +366,19 @@ export const submitInquiryFn = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     await connectToDatabase();
     await ContactInquiry.create(data);
+
+    // Trigger email notification to shoutgospelworship@gmail.com
+    try {
+      await sendInquiryNotificationEmail({
+        name: data.name,
+        email: data.email,
+        subject: data.subject,
+        message: data.message
+      });
+    } catch (emailErr) {
+      console.error("Failed to send inquiry email notification:", emailErr);
+    }
+
     return { success: true };
   });
 
@@ -507,6 +521,14 @@ export const subscribeNewsletterFn = createServerFn({ method: "POST" })
     const exists = await NewsletterSubscriber.findOne({ email: cleanEmail });
     if (exists) return { success: true, message: "Already subscribed" };
     await NewsletterSubscriber.create({ email: cleanEmail });
+
+    // Trigger email notification to shoutgospelworship@gmail.com
+    try {
+      await sendNewsletterNotificationEmail(cleanEmail);
+    } catch (emailErr) {
+      console.error("Failed to send newsletter notification:", emailErr);
+    }
+
     return { success: true };
   });
 
@@ -830,10 +852,11 @@ export const createOrderFn = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     await connectToDatabase();
     const count = await Order.countDocuments();
-    const orderNumber = `SOAR-${1000 + count + 1}`;
+    const orderNumber = data.orderNumber || `SOAR-${1000 + count + 1}`;
 
     // Create Order in MongoDB
     const newOrder = await Order.create({
+      orderNumber,
       customer: data.customer,
       items: data.items,
       subtotal: Number(data.subtotal),
@@ -878,6 +901,25 @@ export const createOrderFn = createServerFn({ method: "POST" })
           lastOrderDate: new Date()
         });
       }
+    }
+
+    // Trigger email notification to shoutgospelworship@gmail.com (and customer)
+    try {
+      await sendOrderNotificationEmail({
+        orderNumber,
+        customer: data.customer,
+        items: data.items,
+        subtotal: Number(data.subtotal),
+        tax: Number(data.tax),
+        shipping: Number(data.shipping),
+        total: Number(data.total),
+        paymentStatus: data.paymentStatus || "Paid",
+        paymentMethod: data.paymentMethod || "Credit Card",
+        orderStatus: data.orderStatus || "Processing",
+        created_at: newOrder.created_at
+      });
+    } catch (emailErr) {
+      console.error("Failed to send order email notification:", emailErr);
     }
 
     return {
@@ -1136,6 +1178,21 @@ export const createDonationFn = createServerFn({ method: "POST" })
         created_at: new Date()
       });
 
+      // Trigger email notification to shoutgospelworship@gmail.com
+      try {
+        await sendDonationNotificationEmail({
+          donorName: data.donorName,
+          donorEmail: data.donorEmail,
+          donorPhone: data.donorPhone,
+          amount: Number(data.amount),
+          giftType: data.giftType,
+          fundCategory: data.fundCategory,
+          message: data.message
+        });
+      } catch (emailErr) {
+        console.error("Failed to send donation email notification:", emailErr);
+      }
+
       return { success: true, donationId: newDonation._id.toString() };
     } catch (err: any) {
       console.error("Failed to save donation:", err);
@@ -1178,6 +1235,263 @@ export function useDonations() {
   return useQuery({
     queryKey: ["cms", "donations"],
     queryFn: () => getDonationsFn(),
+    staleTime: 1000 * 30,
+  });
+}
+
+// ----------------------------------------------------
+// Admin Profile & Security Dynamic Database Handlers
+// ----------------------------------------------------
+export type AdminProfileType = {
+  id: string;
+  username: string;
+  email: string;
+  name: string;
+  avatar_url: string;
+  role: string;
+  updated_at: string;
+};
+
+// Get Admin Profile
+export const getAdminProfileFn = createServerFn({ method: "GET" })
+  .handler(async () => {
+    try {
+      await connectToDatabase();
+      let admin = await AdminUser.findOne();
+      if (!admin) {
+        admin = await AdminUser.create({
+          username: "admin",
+          password: "admin",
+          email: "sistersoar14@gmail.com",
+          name: "Myrtle Dixon",
+          avatar_url: "",
+          role: "Super Administrator"
+        });
+      }
+      return {
+        id: admin._id.toString(),
+        username: admin.username,
+        email: admin.email || "sistersoar14@gmail.com",
+        name: admin.name || "Myrtle Dixon",
+        avatar_url: admin.avatar_url || "",
+        role: admin.role || "Super Administrator",
+        updated_at: admin.updated_at ? admin.updated_at.toISOString() : new Date().toISOString()
+      } as AdminProfileType;
+    } catch (err) {
+      console.error("Error fetching admin profile:", err);
+      return {
+        id: "default",
+        username: "admin",
+        email: "sistersoar14@gmail.com",
+        name: "Myrtle Dixon",
+        avatar_url: "",
+        role: "Super Administrator",
+        updated_at: new Date().toISOString()
+      } as AdminProfileType;
+    }
+  });
+
+// Check Admin Lockout Status
+export const getAdminLockoutStatusFn = createServerFn({ method: "GET" })
+  .handler(async () => {
+    try {
+      await connectToDatabase();
+      let admin = await AdminUser.findOne();
+      if (!admin) return { locked: false, remainingAttempts: 3 };
+
+      const now = new Date();
+      if (admin.lockout_until && new Date(admin.lockout_until) > now) {
+        const diffMs = new Date(admin.lockout_until).getTime() - now.getTime();
+        const remainingSeconds = Math.ceil(diffMs / 1000);
+        const remainingMinutes = Math.ceil(remainingSeconds / 60);
+        return {
+          locked: true,
+          remainingAttempts: 0,
+          lockoutUntil: admin.lockout_until.toISOString(),
+          remainingSeconds,
+          remainingMinutes,
+          error: `Account locked due to 3 failed login attempts. Try again in ${remainingMinutes} min.`
+        };
+      } else if (admin.lockout_until && new Date(admin.lockout_until) <= now) {
+        admin.failed_attempts = 0;
+        admin.lockout_until = null;
+        await admin.save();
+      }
+
+      const remaining = 3 - (admin.failed_attempts || 0);
+      return { locked: false, remainingAttempts: Math.max(0, remaining) };
+    } catch (err) {
+      return { locked: false, remainingAttempts: 3 };
+    }
+  });
+
+// Verify Admin Credentials with 3-Attempt Rate Limit & 1-Hour Account Lockout
+export const verifyAdminLoginFn = createServerFn({ method: "POST" })
+  .validator((payload: { username: string; password: string }) => payload)
+  .handler(async ({ data: { username, password } }) => {
+    try {
+      await connectToDatabase();
+      let admin = await AdminUser.findOne();
+      if (!admin) {
+        admin = await AdminUser.create({
+          username: "admin",
+          password: "admin",
+          email: "sistersoar14@gmail.com",
+          name: "Myrtle Dixon",
+          avatar_url: "",
+          role: "Super Administrator",
+          failed_attempts: 0,
+          lockout_until: null
+        });
+      }
+
+      const now = new Date();
+
+      // 1. Check if account is currently locked out
+      if (admin.lockout_until && new Date(admin.lockout_until) > now) {
+        const diffMs = new Date(admin.lockout_until).getTime() - now.getTime();
+        const remainingSeconds = Math.ceil(diffMs / 1000);
+        const remainingMinutes = Math.ceil(remainingSeconds / 60);
+        return {
+          success: false,
+          locked: true,
+          remainingAttempts: 0,
+          lockoutUntil: admin.lockout_until.toISOString(),
+          remainingSeconds,
+          remainingMinutes,
+          error: `SECURITY LOCKOUT: Account is locked due to 3 failed attempts. Please wait ${remainingMinutes} minute(s) before trying again.`
+        };
+      }
+
+      // If lockout period expired, reset counter
+      if (admin.lockout_until && new Date(admin.lockout_until) <= now) {
+        admin.failed_attempts = 0;
+        admin.lockout_until = null;
+      }
+
+      const matchUser = (username.trim().toLowerCase() === admin.username.trim().toLowerCase()) ||
+                        (username.trim().toLowerCase() === admin.email.trim().toLowerCase());
+      const matchPass = password === admin.password;
+
+      // 2. Handle successful login
+      if (matchUser && matchPass) {
+        admin.failed_attempts = 0;
+        admin.lockout_until = null;
+        await admin.save();
+
+        return {
+          success: true,
+          locked: false,
+          user: {
+            username: admin.username,
+            email: admin.email,
+            name: admin.name,
+            avatar_url: admin.avatar_url,
+            role: admin.role
+          }
+        };
+      }
+
+      // 3. Handle failed login attempt
+      const attempts = (admin.failed_attempts || 0) + 1;
+      admin.failed_attempts = attempts;
+
+      if (attempts >= 3) {
+        const lockoutUntil = new Date(Date.now() + 60 * 60 * 1000); // 1 Hour (60 minutes)
+        admin.lockout_until = lockoutUntil;
+        await admin.save();
+
+        return {
+          success: false,
+          locked: true,
+          remainingAttempts: 0,
+          lockoutUntil: lockoutUntil.toISOString(),
+          remainingMinutes: 60,
+          error: "SECURITY ALERT: Account has been locked for 1 hour due to 3 consecutive failed login attempts."
+        };
+      } else {
+        await admin.save();
+        const remaining = 3 - attempts;
+        return {
+          success: false,
+          locked: false,
+          remainingAttempts: remaining,
+          error: `Invalid username or password. (${remaining} attempt${remaining === 1 ? "" : "s"} remaining before 1-hour account lockout)`
+        };
+      }
+    } catch (err: any) {
+      console.error("Admin verification error:", err);
+      return { success: false, error: err?.message || "Failed to verify admin credentials" };
+    }
+  });
+
+// Update Admin Profile & Password
+export const updateAdminProfileFn = createServerFn({ method: "POST" })
+  .validator((payload: {
+    currentPassword?: string;
+    username: string;
+    email: string;
+    name: string;
+    avatar_url?: string;
+    newPassword?: string;
+  }) => payload)
+  .handler(async ({ data }) => {
+    try {
+      const { checkAdminAuth } = await import("./auth.server");
+      checkAdminAuth();
+      await connectToDatabase();
+
+      let admin = await AdminUser.findOne();
+      if (!admin) {
+        admin = await AdminUser.create({
+          username: "admin",
+          password: "admin",
+          email: "sistersoar14@gmail.com",
+          name: "Myrtle Dixon",
+          avatar_url: "",
+          role: "Super Administrator"
+        });
+      }
+
+      // Verify current password
+      if (data.currentPassword) {
+        if (data.currentPassword !== admin.password) {
+          return { success: false, error: "Current password is incorrect." };
+        }
+      }
+
+      if (data.username) admin.username = data.username.trim();
+      if (data.email) admin.email = data.email.trim();
+      if (data.name) admin.name = data.name.trim();
+      if (data.avatar_url !== undefined) admin.avatar_url = data.avatar_url;
+      if (data.newPassword && data.newPassword.trim()) {
+        admin.password = data.newPassword.trim();
+      }
+      admin.updated_at = new Date();
+
+      await admin.save();
+
+      return {
+        success: true,
+        user: {
+          username: admin.username,
+          email: admin.email,
+          name: admin.name,
+          avatar_url: admin.avatar_url,
+          role: admin.role,
+          updated_at: admin.updated_at.toISOString()
+        }
+      };
+    } catch (err: any) {
+      console.error("Failed to update admin profile:", err);
+      return { success: false, error: err?.message || "Failed to update profile" };
+    }
+  });
+
+export function useAdminProfile() {
+  return useQuery({
+    queryKey: ["cms", "adminProfile"],
+    queryFn: () => getAdminProfileFn(),
     staleTime: 1000 * 30,
   });
 }

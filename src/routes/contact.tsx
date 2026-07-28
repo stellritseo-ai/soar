@@ -9,12 +9,13 @@ import { submitInquiryFn } from "@/lib/cms";
 export const Route = createFileRoute("/contact")({
   head: () => ({
     meta: [
-      { title: "Contact Us — SOAR Global Foundation" },
-      { name: "description", content: "Get in touch with SOAR Global Foundation. Reaching out is the first step in building a future where every woman can soar." },
-      { property: "og:title", content: "Contact Us — SOAR Global Foundation" },
-      { property: "og:url", content: "/contact" },
+      { title: "Contact Us & Location — SOAR Global Foundation Inc. Orlando, FL" },
+      { name: "description", content: "Contact SOAR Global Foundation Inc. in Orlando, FL. Call (321) 710-7145 or message us for mentorship, volunteer opportunities, and program inquiries." },
+      { name: "keywords", content: "contact SOAR Global Foundation, Orlando FL non profit phone number, women non profit address Orlando, SOAR foundation contact" },
+      { property: "og:title", content: "Contact Us — SOAR Global Foundation Inc." },
+      { property: "og:url", content: "https://soarglobalfoundation.org/contact" },
     ],
-    links: [{ rel: "canonical", href: "/contact" }],
+    links: [{ rel: "canonical", href: "https://soarglobalfoundation.org/contact" }],
   }),
   component: Contact,
 });

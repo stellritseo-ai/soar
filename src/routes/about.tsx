@@ -54,12 +54,13 @@ const fallbackTeam = [
 export const Route = createFileRoute("/about")({
   head: () => ({
     meta: [
-      { title: "About — SOAR Global Foundation" },
-      { name: "description", content: "The story, mission, and vision behind SOAR Global Foundation — Sisters Of Adversity Rise." },
-      { property: "og:title", content: "About — SOAR Global Foundation" },
-      { property: "og:url", content: "/about" },
+      { title: "About Us & Mission — SOAR Global Foundation Inc. Orlando, FL" },
+      { name: "description", content: "Learn about SOAR Global Foundation Inc. (Sisters Of Adversity Rise). Our 501(c)(3) non-profit mission empowers women in Orlando, FL through mentorship and homeownership." },
+      { name: "keywords", content: "SOAR Global Foundation, Myrtle Dixon, Sisters Of Adversity Rise, women empowerment non profit Orlando FL, 501c3 organization Orlando, non profit leadership Florida" },
+      { property: "og:title", content: "About Us & Mission — SOAR Global Foundation Inc." },
+      { property: "og:url", content: "https://soarglobalfoundation.org/about" },
     ],
-    links: [{ rel: "canonical", href: "/about" }],
+    links: [{ rel: "canonical", href: "https://soarglobalfoundation.org/about" }],
   }),
   component: About,
 });

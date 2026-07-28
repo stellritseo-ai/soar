@@ -229,6 +229,11 @@ export function DonationsManager() {
                     <td className="px-5 py-4">
                       <div className="font-bold text-white">{d.donorName}</div>
                       <div className="text-[11px] text-white/50">{d.donorEmail}</div>
+                      {d.message && (
+                        <div className="text-[10px] text-purple-300 bg-purple-500/10 px-2 py-0.5 rounded-md mt-1 italic truncate max-w-xs" title={d.message}>
+                          💬 "{d.message}"
+                        </div>
+                      )}
                       {d.isTribute && (
                         <span className="text-[10px] text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded-md mt-1 inline-block">
                           Tribute: {d.tributeName}

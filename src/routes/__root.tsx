@@ -71,21 +71,30 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "SOAR Global Foundation — Helping Women Dream Again" },
+      { title: "SOAR Global Foundation Inc. — Empowering Women & Pathways to Homeownership" },
       {
         name: "description",
         content:
-          "SOAR Global Foundation empowers women through education, mentorship, financial literacy, and pathways to homeownership. Donate, volunteer, or partner with us.",
+          "SOAR Global Foundation Inc. is a 501(c)(3) non-profit organization in Orlando, FL empowering women through education, 1-on-1 mentorship, financial literacy workshops, and pathways to homeownership.",
       },
+      {
+        name: "keywords",
+        content:
+          "SOAR Global Foundation Inc., women empowerment non profit Orlando FL, 501c3 charity Orlando, financial literacy workshops, first-time homebuyer education women, women mentorship program Florida, purple hearts gala 2026, donate to women charity Orlando, affordable housing initiative Florida, Myrtle Dixon",
+      },
+      { name: "robots", content: "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" },
       { name: "author", content: "SOAR Global Foundation Inc." },
-      { property: "og:title", content: "SOAR Global Foundation — Helping Women Dream Again" },
+      { name: "geo.region", content: "US-FL" },
+      { name: "geo.placename", content: "Orlando, Florida" },
+      { property: "og:title", content: "SOAR Global Foundation Inc. — Helping Women Dream Again" },
       {
         property: "og:description",
         content:
-          "Empowering women to rediscover their dreams through education, mentorship, and homeownership.",
+          "Empowering women to overcome adversity through education, mentorship, financial literacy, and pathways to homeownership in Orlando, FL.",
       },
       { property: "og:type", content: "website" },
-      { property: "og:site_name", content: "SOAR Global Foundation" },
+      { property: "og:site_name", content: "SOAR Global Foundation Inc." },
+      { property: "og:url", content: "https://soarglobalfoundation.org" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "theme-color", content: "#5E2B97" },
     ],
@@ -107,10 +116,46 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 });
 
 function RootShell({ children }: { children: ReactNode }) {
+  const ngoSchema = {
+    "@context": "https://schema.org",
+    "@type": "NGO",
+    "name": "SOAR Global Foundation Inc.",
+    "alternateName": "SOAR Foundation",
+    "url": "https://soarglobalfoundation.org",
+    "logo": "https://soarglobalfoundation.org/assets/logo.png",
+    "description": "SOAR Global Foundation Inc. empowers women through education, 1-on-1 mentorship, financial literacy workshops, and pathways to homeownership in Orlando, FL.",
+    "foundingDate": "2025",
+    "founder": {
+      "@type": "Person",
+      "name": "Myrtle Dixon"
+    },
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "720 Outer Road, Suite 100",
+      "addressLocality": "Orlando",
+      "addressRegion": "FL",
+      "postalCode": "32814",
+      "addressCountry": "US"
+    },
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "telephone": "+1-321-710-7145",
+      "contactType": "customer service",
+      "email": "sistersoar14@gmail.com",
+      "areaServed": "US",
+      "availableLanguage": "English"
+    },
+    "taxID": "501(c)(3) Tax-Exempt Non-Profit"
+  };
+
   return (
     <html lang="en">
       <head>
         <HeadContent />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(ngoSchema) }}
+        />
       </head>
       <body suppressHydrationWarning>
         {children}

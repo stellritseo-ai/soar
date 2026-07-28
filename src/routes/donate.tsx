@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { SiteLayout } from "@/components/site/Layout";
 import { PageHeader } from "@/components/site/PageHeader";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   Heart,
   Sparkles,
@@ -22,12 +22,11 @@ import {
   ArrowLeft,
   Users,
   TrendingUp,
+  AlertCircle,
   MapPin,
   HelpCircle,
   Briefcase,
-  Share2,
-  Loader2,
-  AlertCircle
+  Loader2
 } from "lucide-react";
 import { toast } from "sonner";
 import { loadStripe, type Stripe, type StripeElements } from "@stripe/stripe-js";
@@ -44,15 +43,19 @@ const stripePromise = loadStripe(getStripePublishableKey());
 export const Route = createFileRoute("/donate")({
   head: () => ({
     meta: [
-      { title: "Donate Now — SOAR Global Foundation" },
+      { title: "Donate & Support Women Empowerment — 501(c)(3) Tax Deductible | SOAR Global Foundation Inc." },
       {
         name: "description",
-        content: "Support SOAR Global Foundation. Empower women to achieve homeownership, financial literacy, and lasting independence."
+        content: "Donate to SOAR Global Foundation Inc. Your 501(c)(3) tax-deductible gift empowers women in Orlando, FL through financial literacy, mentorship, and homeownership."
       },
-      { property: "og:title", content: "Donate Now — SOAR Global Foundation" },
-      { property: "og:url", content: "/donate" }
+      {
+        name: "keywords",
+        content: "donate to women charity Orlando, 501c3 tax deductible donation Florida, support women homeownership, charity for single mothers Orlando, sponsor a family non profit"
+      },
+      { property: "og:title", content: "Donate & Support Women Empowerment — SOAR Global Foundation Inc." },
+      { property: "og:url", content: "https://soarglobalfoundation.org/donate" }
     ],
-    links: [{ rel: "canonical", href: "/donate" }]
+    links: [{ rel: "canonical", href: "https://soarglobalfoundation.org/donate" }]
   }),
   component: DonatePage
 });
@@ -173,8 +176,8 @@ function DonatePage() {
       }
       setFormStep(2);
     } else if (formStep === 2) {
-      if (!firstName || !lastName || !email || !address || !city || !state || !zip) {
-        toast.error("Please fill in all required contact and billing fields.");
+      if (!firstName || !lastName || !email) {
+        toast.error("Please enter your First Name, Last Name, and Email address.");
         return;
       }
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
@@ -553,16 +556,26 @@ function DonatePage() {
                             />
                           </div>
                           <div>
-                            <label className="font-bold text-foreground/80 block mb-1">ZIP Code *</label>
+                            <label className="font-bold text-foreground/80 block mb-1">ZIP Code</label>
                             <input
                               type="text"
-                              required
                               value={zip}
                               onChange={(e) => setZip(e.target.value)}
                               placeholder="32801"
                               className="w-full border border-border rounded-xl px-3.5 py-2.5 bg-white focus:outline-none focus:border-primary shadow-sm"
                             />
                           </div>
+                        </div>
+
+                        <div className="sm:col-span-2">
+                          <label className="font-bold text-foreground/80 block mb-1">Message / Donor Note (Optional)</label>
+                          <textarea
+                            rows={3}
+                            value={donorMessage}
+                            onChange={(e) => setDonorMessage(e.target.value)}
+                            placeholder="Add a personal message, note, or dedication with your gift..."
+                            className="w-full border border-border rounded-xl px-3.5 py-2.5 bg-white focus:outline-none focus:border-primary shadow-sm resize-none"
+                          />
                         </div>
                       </div>
                     </div>
@@ -598,6 +611,13 @@ function DonatePage() {
                         <Lock className="size-4 text-emerald-600" /> SSL Encrypted
                       </span>
                     </div>
+
+                    {stripeError && (
+                      <div className="p-3.5 rounded-xl bg-red-500/10 border border-red-500/20 text-red-600 text-xs font-semibold flex items-center gap-2">
+                        <AlertCircle className="size-4 shrink-0" />
+                        {stripeError}
+                      </div>
+                    )}
 
                     {/* Card Element Mount Container */}
                     <div>
@@ -758,8 +778,10 @@ function DonatePage() {
 
 // Inner Component for Stripe Card Iframe Mount
 function StripeDonationCardInput({ elementsInstance }: { elementsInstance: StripeElements | null }) {
+  const mountRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
-    if (!elementsInstance) return;
+    if (!elementsInstance || !mountRef.current) return;
 
     let card = elementsInstance.getElement("card");
     if (!card) {
@@ -767,7 +789,7 @@ function StripeDonationCardInput({ elementsInstance }: { elementsInstance: Strip
         style: {
           base: {
             color: "#0F172A",
-            fontSize: "14px",
+            fontSize: "15px",
             fontFamily: "Inter, sans-serif",
             "::placeholder": {
               color: "#94A3B8",
@@ -778,9 +800,14 @@ function StripeDonationCardInput({ elementsInstance }: { elementsInstance: Strip
           },
         },
       });
-      card.mount("#stripe-donation-card-element");
+    }
+
+    try {
+      card.mount(mountRef.current);
+    } catch {
+      // Element might already be mounted
     }
   }, [elementsInstance]);
 
-  return <div id="stripe-donation-card-element" className="min-h-[40px] py-1" />;
+  return <div ref={mountRef} className="min-h-[44px] py-1" />;
 }
