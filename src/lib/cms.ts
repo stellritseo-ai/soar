@@ -1,9 +1,33 @@
 import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { createServerFn } from "@tanstack/react-start";
+import crypto from "node:crypto";
 import { connectToDatabase } from "./mongodb";
 import { SiteSetting, TeamMember, EventModel, BlogPost, GalleryImage, ContactInquiry, ChatMessage, NewsletterSubscriber, Product, Order, CustomerProfile, Donation, AdminUser, seedDatabase } from "./models";
 import { sendOrderNotificationEmail, sendInquiryNotificationEmail, sendNewsletterNotificationEmail, sendDonationNotificationEmail } from "./email";
+
+/**
+ * Encrypt / Hash password using PBKDF2 with SHA-512 and a random salt
+ */
+export function hashPassword(password: string): string {
+  const salt = crypto.randomBytes(16).toString("hex");
+  const hash = crypto.pbkdf2Sync(password, salt, 10000, 64, "sha512").toString("hex");
+  return `${salt}:${hash}`;
+}
+
+/**
+ * Verify plain password against stored hash or legacy plain-text password
+ */
+export function verifyPassword(password: string, storedHash: string): boolean {
+  if (!storedHash) return false;
+  if (!storedHash.includes(":")) {
+    return password === storedHash;
+  }
+  const [salt, originalHash] = storedHash.split(":");
+  if (!salt || !originalHash) return false;
+  const candidateHash = crypto.pbkdf2Sync(password, salt, 10000, 64, "sha512").toString("hex");
+  return crypto.timingSafeEqual(Buffer.from(candidateHash, "hex"), Buffer.from(originalHash, "hex"));
+}
 
 export type TeamMemberType = {
   id: string;
@@ -1335,7 +1359,7 @@ export const verifyAdminLoginFn = createServerFn({ method: "POST" })
       if (!admin) {
         admin = await AdminUser.create({
           username: "admin",
-          password: "admin",
+          password: hashPassword("admin"),
           email: "sistersoar14@gmail.com",
           name: "Myrtle Dixon",
           avatar_url: "",
@@ -1371,10 +1395,14 @@ export const verifyAdminLoginFn = createServerFn({ method: "POST" })
 
       const matchUser = (username.trim().toLowerCase() === admin.username.trim().toLowerCase()) ||
                         (username.trim().toLowerCase() === admin.email.trim().toLowerCase());
-      const matchPass = password === admin.password;
+      const matchPass = verifyPassword(password, admin.password);
 
       // 2. Handle successful login
       if (matchUser && matchPass) {
+        // Auto-upgrade plain-text stored passwords to encrypted hashes
+        if (!admin.password.includes(":")) {
+          admin.password = hashPassword(password);
+        }
         admin.failed_attempts = 0;
         admin.lockout_until = null;
         await admin.save();
@@ -1445,7 +1473,7 @@ export const updateAdminProfileFn = createServerFn({ method: "POST" })
       if (!admin) {
         admin = await AdminUser.create({
           username: "admin",
-          password: "admin",
+          password: hashPassword("admin"),
           email: "sistersoar14@gmail.com",
           name: "Myrtle Dixon",
           avatar_url: "",
@@ -1455,7 +1483,7 @@ export const updateAdminProfileFn = createServerFn({ method: "POST" })
 
       // Verify current password
       if (data.currentPassword) {
-        if (data.currentPassword !== admin.password) {
+        if (!verifyPassword(data.currentPassword, admin.password)) {
           return { success: false, error: "Current password is incorrect." };
         }
       }
@@ -1465,7 +1493,7 @@ export const updateAdminProfileFn = createServerFn({ method: "POST" })
       if (data.name) admin.name = data.name.trim();
       if (data.avatar_url !== undefined) admin.avatar_url = data.avatar_url;
       if (data.newPassword && data.newPassword.trim()) {
-        admin.password = data.newPassword.trim();
+        admin.password = hashPassword(data.newPassword.trim());
       }
       admin.updated_at = new Date();
 
