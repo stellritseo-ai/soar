@@ -175,7 +175,17 @@ export function Footer() {
             <Heart className="size-3.5 text-red-500 fill-current animate-pulse shrink-0" />
             <span>for women everywhere.</span>
             <span className="text-white/20 px-1 hidden sm:inline">|</span>
-            <span className="text-white/40">Design & Developed by <span className="text-[#D4AF37] font-semibold">StellR IT LLC</span></span>
+            <span className="text-white/40">
+              Design & Developed by{" "}
+              <a
+                href="https://stellrit.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[#D4AF37] font-semibold hover:underline hover:text-[#F2D27C] transition-colors"
+              >
+                StellR IT LLC
+              </a>
+            </span>
           </p>
           <div className="flex gap-6">
             <Link to="/privacy" className="hover:text-[#D4AF37] transition-colors duration-200">Privacy Policy</Link>
