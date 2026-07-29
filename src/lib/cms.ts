@@ -1147,8 +1147,8 @@ export type NewsletterSubscriber = NewsletterSubscriberType;
 
 // Stripe Server Function for Live Payment Intents
 export const createStripePaymentIntentFn = createServerFn({ method: "POST" })
-  .validator((amount: number) => amount)
-  .handler(async ({ data: amount }) => {
+  .validator((payload: number | { amount: number; description?: string; customerEmail?: string; metadata?: Record<string, string> }) => payload)
+  .handler(async ({ data: payload }) => {
     try {
       const Stripe = (await import("stripe")).default;
       const stripeSecret = process.env.STRIPE_SECRET_KEY || "";
@@ -1156,12 +1156,30 @@ export const createStripePaymentIntentFn = createServerFn({ method: "POST" })
         apiVersion: "2023-10-16" as any,
       });
 
+      const amount = typeof payload === "number" ? payload : payload.amount;
+      const description = typeof payload === "object" ? payload.description : undefined;
+      const customerEmail = typeof payload === "object" ? payload.customerEmail : undefined;
+      const metadata = typeof payload === "object" ? payload.metadata : undefined;
+
       const amountInCents = Math.max(50, Math.round(amount * 100));
-      const paymentIntent = await stripe.paymentIntents.create({
+
+      const params: any = {
         amount: amountInCents,
         currency: "usd",
         automatic_payment_methods: { enabled: true },
-      });
+      };
+
+      if (description) {
+        params.description = description;
+      }
+      if (metadata) {
+        params.metadata = metadata;
+      }
+      if (customerEmail) {
+        params.receipt_email = customerEmail;
+      }
+
+      const paymentIntent = await stripe.paymentIntents.create(params);
 
       return { clientSecret: paymentIntent.client_secret, id: paymentIntent.id };
     } catch (err: any) {
@@ -1286,7 +1304,7 @@ export const getAdminProfileFn = createServerFn({ method: "GET" })
         admin = await AdminUser.create({
           username: "admin",
           password: "admin",
-          email: "sistersoar14@gmail.com",
+          email: "shoutgospelworship@gmail.com",
           name: "Myrtle Dixon",
           avatar_url: "",
           role: "Super Administrator"
@@ -1295,7 +1313,7 @@ export const getAdminProfileFn = createServerFn({ method: "GET" })
       return {
         id: admin._id.toString(),
         username: admin.username,
-        email: admin.email || "sistersoar14@gmail.com",
+        email: admin.email || "shoutgospelworship@gmail.com",
         name: admin.name || "Myrtle Dixon",
         avatar_url: admin.avatar_url || "",
         role: admin.role || "Super Administrator",
@@ -1306,7 +1324,7 @@ export const getAdminProfileFn = createServerFn({ method: "GET" })
       return {
         id: "default",
         username: "admin",
-        email: "sistersoar14@gmail.com",
+        email: "shoutgospelworship@gmail.com",
         name: "Myrtle Dixon",
         avatar_url: "",
         role: "Super Administrator",
@@ -1360,7 +1378,7 @@ export const verifyAdminLoginFn = createServerFn({ method: "POST" })
         admin = await AdminUser.create({
           username: "admin",
           password: hashPassword("admin"),
-          email: "sistersoar14@gmail.com",
+          email: "shoutgospelworship@gmail.com",
           name: "Myrtle Dixon",
           avatar_url: "",
           role: "Super Administrator",
@@ -1474,7 +1492,7 @@ export const updateAdminProfileFn = createServerFn({ method: "POST" })
         admin = await AdminUser.create({
           username: "admin",
           password: hashPassword("admin"),
-          email: "sistersoar14@gmail.com",
+          email: "shoutgospelworship@gmail.com",
           name: "Myrtle Dixon",
           avatar_url: "",
           role: "Super Administrator"

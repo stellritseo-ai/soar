@@ -147,8 +147,22 @@ function CheckoutPage() {
 
     try {
       if (stripeInstance && elementsInstance) {
-        // Create PaymentIntent or process token securely with Stripe
-        const intentRes = await createStripePaymentIntentFn({ data: currentTotal });
+        // Create PaymentIntent with explicit product description for Stripe dashboard
+        const itemSummary = cart.map((i: any) => `${i.quantity}x ${i.product.name}`).join(", ");
+        const shopDescription = `SOAR Shop Order - ${itemSummary} ($${currentTotal.toFixed(2)})`;
+
+        const intentRes = await createStripePaymentIntentFn({
+          data: {
+            amount: currentTotal,
+            description: shopDescription.slice(0, 350),
+            customerEmail: formData.email,
+            metadata: {
+              customerName: formData.name,
+              items: itemSummary.slice(0, 500),
+              orderType: "Shop Merchandise",
+            },
+          },
+        });
         if (intentRes.clientSecret) {
           const cardEl = elementsInstance.getElement("card");
           if (cardEl) {

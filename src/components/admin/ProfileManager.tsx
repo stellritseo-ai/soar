@@ -248,7 +248,7 @@ export function ProfileManager() {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="sistersoar14@gmail.com"
+                placeholder="shoutgospelworship@gmail.com"
                 className="w-full rounded-xl border border-white/15 bg-black/40 px-4 py-3 text-xs text-white placeholder:text-white/30 focus:outline-none focus:border-[#D4AF37]"
               />
             </div>

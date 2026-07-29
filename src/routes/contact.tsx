@@ -152,8 +152,8 @@ function Contact() {
                   <div>
                     <div className="text-[10px] uppercase tracking-[0.2em] text-primary/80 font-bold">Email</div>
                     <h4 className="text-foreground font-extrabold mt-1 text-sm">Inquiries & Partnerships</h4>
-                    <a href="mailto:sistersoar14@gmail.com" className="inline-block mt-1 text-base font-bold text-foreground hover:text-primary transition break-all">
-                      sistersoar14@gmail.com
+                    <a href="mailto:shoutgospelworship@gmail.com" className="inline-block mt-1 text-base font-bold text-foreground hover:text-primary transition break-all">
+                      shoutgospelworship@gmail.com
                     </a>
                   </div>
                 </div>

@@ -92,7 +92,7 @@ const faqs = [
   },
   {
     q: "What is your tax ID number?",
-    a: "Our tax ID number (EIN) is available upon request. Please contact us at sistersoar14@gmail.com for official documentation."
+    a: "Our tax ID number (EIN) is available upon request. Please contact us at shoutgospelworship@gmail.com for official documentation."
   },
   {
     q: "How will my donation be used?",
@@ -204,7 +204,22 @@ function DonatePage() {
       let paymentId = "stripe_live_" + Date.now();
 
       if (stripeInstance && elementsInstance) {
-        const intentRes = await createStripePaymentIntentFn({ data: totalAmount });
+        const donationDesc = `SOAR Global Foundation Donation - ${giftType === "monthly" ? "Monthly" : "One-Time"} Gift ($${totalAmount.toFixed(2)})`;
+        const intentRes = await createStripePaymentIntentFn({
+          data: {
+            amount: totalAmount,
+            description: donationDesc.slice(0, 350),
+            customerEmail: email,
+            metadata: {
+              donorName: `${firstName} ${lastName}`,
+              donorEmail: email,
+              giftType,
+              fundCategory: designation || "General Fund",
+              isTribute: isTribute ? "Yes" : "No",
+              tributeName: tributeName || "",
+            },
+          },
+        });
         if (intentRes.clientSecret) {
           const cardEl = elementsInstance.getElement("card");
           if (cardEl) {

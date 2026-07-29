@@ -634,7 +634,7 @@ function EventsPage() {
               <Mail className="size-5 text-primary shrink-0" />
               <div className="text-xs">
                 <strong className="text-foreground block">Email</strong>
-                <span className="text-muted-foreground">sistersoar14@gmail.com</span>
+                <span className="text-muted-foreground">shoutgospelworship@gmail.com</span>
               </div>
             </div>
           </div>

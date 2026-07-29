@@ -710,7 +710,7 @@ export interface IAdminUser {
 const AdminUserSchema = new Schema<IAdminUser>({
   username: { type: String, required: true, default: "admin" },
   password: { type: String, required: true, default: "admin" },
-  email: { type: String, default: "sistersoar14@gmail.com" },
+  email: { type: String, default: "shoutgospelworship@gmail.com" },
   name: { type: String, default: "Myrtle Dixon" },
   avatar_url: { type: String, default: "" },
   role: { type: String, default: "Super Administrator" },

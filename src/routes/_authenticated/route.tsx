@@ -10,7 +10,7 @@ export const Route = createFileRoute("/_authenticated")({
         throw redirect({ to: "/auth", search: { redirect: location.href } });
       }
     }
-    return { user: { email: "sistersoar14@gmail.com" } };
+    return { user: { email: "shoutgospelworship@gmail.com" } };
   },
   component: AuthenticatedLayout,
 });

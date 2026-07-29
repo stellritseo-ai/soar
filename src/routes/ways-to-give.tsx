@@ -130,7 +130,7 @@ const faqs = [
   { q: "How can I designate my gift to a specific program?", a: "When making your donation online or via check, you can specify which program you would like to support. We honor all designated gifts." },
   { q: "Can I make a gift in honor or memory of someone?", a: "Absolutely. We are honored to accept gifts made in tribute to loved ones and will send acknowledgment to the designated recipient." },
   { q: "How do I receive a receipt for my donation?", a: "All donors receive an email receipt immediately after online giving. Mail-in donations receive tax receipts within 2-3 weeks." },
-  { q: "Who can I contact with questions?", a: "Please reach out to our donor services team at (321) 710-7145 or sistersoar14@gmail.com." }
+  { q: "Who can I contact with questions?", a: "Please reach out to our donor services team at (321) 710-7145 or shoutgospelworship@gmail.com." }
 ];
 
 function WaysToGive() {
@@ -384,8 +384,8 @@ function WaysToGive() {
                   <a href="tel:3217107145" className="flex items-center gap-2 text-xs font-semibold text-primary hover:text-accent transition">
                     📞 (321) 710-7145
                   </a>
-                  <a href="mailto:sistersoar14@gmail.com" className="flex items-center gap-2 text-xs font-semibold text-primary hover:text-accent transition">
-                    ✉ sistersoar14@gmail.com
+                  <a href="mailto:shoutgospelworship@gmail.com" className="flex items-center gap-2 text-xs font-semibold text-primary hover:text-accent transition">
+                    ✉ shoutgospelworship@gmail.com
                   </a>
                 </div>
               </div>

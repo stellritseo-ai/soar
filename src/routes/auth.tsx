@@ -227,7 +227,7 @@ function AuthPage() {
                   autoComplete="username"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
-                  placeholder="admin or sistersoar14@gmail.com"
+                  placeholder="admin or shoutgospelworship@gmail.com"
                   className="w-full rounded-xl border border-white/15 bg-black/50 pl-10 pr-4 py-3 text-xs text-white placeholder:text-white/30 outline-none focus:border-[#D4AF37] focus:ring-2 focus:ring-[#D4AF37]/20 disabled:opacity-50 transition"
                 />
               </div>

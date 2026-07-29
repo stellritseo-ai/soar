@@ -175,7 +175,7 @@ function TermsPage() {
                   <div className="p-4 rounded-2xl bg-white border border-[#D4AF37]/30 space-y-1.5">
                     <strong className="text-foreground text-sm font-bold block">Donation Refund Policy</strong>
                     <p className="text-muted-foreground leading-relaxed">
-                      Due to the immediate allocation of funds toward our non-profit educational and community housing initiatives, charitable donations are non-refundable. If an error was made in the donation amount or if duplicate charges occurred due to a technical processing glitch, please contact <strong>sistersoar14@gmail.com</strong> within 15 days of the transaction for a refund resolution.
+                      Due to the immediate allocation of funds toward our non-profit educational and community housing initiatives, charitable donations are non-refundable. If an error was made in the donation amount or if duplicate charges occurred due to a technical processing glitch, please contact <strong>shoutgospelworship@gmail.com</strong> within 15 days of the transaction for a refund resolution.
                     </p>
                   </div>
                 </div>
@@ -265,12 +265,12 @@ function TermsPage() {
 
                 <div className="grid gap-4 sm:grid-cols-3 text-xs pt-2">
                   <a
-                    href="mailto:sistersoar14@gmail.com"
+                    href="mailto:shoutgospelworship@gmail.com"
                     className="p-4 rounded-2xl bg-white/5 border border-white/10 hover:border-[#D4AF37]/50 transition space-y-1 block"
                   >
                     <Mail className="size-4 text-[#D4AF37]" />
                     <span className="text-white/60 block font-semibold">Email Counsel</span>
-                    <strong className="text-white font-bold block truncate">sistersoar14@gmail.com</strong>
+                    <strong className="text-white font-bold block truncate">shoutgospelworship@gmail.com</strong>
                   </a>
 
                   <a

@@ -7,7 +7,7 @@ import footerLogoImg from "@/assets/footer-logo.png";
 export function Footer() {
   const { data } = useSetting<ContactSettings>("contact");
   const phone = data?.phone ?? "(321) 710-7145";
-  const email = data?.email ?? "sistersoar14@gmail.com";
+  const email = data?.email ?? "shoutgospelworship@gmail.com";
 
   const [newsletterEmail, setNewsletterEmail] = useState("");
   const [subscribing, setSubscribing] = useState(false);

@@ -351,7 +351,7 @@ function NewsAndEvents() {
               </p>
               <div className="flex flex-wrap gap-3 pt-2 text-[10px] text-muted-foreground">
                 <span>📞 (321) 710-7145</span>
-                <span>✉ sistersoar14@gmail.com</span>
+                <span>✉ shoutgospelworship@gmail.com</span>
               </div>
             </div>
           </div>

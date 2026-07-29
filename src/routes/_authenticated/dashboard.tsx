@@ -31,7 +31,7 @@ export const Route = createFileRoute("/_authenticated/dashboard")({
 
 function Dashboard() {
   const context = Route.useRouteContext();
-  const user = context?.user || { email: "sistersoar14@gmail.com" };
+  const user = context?.user || { email: "shoutgospelworship@gmail.com" };
   const navigate = useNavigate();
   const qc = useQueryClient();
   const [tab, setTab] = useState<
@@ -206,7 +206,7 @@ function Dashboard() {
             )}
             <div className="flex flex-col min-w-0 leading-none">
               <span className="text-xs font-bold truncate group-hover:text-[#D4AF37] transition">{adminProfile?.name || "Administrator"}</span>
-              <span className="text-[9px] opacity-40 mt-1 truncate">{adminProfile?.email || user?.email || "sistersoar14@gmail.com"}</span>
+              <span className="text-[9px] opacity-40 mt-1 truncate">{adminProfile?.email || user?.email || "shoutgospelworship@gmail.com"}</span>
             </div>
           </button>
           <button

@@ -334,12 +334,12 @@ function PrivacyPage() {
 
                 <div className="grid gap-4 sm:grid-cols-3 text-xs pt-2">
                   <a
-                    href="mailto:sistersoar14@gmail.com"
+                    href="mailto:shoutgospelworship@gmail.com"
                     className="p-4 rounded-2xl bg-white/5 border border-white/10 hover:border-[#D4AF37]/50 transition space-y-1 block"
                   >
                     <Mail className="size-4 text-[#D4AF37]" />
                     <span className="text-white/60 block font-semibold">Email Desk</span>
-                    <strong className="text-white font-bold block truncate">sistersoar14@gmail.com</strong>
+                    <strong className="text-white font-bold block truncate">shoutgospelworship@gmail.com</strong>
                   </a>
 
                   <a

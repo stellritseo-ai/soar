@@ -141,7 +141,7 @@ function RootShell({ children }: { children: ReactNode }) {
       "@type": "ContactPoint",
       "telephone": "+1-321-710-7145",
       "contactType": "customer service",
-      "email": "sistersoar14@gmail.com",
+      "email": "shoutgospelworship@gmail.com",
       "areaServed": "US",
       "availableLanguage": "English"
     },
